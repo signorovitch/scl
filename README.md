@@ -1,3 +1,1 @@
-# SCCL: Simple C Calculator Language
-
-Parses infix operators.
+# SCL: Simple Calculator Language
