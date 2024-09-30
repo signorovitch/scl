@@ -1,6 +1,5 @@
 *.o
 *.so
 *.out
-obj/
-compile_commands.json
 .cache
+compile_commands.json
