@@ -1,13 +1,13 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-typedef enum TokenType {
+typedef enum {
     TOKEN_TYPE_CALL,
     TOKEN_TYPE_NUMBER,
 } TokenType;
 
 // Token.
-typedef struct Token {
+typedef struct {
     TokenType type; // The type of the Token.
     char* val;      // The text of the Token.        
 } Token;
