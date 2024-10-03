@@ -8,20 +8,20 @@
 
 // What the lexer is currently looking at.
 typedef enum {
-  LEXER_STATE_CONFUSED, // Can't decide what it's looking at (also initial
-                        // state).
-  LEXER_STATE_NUM,      // Looking at a number.
-  LEXER_STATE_CALL,     // Looking at a call.
+    LEXER_STATE_CONFUSED, // Can't decide what it's looking at (also initial
+                          // state).
+    LEXER_STATE_NUM,      // Looking at a number.
+    LEXER_STATE_CALL,     // Looking at a call.
 } LexerState;
 
 // Lexer: converts text to tokens.
 typedef struct {
-    char* src;          // The source text.
-    size_t srcl;        // The number of source chars.
-    char* cchar;        // The current character.
-    Token** tokens;     // The tokens produced.
-    size_t ntokens;     // The number of tokens.
-    LexerState state;   // What the lexxer is looking at.
+    char* src;        // The source text.
+    size_t srcl;      // The number of source chars.
+    char* cchar;      // The current character.
+    Token** tokens;   // The tokens produced.
+    size_t ntokens;   // The number of tokens.
+    LexerState state; // What the lexxer is looking at.
 } Lexer;
 
 // Create a lexer.
