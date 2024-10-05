@@ -1,5 +1,5 @@
-#include "unity/unity.h"
 #include "registry.h"
+#include "unity/unity.h"
 
 void (*tests[30])();
 

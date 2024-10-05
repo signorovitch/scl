@@ -21,7 +21,7 @@ typedef struct {
     char* cchar;      // The current character.
     Token** tokens;   // The tokens produced.
     size_t ntokens;   // The number of tokens.
-    LexerState state; // What the lexxer is looking at.
+    LexerState state; // What the lexer is looking at.
 } Lexer;
 
 // Create a lexer.
@@ -41,5 +41,8 @@ void lexer_do_call(Lexer* lexer);
 
 // Convert text to tokens.
 void lexer_lex(Lexer* lexer);
+
+// Add a token to the lexer.
+void lexer_add_token(Lexer* lexer, Token* token);
 
 #endif

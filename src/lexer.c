@@ -1,4 +1,6 @@
 #include "include/lexer.h"
+#include "include/token.h"
+#include <stdlib.h>
 
 Lexer* lexer_init(char* src) {
     Lexer* lexer = malloc(sizeof(Lexer));
@@ -20,7 +22,15 @@ void lexer_destroy(Lexer* lexer) {
     for (int i = 0; i < lexer->ntokens; token_destroy(lexer->tokens[i++]));
 }
 
-void lexer_do_confused(Lexer* lexer) {}
+void lexer_do_confused(Lexer* lexer) {
+    int c = atoi(lexer->cchar);
+
+    if (c) lexer_add_token(lexer, token_init(TOKEN_TYPE_NUMBER, lexer->cchar));
+    else lexer_add_token(lexer, token_init(TOKEN_TYPE_CALL, lexer->cchar));
+}
+
+void lexer_do_number(Lexer* lexer) {}
+void lexer_do_call(Lexer* lexer) {}
 
 void lexer_lex(Lexer* lexer) {
     while (*lexer->cchar) {
@@ -31,4 +41,9 @@ void lexer_lex(Lexer* lexer) {
         default:                   break;
         }
     }
+}
+
+void lexer_add_token(Lexer* lexer, Token* token) {
+    (void)reallocarray(lexer->tokens, lexer->ntokens++, sizeof(Token));
+    lexer->tokens[lexer->ntokens-1] = token;
 }

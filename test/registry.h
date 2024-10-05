@@ -2,12 +2,12 @@
 #define REGISTRY_H
 
 #include <stdio.h>
+#include "unity/unity.h"
 
-// Test functions neither consume nor return anything.
-typedef void (*Test)(void);
+typedef int (*Test)(void);
 
 // Register a new test function.
-void register_test(Test t);
+void register_test(Test);
 
 // Run all registered tests.
 void run_all_tests();
