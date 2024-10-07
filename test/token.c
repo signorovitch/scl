@@ -19,6 +19,6 @@ int test_token() {
     return UNITY_END();
 }
 
-__attribute__((constructor)) void register_tests_token() {
+__attribute__((constructor)) void register_token() {
     register_test(test_token);
 }
