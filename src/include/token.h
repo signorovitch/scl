@@ -19,7 +19,10 @@ typedef struct {
 Token* token_init(TokenType type, char* val);
 void token_destroy(Token* token);
 
-void token_print(Token* token);
-static char* token_type_str(Token* token);
+// Returns a string representation of the Token.
+char* token_to_str(Token* token, unsigned int indent);
+
+// Returns a string representation of the TokenType.
+char* token_type_to_str(TokenType t);
 
 #endif

@@ -11,7 +11,7 @@ TEST_OBJ_DIR = $(TEST_BUILD_DIR)/obj
 
 CC = clang
 LINK = clang
-CFLAGS = -Wall
+CFLAGS = -Wall -DDBG -ggdb
 LDFLAGS =
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
@@ -27,6 +27,10 @@ WHITE = $(RESETCOLOR)\x1b[37m
 WHITE_BOLD = $(RESETCOLOR)\x1b[37;1m
 
 all: $(TARGET)
+
+release: clean
+release: CFLAGS = -Wall -O2
+release: $(TARGET)
 
 # Link to final binary.
 $(TARGET): $(OBJ_FILES)
@@ -56,5 +60,8 @@ clean:
 	@ echo -e "$(WHITE_BOLD)Cleaning up...$(WHITE) $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)$(RESETCOLOR)"
 	@ rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)
 
-.PHONY: all clean test nocolor
+run:
+	./$(TARGET)
+
+.PHONY: all clean test nocolor release
 

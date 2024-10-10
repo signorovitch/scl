@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
+#include <ctype.h>
 
+#include "util.h"
 #include "token.h"
 
 #define TOKENS_MAX 32
@@ -51,10 +54,5 @@ void lexer_inc(Lexer* lexer);
 
 // Add a token to the lexer.
 void lexer_add_token(Lexer* lexer, Token* token);
-
-// Print the contents of a lexer.
-void lexer_print(Lexer* lexer);
-
-static char* lexer_state_str(Lexer* lexer);
 
 #endif

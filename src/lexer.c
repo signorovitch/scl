@@ -1,9 +1,5 @@
 #include "include/lexer.h"
-#include "include/token.h"
-#include <assert.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
+#include "include/util.h"
 
 Lexer* lexer_init(char* src) {
     Lexer* lexer = malloc(sizeof(Lexer));
@@ -12,7 +8,7 @@ Lexer* lexer_init(char* src) {
     lexer->srcl = strlen(src);
     lexer->cchar = lexer->src;
 
-    lexer->tokens = calloc(TOKENS_MAX, sizeof(Token));
+    lexer->tokens = calloc(TOKENS_MAX, sizeof(Token*));
     lexer->ntokens = 0;
     lexer->state = LEXER_STATE_CONFUSED;
 
@@ -22,7 +18,7 @@ Lexer* lexer_init(char* src) {
 void lexer_destroy(Lexer* lexer) {
     free(lexer->src);
 
-    for (int i = 0; i < lexer->ntokens; token_destroy(lexer->tokens[i++]));
+    for (int i = 0; i < lexer->ntokens; i++) token_destroy(lexer->tokens[i]);
 }
 
 void lexer_lex(Lexer* lexer) {
@@ -37,11 +33,13 @@ void lexer_lex(Lexer* lexer) {
 }
 
 void lexer_do_confused(Lexer* lexer) {
+    log_dbg("entered confused mode");
     if (isdigit(*lexer->cchar)) lexer_do_number(lexer);
     else lexer_do_call(lexer);
 }
 
 void lexer_do_number(Lexer* lexer) {
+    log_dbg("entered number mode");
     // Size of the number string.
     size_t numsz;
 
@@ -59,6 +57,7 @@ void lexer_do_number(Lexer* lexer) {
 }
 
 void lexer_do_call(Lexer* lexer) {
+    log_dbg("entered call mode");
     // Size of the call string.
     size_t callsz;
 
@@ -71,6 +70,8 @@ void lexer_do_call(Lexer* lexer) {
     char* call = malloc(callsz + 1);
     memcpy(call, start, callsz);
     call[callsz] = '\0';
+
+    lexer_add_token(lexer, token_init(TOKEN_TYPE_CALL, call));
 }
 
 void lexer_inc(Lexer* lexer) {
@@ -81,29 +82,8 @@ void lexer_add_token(Lexer* lexer, Token* token) {
     assert(lexer->ntokens < TOKENS_MAX);
 
     if (lexer->ntokens < TOKENS_MAX - 1) {
-        lexer->tokens[lexer->ntokens - 1] = token;
+        lexer->tokens[lexer->ntokens] = token;
         lexer->ntokens++;
     }
 }
 
-void lexer_print(Lexer* lexer) {
-    printf("Lexer @%p:\n", lexer);
-    printf("\tsrc: \"%s\"\n", lexer->src);
-    printf("\tsrcl: \"%ld\"\n", lexer->srcl);
-    printf("\tcchar: \"%s\"\n", lexer->cchar);
-    printf("\tntokens: %ld\n", lexer->ntokens);
-    printf("\ttokens: [START]\n");
-    for (int i = 0; i < lexer->ntokens; i++) token_print(lexer->tokens[i]);
-    printf("[END]\n");
-    printf("\tstate: %s\n", lexer_state_str(lexer));
-
-}
-
-static char* lexer_state_str(Lexer* lexer) {
-    switch (lexer->state) {
-    case LEXER_STATE_NUM:      return "NUM";
-    case LEXER_STATE_CALL:     return "CALL";
-    case LEXER_STATE_CONFUSED: return "CONFUSED";
-    default:                   return "???";
-    }
-}
