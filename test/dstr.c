@@ -12,14 +12,16 @@ void test_dstr_init() {
 
 void test_dstr_append() {
     char* str1 = malloc(2);
-    str1 = "h";
+    str1[0] = 'h';
+    str1[1] = '\0';
 
     char* str2 = malloc(DSTR_INITSZ);
-    str2 = "h";
+    str2[0] = 'h';
+    str2[1] = '\0';
 
 
     Dstr* dstr = dstr_init();
-    dstr_append(dstr, 1, str1);
+    dstr_append(dstr, str1, 1);
 
     TEST_ASSERT_EQUAL_STRING(str2, dstr->buf);
 }

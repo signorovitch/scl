@@ -32,6 +32,10 @@ release: clean
 release: CFLAGS = -Wall -O2
 release: $(TARGET)
 
+run: $(TARGET)
+	@ echo -e "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
+	@ ./$(TARGET)
+
 # Link to final binary.
 $(TARGET): $(OBJ_FILES)
 	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$(TARGET)$(WHITE_BOLD)...$(RESETCOLOR) $(CC) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)"
@@ -60,8 +64,5 @@ clean:
 	@ echo -e "$(WHITE_BOLD)Cleaning up...$(WHITE) $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)$(RESETCOLOR)"
 	@ rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)
 
-run:
-	./$(TARGET)
-
-.PHONY: all clean test nocolor release
+.PHONY: all clean test nocolor release run
 
