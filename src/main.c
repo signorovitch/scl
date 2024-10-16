@@ -10,15 +10,17 @@ int main(int argc, char** argv) {
         Dstr* cline = dstr_init(); // The current line.
         printf("> ");
         fflush(stdout);
-        for (char cch; (cch = getchar() != EOF);) {
-            dstr_appendch(cline, fgetc(stdin));
+        for (char cch; (cch = getc(stdin)) != '\n';) {
+            log_dbgf("cchar: %c", cch);
+            dstr_appendch(cline, cch);
         }
+
+        log_dbgf("cline: %s", cline->buf);
 
         if (cline->ln > 0) {
             Lexer* lexer = lexer_init(cline->buf);
             lexer_lex(lexer);
             printf("\n=%s\n", token_to_dstr(lexer->tokens[0])->buf);
         }
-
     }
 }

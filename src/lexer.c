@@ -77,7 +77,7 @@ void lexer_do_call(Lexer* lexer) {
 
     for (; *lexer->cchar && (isblank(lexer->cchar) || *lexer->cchar == '\n'); lexer_inc(lexer));
 
-    for (callsz = 0; *lexer->cchar && isalpha(*lexer->cchar); callsz++)
+    for (callsz = 0; *lexer->cchar && (!isdigit(*lexer->cchar)); callsz++)
         lexer_inc(lexer);
 
     char* call = malloc(callsz + 1);
