@@ -1,6 +1,7 @@
 #include "include/token.h"
 #include "include/dstr.h"
-#include <stdlib.h>
+
+#include <stdio.h>
 
 Token* token_init(TokenType type, char* val, size_t valn) {
     Token* t = malloc(sizeof(Token));

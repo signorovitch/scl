@@ -5,13 +5,13 @@
 
 // Log a message.
 #define log_dbg(msg)                                                           \
-    printf("\033[37;1mdbg\033[0m:\033[37;5m%s\033[0m:\033[32m " msg            \
+    printf("\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg            \
            "\033[0m\n",                                                        \
            __func__);
 
 // Log a message with formatting.
 #define log_dbgf(msg, ...)                                                     \
-    printf("\033[37;1mdbg\033[0m:\033[37;5m%s\033[0m:\033[32m " msg            \
+    printf("\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg            \
            "\033[0m\n",                                                        \
            __func__, __VA_ARGS__);
 

@@ -2,8 +2,6 @@
 #define TOKEN_H
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
 
 #include "dstr.h"
 
@@ -23,10 +21,10 @@ typedef struct {
 Token* token_init(TokenType type, char* val, size_t valn);
 void token_destroy(Token* token);
 
-// Returns a string representation of the Token.
-Dstr* token_to_dstr(Token* token);
+// Prints out a representation of the Token.
+void token_print(Token* token);
 
-// Returns a string representation of the TokenType.
-char* token_type_to_str(TokenType t);
+// Prints out a representation of the TokenType.
+void tokentype_print(TokenType t);
 
 #endif
