@@ -15,16 +15,23 @@ typedef enum {
                           // state).
     LEXER_STATE_NUM,      // Looking at a number.
     LEXER_STATE_CALL,     // Looking at a call.
+    LEXER_STATE_MAX = LEXER_STATE_CALL,
 } LexerState;
+
+static char* lexerstate_names[] = {
+    [LEXER_STATE_CONFUSED] = "CONFUSED",
+    [LEXER_STATE_NUM] = "NUM",
+    [LEXER_STATE_CALL] = "CALL",
+};
 
 // Lexer: converts text to tokens.
 typedef struct {
-    char* src;        // The source text.
-    size_t srcln;     // The number of source chars.
-    char* cchar;      // The current character.
-    Token** tokens;   // The tokens produced.
-    size_t ntokens;   // The number of tokens.
     LexerState state; // What the lexer is looking at.
+    size_t srcln;     // The number of source chars.
+    char* src;        // The source text.
+    char* cchar;      // The current character.
+    size_t ntokens;   // The number of tokens.
+    Token** tokens;   // The tokens produced.
 } Lexer;
 
 // Create a lexer.
@@ -51,10 +58,16 @@ void lexer_inc(Lexer* lexer);
 // Add a token to the lexer.
 void lexer_add_token(Lexer* lexer, Token* token);
 
-// Returns a dynamic string representation of the Lexer.
-Dstr* lexer_to_dstr(Lexer* lexer);
+// Print a representation of a Lexer.
+void lexer_print(Lexer* lexer);
 
-// Returns a string representation of the LexerState.
-char* lexer_state_to_str(LexerState s);
+// Print a representation of a Lexer at specified indentation level.
+void lexer_print_i(Lexer* lexer, int ilvl);
+
+// Print a representation of a LexerState.
+void lexerstate_print(LexerState s);
+
+// Print a representation of a LexerState at the specified indentation level.
+void lexerstate_print_i(LexerState s, int ilvl);
 
 #endif

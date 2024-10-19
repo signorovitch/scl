@@ -22,9 +22,9 @@ TEST_SRC_FILES = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_OBJ_DIR)/%.o, $(TEST_SRC_FILES))
 
 # Stupid things.
-RESETCOLOR = \x1b[0m
-WHITE = $(RESETCOLOR)\x1b[37m
-WHITE_BOLD = $(RESETCOLOR)\x1b[37;1m
+RESETCOLOR = \033[0m
+WHITE = $(RESETCOLOR)\033[37m
+WHITE_BOLD = $(RESETCOLOR)\033[37;1m
 
 all: $(TARGET)
 
@@ -33,7 +33,7 @@ release: CFLAGS = -Wall -O2
 release: $(TARGET)
 
 run: $(TARGET)
-	@ echo -e "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
+	@ echo "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
 	@ ./$(TARGET)
 
 # Link to final binary.

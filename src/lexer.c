@@ -55,20 +55,20 @@ void lexer_do_confused(Lexer* lexer) {
 void lexer_do_number(Lexer* lexer) {
     log_dbgf("lexer @ %p entered number mode @ char '%c' (%d)", lexer, *lexer->cchar, (int)*lexer->cchar);
 
-    // Size of the number string.
-    size_t numsz;
+    // Length of the number string.
+    size_t numln;
 
     // Where the number string starts.
     char* start = lexer->cchar;
 
-    for (numsz = 0; *lexer->cchar && isdigit(*lexer->cchar); numsz++)
+    for (numln = 0; *lexer->cchar && isdigit(*lexer->cchar); numln++)
         lexer_inc(lexer);
 
-    char* num = malloc(numsz + 1);
-    memcpy(num, start, numsz);
-    num[numsz] = '\0';
+    char* num = malloc(numln + 1);
+    memcpy(num, start, numln);
+    num[numln] = '\0';
 
-    lexer_add_token(lexer, token_init(TOKEN_TYPE_NUMBER, num, 1));
+    lexer_add_token(lexer, token_init(TOKEN_TYPE_NUMBER, num, numln));
     lexer->state = LEXER_STATE_CONFUSED;
 }
 
@@ -76,19 +76,19 @@ void lexer_do_call(Lexer* lexer) {
     log_dbgf("lexer @ %p entered call mode @ char '%c' (%d)", lexer, *lexer->cchar, (int)*lexer->cchar);
 
     // Size of the call string.
-    size_t callsz;
+    size_t callln;
 
     // Where the call string starts.
     char* start = lexer->cchar;
 
-    for (callsz = 0; *lexer->cchar && (!isdigit(*lexer->cchar)); callsz++)
+    for (callln = 0; *lexer->cchar && (!isdigit(*lexer->cchar)); callln++)
         lexer_inc(lexer);
 
-    char* call = malloc(callsz + 1);
-    memcpy(call, start, callsz);
-    call[callsz] = '\0';
+    char* call = malloc(callln + 1);
+    memcpy(call, start, callln);
+    call[callln] = '\0';
 
-    lexer_add_token(lexer, token_init(TOKEN_TYPE_CALL, call, 1));
+    lexer_add_token(lexer, token_init(TOKEN_TYPE_CALL, call, callln));
 
     lexer->state = LEXER_STATE_CONFUSED;
 }
@@ -103,33 +103,49 @@ void lexer_add_token(Lexer* lexer, Token* token) {
     if (lexer->ntokens < TOKENS_MAX - 1) {
         lexer->tokens[lexer->ntokens] = token;
         lexer->ntokens++;
+
+        log_dbgf("added token (total: %ld)", lexer->ntokens);
     }
 }
 
-Dstr* lexer_to_dstr(Lexer* lexer) {
-    Dstr* str = dstr_init();
+void lexer_print(Lexer* lexer) { lexer_print_i(lexer, 0); }
 
-    size_t titlesz = sizeof("Lexer @ 0x00000000");
-    char title[titlesz];
-    sprintf(title, "Lexer @ %p", lexer);
-    dstr_append(str, title, titlesz - 1);
+void lexer_print_i(Lexer* lexer, int ilvl) {
+    Dstr* spacing = dstr_init();
+    char* sp = spacing->buf;
+    for (int i = 0; i < ilvl; i++) dstr_appendch(spacing, ' ');
 
-    size_t ln = snprintf(NULL, 0, "srcln: %ld", lexer->srcln); 
-    char src_sz[ln + 1];
-    snprintf(src_sz, ln + 1, "srcln: %ld", lexer->srcln);
-    dstr_append(str, src_sz, ln - 1);
+    printf("%sLexer @ %p\n", sp, lexer);
+    printf("%s state:\n", sp);
+    lexerstate_print_i(lexer->state, ilvl + 2);
+    printf("%s srcln:\n", sp);
+    printf("%s %ld\n", sp, lexer->srcln);
+    printf("%s src:\n", sp);
+    printf("%s  \"%s\"\n", sp, lexer->src);
+    printf("%s cchar: \'%c\'\n", sp, *lexer->cchar);
+    printf("%s ntokens: %ld\n", sp, lexer->ntokens);
+    printf("%s tokens: [\n", sp);
 
-    dstr_append(str, "\nsrc: ", 5);
-    dstr_append(str, lexer->src, lexer->srcln);
-
-    return str;
+    for (int i = 0; i < lexer->ntokens; i++) {
+        token_print_i(lexer->tokens[i], ilvl + 2);
+        printf(",\n\n");
+    }
 }
 
-char* lexer_state_to_str(LexerState s) {
-    switch (s) {
-    case LEXER_STATE_NUM:      return "NUM";
-    case LEXER_STATE_CALL:     return "CALL";
-    case LEXER_STATE_CONFUSED: return "CONFUSED";
-    default:                   return "UNKNOWN";
+void lexerstate_print(LexerState s) { lexerstate_print_i(s, 0); }
+
+void lexerstate_print_i(LexerState s, int ilvl) {
+    Dstr* spacing = dstr_init();
+
+    for (int j = 0; j < ilvl; j++) dstr_appendch(spacing, ' ');
+
+    if (s > LEXER_STATE_MAX) {
+        printf("%sUnknown (%d)\n", spacing->buf, s);
+        log_dbgf("%d is not a valid LexerSate (max: %d)", s, LEXER_STATE_MAX);
+        return;
     }
+
+    printf("%s%s\n", spacing->buf, lexerstate_names[s]);
+
+    dstr_destroy(spacing);
 }

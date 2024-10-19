@@ -1,14 +1,20 @@
+#include <stdio.h>
+
 #include "include/token.h"
 #include "include/dstr.h"
+#include "include/util.h"
 
-#include <stdio.h>
+static char* tokentype_names[] = {
+    [TOKEN_TYPE_CALL] = "CALL",
+    [TOKEN_TYPE_NUMBER] = "NUMBER",
+};
 
 Token* token_init(TokenType type, char* val, size_t valn) {
     Token* t = malloc(sizeof(Token));
 
     t->type = type;
-    t->val = val;
     t->valn = valn;
+    t->val = val;
 
     return t;
 }
@@ -18,25 +24,53 @@ void token_destroy(Token* t) {
     free(t);
 }
 
-Dstr* token_to_dstr(Token* token) {
-    Dstr* str = dstr_init();
+void token_print(Token* token) { token_print_i(token, 0); }
 
-    size_t titlesz = sizeof("Token @ 0x00000000");
-    char title[titlesz];
-    sprintf(title, "Token @ %p", token);
-    dstr_append(str, title, titlesz - 1);
-    dstr_append(str, "\n", 1);
+#if 0
+void token_print_i(Token *token, int ilvl) {
+    Dstr* spacing = dstr_init();
+    for (int j = 0; j < ilvl; j++) dstr_appendch(spacing, ' ');
 
-    size_t typesz = sizeof("type: 1");
-    char type[typesz];
-    // If token_to_dstr starts breaking, it might be because there're more than
-    // 10 types. FIXME.
-    sprintf(type, "type: %d", token->type);
-    dstr_append(str, type, typesz - 1);
-    dstr_append(str, "\n", 1);
+    printf("%sToken @ %p\n", spacing->buf, token);
+    printf("%s type:\n", spacing->buf);
+    tokentype_print_i(token->type, ilvl+1);
+    printf("%s valn:\n", spacing->buf);
+    printf("%s  %ld\n", spacing->buf, token->valn);
+    printf("%s val:\n", spacing->buf);
+    printf("%s  \"%s\"\n", spacing->buf, token->val);
 
-    dstr_append(str, "val: ", 5);
-    dstr_append(str, token->val, token->valn);
+    // <spacing> <field>:<value>
+}
+#endif
 
-    return str;
+void token_print_i(Token *token, int ilvl) {
+    INDENT_BEGIN(ilvl);
+
+    INDENT_TITLE("Token", token);
+    INDENT_FIELD_NONL("type");
+    tokentype_print_raw(token->type);
+}
+
+void tokentype_print_raw(TokenType t) {
+    if (t > TOKEN_TYPE_MAX) {
+        printf("Unknown (%d)", t);
+        log_dbgf("%d is not a valid TokenType (max: %d)", t, TOKEN_TYPE_MAX);
+        return;
+    }
+
+    printf("%s", tokentype_names[t]);
+}
+
+void tokentype_print(TokenType t) { tokentype_print_i(t, 0); }
+
+void tokentype_print_i(TokenType t, int i) {
+    INDENT_BEGIN(i);
+
+    if (t > TOKEN_TYPE_MAX) {
+        INDENT_FIELD("val", "Unknown (%d)", t);
+        log_dbgf("%d is not a valid TokenType (max: %d)", t, TOKEN_TYPE_MAX);
+        return;
+    }
+
+    INDENT_FIELD("val", "%s", tokentype_names[t]);
 }
