@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
         if (cline->ln > 0) {
             Lexer* lexer = lexer_init(cline->buf);
             lexer_lex(lexer);
-            printf("\n=%s\n", token_to_dstr(lexer->tokens[0])->buf);
+            printf("\n%s\n", lexer_to_dstr(lexer)->buf);
         }
     }
 }

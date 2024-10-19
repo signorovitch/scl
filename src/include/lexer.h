@@ -2,12 +2,8 @@
 #define LEXER_H
 
 #include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include <assert.h>
-#include <ctype.h>
 
-#include "util.h"
 #include "token.h"
 
 #define TOKENS_MAX 32
@@ -24,7 +20,7 @@ typedef enum {
 // Lexer: converts text to tokens.
 typedef struct {
     char* src;        // The source text.
-    size_t srcl;      // The number of source chars.
+    size_t srcln;     // The number of source chars.
     char* cchar;      // The current character.
     Token** tokens;   // The tokens produced.
     size_t ntokens;   // The number of tokens.
@@ -54,5 +50,11 @@ void lexer_inc(Lexer* lexer);
 
 // Add a token to the lexer.
 void lexer_add_token(Lexer* lexer, Token* token);
+
+// Returns a dynamic string representation of the Lexer.
+Dstr* lexer_to_dstr(Lexer* lexer);
+
+// Returns a string representation of the LexerState.
+char* lexer_state_to_str(LexerState s);
 
 #endif
