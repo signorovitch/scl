@@ -111,20 +111,15 @@ void lexer_add_token(Lexer* lexer, Token* token) {
 void lexer_print(Lexer* lexer) { lexer_print_i(lexer, 0); }
 
 void lexer_print_i(Lexer* lexer, int ilvl) {
-    Dstr* spacing = dstr_init();
-    char* sp = spacing->buf;
-    for (int i = 0; i < ilvl; i++) dstr_appendch(spacing, ' ');
-
-    printf("%sLexer @ %p\n", sp, lexer);
-    printf("%s state:\n", sp);
-    lexerstate_print_i(lexer->state, ilvl + 2);
-    printf("%s srcln:\n", sp);
-    printf("%s %ld\n", sp, lexer->srcln);
-    printf("%s src:\n", sp);
-    printf("%s  \"%s\"\n", sp, lexer->src);
-    printf("%s cchar: \'%c\'\n", sp, *lexer->cchar);
-    printf("%s ntokens: %ld\n", sp, lexer->ntokens);
-    printf("%s tokens: [\n", sp);
+    INDENT_BEGIN(ilvl);
+    INDENT_TITLE("Lexer", lexer);
+    INDENT_FIELD_NONL("state");
+    lexerstate_print_raw(lexer->state); putchar('\n');
+    INDENT_FIELD("srcln", "%ld", lexer->srcln);
+    INDENT_FIELD_NL("src", "\"%s\"", lexer->src);
+    INDENT_FIELD("cchar", "'%c'", *lexer->cchar);
+    INDENT_FIELD("ntokens", "%ld", lexer->ntokens);
+    printf("%s tokens: [\n", INDENT_spacing->buf);
 
     for (int i = 0; i < lexer->ntokens; i++) {
         token_print_i(lexer->tokens[i], ilvl + 2);
@@ -132,20 +127,8 @@ void lexer_print_i(Lexer* lexer, int ilvl) {
     }
 }
 
-void lexerstate_print(LexerState s) { lexerstate_print_i(s, 0); }
-
-void lexerstate_print_i(LexerState s, int ilvl) {
-    Dstr* spacing = dstr_init();
-
-    for (int j = 0; j < ilvl; j++) dstr_appendch(spacing, ' ');
-
-    if (s > LEXER_STATE_MAX) {
-        printf("%sUnknown (%d)\n", spacing->buf, s);
-        log_dbgf("%d is not a valid LexerSate (max: %d)", s, LEXER_STATE_MAX);
-        return;
-    }
-
-    printf("%s%s\n", spacing->buf, lexerstate_names[s]);
-
-    dstr_destroy(spacing);
+void lexerstate_print_raw(LexerState s) {
+    if (s > LEXER_STATE_MAX)
+        printf("Unknown (%d)", s) && log_dbgf("%d is not a valid LexerState (max: %d)", s, TOKEN_TYPE_MAX)
+    else printf("%s", lexerstate_names[s]);
 }

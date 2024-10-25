@@ -33,7 +33,7 @@ release: CFLAGS = -Wall -O2
 release: $(TARGET)
 
 run: $(TARGET)
-	@ echo "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
+	@ echo -e "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
 	@ ./$(TARGET)
 
 # Link to final binary.

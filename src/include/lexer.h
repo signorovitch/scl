@@ -65,9 +65,6 @@ void lexer_print(Lexer* lexer);
 void lexer_print_i(Lexer* lexer, int ilvl);
 
 // Print a representation of a LexerState.
-void lexerstate_print(LexerState s);
-
-// Print a representation of a LexerState at the specified indentation level.
-void lexerstate_print_i(LexerState s, int ilvl);
+void lexerstate_print_raw(LexerState s);
 
 #endif

@@ -26,29 +26,15 @@ void token_destroy(Token* t) {
 
 void token_print(Token* token) { token_print_i(token, 0); }
 
-#if 0
-void token_print_i(Token *token, int ilvl) {
-    Dstr* spacing = dstr_init();
-    for (int j = 0; j < ilvl; j++) dstr_appendch(spacing, ' ');
-
-    printf("%sToken @ %p\n", spacing->buf, token);
-    printf("%s type:\n", spacing->buf);
-    tokentype_print_i(token->type, ilvl+1);
-    printf("%s valn:\n", spacing->buf);
-    printf("%s  %ld\n", spacing->buf, token->valn);
-    printf("%s val:\n", spacing->buf);
-    printf("%s  \"%s\"\n", spacing->buf, token->val);
-
-    // <spacing> <field>:<value>
-}
-#endif
-
 void token_print_i(Token *token, int ilvl) {
     INDENT_BEGIN(ilvl);
 
     INDENT_TITLE("Token", token);
     INDENT_FIELD_NONL("type");
     tokentype_print_raw(token->type);
+    putchar('\n');
+    INDENT_FIELD("valn", "%ld", token->valn); 
+    INDENT_FIELD_NL("val", "\"%s\"", token->val);
 }
 
 void tokentype_print_raw(TokenType t) {
