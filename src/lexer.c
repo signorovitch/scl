@@ -41,7 +41,10 @@ void lexer_lex(Lexer* lexer) {
 }
 
 void lexer_do_confused(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered confused mode @ char '%c' (%d)", lexer, *lexer->cchar, (int)*lexer->cchar);
+    log_dbgf("lexer @ %p entered confused mode @ char '%c' (%d)", lexer,
+             *lexer->cchar, (int)*lexer->cchar);
+
+    if (isspace(*lexer->cchar)) lexer_inc(lexer);
 
     if (isdigit(*lexer->cchar)) {
         lexer->state = LEXER_STATE_NUM;
@@ -53,7 +56,8 @@ void lexer_do_confused(Lexer* lexer) {
 }
 
 void lexer_do_number(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered number mode @ char '%c' (%d)", lexer, *lexer->cchar, (int)*lexer->cchar);
+    log_dbgf("lexer @ %p entered number mode @ char '%c' (%d)", lexer,
+             *lexer->cchar, (int)*lexer->cchar);
 
     // Length of the number string.
     size_t numln;
@@ -73,7 +77,8 @@ void lexer_do_number(Lexer* lexer) {
 }
 
 void lexer_do_call(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered call mode @ char '%c' (%d)", lexer, *lexer->cchar, (int)*lexer->cchar);
+    log_dbgf("lexer @ %p entered call mode @ char '%c' (%d)", lexer,
+             *lexer->cchar, (int)*lexer->cchar);
 
     // Size of the call string.
     size_t callln;
@@ -81,7 +86,9 @@ void lexer_do_call(Lexer* lexer) {
     // Where the call string starts.
     char* start = lexer->cchar;
 
-    for (callln = 0; *lexer->cchar && (!isdigit(*lexer->cchar)); callln++)
+    for (callln = 0;
+         *lexer->cchar && (!isdigit(*lexer->cchar) && !isspace(*lexer->cchar));
+         callln++)
         lexer_inc(lexer);
 
     char* call = malloc(callln + 1);

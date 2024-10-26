@@ -1,9 +1,12 @@
 #ifndef AST_H
 #define AST_H
 
+#include <stdlib.h>
+
 typedef enum {
     AST_TYPE_NUM,
-    AST_TYPE,CALL
+    AST_TYPE_CALL,
+    AST_TYPE_MAX = AST_TYPE_CALL
 } ASTType;
 
 typedef struct {
@@ -15,9 +18,19 @@ typedef struct {
     int val;
 } ASTTypeNum;
 
+ASTTypeNum* ast_type_num_init(int val);
+void ast_type_num_destroy(ASTTypeNum* num);
+
 typedef struct {
-    char* to;
-    char** args;
+    char* to;       // What the call's to.
+    size_t argc;    // Argument count.
+    AST** argv;     // Argument vector.
 } ASTTypeCall;
+
+ASTTypeCall* ast_type_call_init(char* to, size_t argc, AST** argv);
+void ast_type_call_destroy(ASTTypeCall* call);
+
+AST* ast_init(ASTType type, void* data);
+void ast_destroy(AST* ast);
 
 #endif

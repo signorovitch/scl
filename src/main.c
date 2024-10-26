@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "include/dstr.h"
-#include "include/token.h"
 #include "include/util.h"
 #include "include/lexer.h"
 

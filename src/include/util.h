@@ -34,12 +34,16 @@
 
 // Print & indent a thing with a newline before the val.
 #define INDENT_FIELD_NL(FIELD, VAL, ...)                                       \
-    printf("%s " FIELD ":\n %s " VAL "\n", INDENT_spacing->buf,                 \
+    printf("%s " FIELD ":\n %s " VAL "\n", INDENT_spacing->buf,                \
            INDENT_spacing->buf, __VA_ARGS__);
 
 // Print & indent a thing without any newline.
 #define INDENT_FIELD_NONL(FIELD) printf("%s " FIELD ": ", INDENT_spacing->buf);
 
+// End an indent block.
 #define INDENT_END dstr_destroy(INDENT_spacing);
+
+// Allocate a pointer with a type.
+#define talloc(T, X) T* X = malloc(sizeof(T));
 
 #endif
