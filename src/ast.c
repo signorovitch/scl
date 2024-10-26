@@ -17,6 +17,8 @@ ASTTypeNum* ast_type_num_init(int val) {
 }
 
 void ast_type_num_destroy(ASTTypeNum* num) {
+    if (!num) return
+
     free(num);
 }
 
@@ -31,6 +33,8 @@ ASTTypeCall* ast_type_call_init(char* to, size_t argc, AST** argv) {
 }
 
 void ast_type_call_destroy(ASTTypeCall* call) {
+    if (!call) return
+
     free(call->to);
     for (size_t i = 0; i < call->argc; i++) free(call->argv[i]);
     free(call);
@@ -46,6 +50,8 @@ AST* ast_init(ASTType type, void* data) {
 }
 
 void ast_destroy(AST* ast) {
+    if (!ast) return;
+
     switch (ast->type) {
     case AST_TYPE_NUM:  ast_type_num_destroy(ast->data); break;
     case AST_TYPE_CALL: ast_type_call_destroy(ast->data); break;
