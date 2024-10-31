@@ -30,9 +30,9 @@ void token_print_i(Token *token, int ilvl) {
     INDENT_BEGIN(ilvl);
 
     INDENT_TITLE("Token", token);
-    INDENT_FIELD_NONL("type");
-    tokentype_print_raw(token->type);
-    putchar('\n');
+    INDENT_FIELD_NONL_START("type")
+        tokentype_print_raw(token->type);
+    INDENT_FIELD_NONL_END
     INDENT_FIELD("valn", "%ld", token->valn); 
     INDENT_FIELD_NL("val", "\"%s\"", token->val);
 }

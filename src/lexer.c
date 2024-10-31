@@ -7,7 +7,6 @@
 #include "include/dstr.h"
 #include "include/token.h"
 #include "include/util.h"
-
 Lexer* lexer_init(char* src) {
     Lexer* lexer = malloc(sizeof(Lexer));
 
@@ -121,8 +120,9 @@ void lexer_print(Lexer* lexer) { lexer_print_i(lexer, 0); }
 void lexer_print_i(Lexer* lexer, int ilvl) {
     INDENT_BEGIN(ilvl);
     INDENT_TITLE("Lexer", lexer);
-    INDENT_FIELD_NONL("state");
-    lexerstate_print_raw(lexer->state); putchar('\n');
+    INDENT_FIELD_NONL_START("state")
+        lexerstate_print_raw(lexer->state);
+    INDENT_FIELD_NONL_END
     INDENT_FIELD("srcln", "%ld", lexer->srcln);
     INDENT_FIELD_NL("src", "\"%s\"", lexer->src);
     INDENT_FIELD("cchar", "'%c'", *lexer->cchar);
@@ -139,7 +139,8 @@ void lexer_print_i(Lexer* lexer, int ilvl) {
 }
 
 void lexerstate_print_raw(LexerState s) {
-    if (s > LEXER_STATE_MAX)
-        printf("Unknown (%d)", s) && log_dbgf("%d is not a valid LexerState (max: %d)", s, TOKEN_TYPE_MAX)
-    else printf("%s", lexerstate_names[s]);
+    if (s > LEXER_STATE_MAX) {
+        printf("Unknown (%d)", s);
+        log_dbgf("%d is not a valid LexerState (max: %d)", s, TOKEN_TYPE_MAX);
+    } else printf("%s", lexerstate_names[s]);
 }
