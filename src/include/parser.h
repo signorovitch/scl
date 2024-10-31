@@ -17,8 +17,9 @@ typedef struct {
 Parser* parser_init(size_t tokenc, Token** tokenv);
 void parser_destroy(Parser* parser);
 
-// Increment parser->ctoken.
+// Increment `parser->ctoken`.
 void parser_inc(Parser* parser);
+
 // Step forward 1 token and add to stacks.
 void parser_step(Parser* parser);
 

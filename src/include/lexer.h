@@ -38,6 +38,7 @@ typedef struct {
 Lexer* lexer_init(char* src);
 
 // Destroy a lexer.
+// Does not destroy `lexer->src`!
 void lexer_destroy(Lexer* lexer);
 
 // Convert text to tokens.

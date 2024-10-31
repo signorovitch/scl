@@ -24,8 +24,7 @@ Lexer* lexer_init(char* src) {
 }
 
 void lexer_destroy(Lexer* lexer) {
-    free(lexer->src);
-
+    // Does not free lexer->src.
     for (int i = 0; i < lexer->ntokens; i++) token_destroy(lexer->tokens[i]);
 }
 
