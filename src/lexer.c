@@ -5,6 +5,7 @@
 
 #include "include/lexer.h"
 #include "include/dstr.h"
+#include "include/token.h"
 #include "include/util.h"
 
 Lexer* lexer_init(char* src) {
@@ -126,12 +127,15 @@ void lexer_print_i(Lexer* lexer, int ilvl) {
     INDENT_FIELD_NL("src", "\"%s\"", lexer->src);
     INDENT_FIELD("cchar", "'%c'", *lexer->cchar);
     INDENT_FIELD("ntokens", "%ld", lexer->ntokens);
+    INDENT_FIELD_LIST("tokens", lexer->tokens, lexer->ntokens, token_print_i);
+#if 0
     printf("%s tokens: [\n", INDENT_spacing->buf);
 
     for (int i = 0; i < lexer->ntokens; i++) {
         token_print_i(lexer->tokens[i], ilvl + 2);
         printf(",\n\n");
     }
+#endif
 }
 
 void lexerstate_print_raw(LexerState s) {

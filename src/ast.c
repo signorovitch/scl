@@ -3,10 +3,12 @@
 #include "include/ast.h"
 #include "include/util.h"
 
+#if 0
 static char* asttype_names[] = {
     [AST_TYPE_CALL] = "CALL",
     [AST_TYPE_NUM] = "NUMBER",
 };
+#endif
 
 ASTTypeNum* ast_type_num_init(int val) {
     talloc(ASTTypeNum, num);
