@@ -3,8 +3,10 @@ NAME = scl
 TARGET = $(NAME).out
 
 SRC_DIR = src
+INC_DIR = $(SRC_DIR)/include
 BUILD_DIR = build
 OBJ_DIR = $(BUILD_DIR)/obj
+GRAM_DIR = $(BUILD_DIR)/grammars
 TEST_DIR = test
 TEST_BUILD_DIR = $(BUILD_DIR)/test
 TEST_OBJ_DIR = $(TEST_BUILD_DIR)/obj
@@ -36,13 +38,22 @@ run: $(TARGET)
 	@ echo -e "$(WHITE_BOLD)Running... $(RESETCOLOR)./$(TARGET)"
 	@ ./$(TARGET)
 
+# Generate grammars with bison.
+grammars: $(SRC_DIR)/grammar.y
+	@ mkdir -p $(GRAM_DIR)
+	@ echo -e "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR) bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h"
+	@ bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
+
 # Link to final binary.
 $(TARGET): $(OBJ_FILES)
 	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$(TARGET)$(WHITE_BOLD)...$(RESETCOLOR) $(CC) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)"
 	@ $(LINK) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)
 
+# Lexer depends on grammars.
+$(OBJ_DIR)/lexer.o: grammars
+
 # Compile project sources.
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/include/%.h
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@ mkdir -p $(OBJ_DIR)
 	@ echo -e "$(WHITE_BOLD)Compiling $(WHITE)$<$(WHITE_BOLD)... $(RESETCOLOR)$(CC) $(CFLAGS) -c $< -o $@"
 	@ $(CC) $(CFLAGS) -c $< -o $@

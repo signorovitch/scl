@@ -143,3 +143,7 @@ void lexerstate_print_raw(LexerState s) {
         log_dbgf("%d is not a valid LexerState (max: %d)", s, TOKEN_TYPE_MAX);
     } else printf("%s", lexerstate_names[s]);
 }
+
+int yylex() {
+    lexer_lex()
+}

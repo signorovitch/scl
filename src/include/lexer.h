@@ -68,4 +68,7 @@ void lexer_print_i(Lexer* lexer, int ilvl);
 // Print a representation of a LexerState.
 void lexerstate_print_raw(LexerState s);
 
+// Interface with bison.
+int yylex();
+
 #endif

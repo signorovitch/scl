@@ -3,4 +3,5 @@
 tags
 *.out
 .cache
+build/*
 compile_commands.json
