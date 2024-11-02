@@ -35,7 +35,7 @@ typedef struct {
 } Lexer;
 
 // Create a lexer.
-Lexer* lexer_init(char* src);
+void lexer_init(char* src);
 
 // Destroy a lexer.
 // Does not destroy `lexer->src`!
@@ -68,7 +68,7 @@ void lexer_print_i(Lexer* lexer, int ilvl);
 // Print a representation of a LexerState.
 void lexerstate_print_raw(LexerState s);
 
-// Interface with bison.
-int yylex();
+// Create the input string.
+void lexer_set_global(const char* str);
 
 #endif

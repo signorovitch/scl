@@ -7,20 +7,21 @@
 #include "include/dstr.h"
 #include "include/token.h"
 #include "include/util.h"
-Lexer* lexer_init(char* src) {
-    Lexer* lexer = malloc(sizeof(Lexer));
 
-    lexer->src = src;
-    lexer->srcln = strlen(src);
-    lexer->cchar = lexer->src;
+Lexer* thelexer = NULL;
 
-    lexer->tokens = calloc(TOKENS_MAX, sizeof(Token*));
-    lexer->ntokens = 0;
-    lexer->state = LEXER_STATE_CONFUSED;
+void lexer_init(char* src) {
+    thelexer = malloc(sizeof(Lexer));
 
-    log_dbgf("created new lexer @ %p", lexer);
+    thelexer->src = src;
+    thelexer->srcln = strlen(src);
+    thelexer->cchar = thelexer->src;
 
-    return lexer;
+    thelexer->tokens = calloc(TOKENS_MAX, sizeof(Token*));
+    thelexer->ntokens = 0;
+    thelexer->state = LEXER_STATE_CONFUSED;
+
+    log_dbgf("created thelexer @ %p", thelexer);
 }
 
 void lexer_destroy(Lexer* lexer) {
@@ -144,6 +145,36 @@ void lexerstate_print_raw(LexerState s) {
     } else printf("%s", lexerstate_names[s]);
 }
 
-int yylex() {
-    lexer_lex()
+#include "../build/grammars/grammar.tab.h"
+
+int yylex(void) {
+    if (*thelexer->cchar == '\0') return YYEOF;
+
+    switch (*thelexer->cchar) {
+        case ' ':
+        case '\t':
+            thelexer->cchar++;
+    }
+
+    // Assign & consume current character.
+    int c = *thelexer->cchar++;
+
+    switch (c) {
+        case '+':
+            return PLUS;
+    }
+
+    if (isdigit(c)) {
+        int value = c - '0';  // Start with the first digit
+        while (isdigit(*thelexer->cchar)) {
+            value = value * 10 + (*thelexer->cchar - '0');  // Accumulate value
+            thelexer++;
+        }
+        yylval.intval = value;  // Set the token value
+        return NUM; // Return the INTEGER token type
+    }
+
+    fprintf(stderr, "Unexpected character: %c\n", c);
+
+    return 0;
 }
