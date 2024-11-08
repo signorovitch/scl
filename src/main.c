@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
         log_dbgf("cline: %s", cline->buf);
 
         if (cline->ln > 0) {
-            Lexer* lexer = lexer_init(cline->buf);
-            lexer_lex(lexer);
-            lexer_print(lexer);
-            lexer_destroy(lexer);
+            lexer_init(cline->buf);
+            lexer_lex();
+            lexer_print();
+            lexer_destroy();
         }
 
         dstr_destroy(cline);

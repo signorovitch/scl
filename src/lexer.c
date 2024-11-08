@@ -24,121 +24,114 @@ void lexer_init(char* src) {
     log_dbgf("created thelexer @ %p", thelexer);
 }
 
-void lexer_destroy(Lexer* lexer) {
+void lexer_destroy() {
     // Does not free lexer->src.
-    for (int i = 0; i < lexer->ntokens; i++) token_destroy(lexer->tokens[i]);
+    for (int i = 0; i < thelexer->ntokens; i++) token_destroy(thelexer->tokens[i]);
 }
 
-void lexer_lex(Lexer* lexer) {
-    while (*lexer->cchar) {
-        switch (lexer->state) {
-        case LEXER_STATE_CONFUSED: lexer_do_confused(lexer); break;
-        case LEXER_STATE_NUM:      lexer_do_number(lexer); break;
-        case LEXER_STATE_CALL:     lexer_do_call(lexer); break;
+void lexer_lex() {
+    while (*thelexer->cchar) {
+        switch (thelexer->state) {
+        case LEXER_STATE_CONFUSED: lexer_do_confused(); break;
+        case LEXER_STATE_NUM:      lexer_do_number(); break;
+        case LEXER_STATE_CALL:     lexer_do_call(); break;
         default:                   break;
         }
     }
 }
 
-void lexer_do_confused(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered confused mode @ char '%c' (%d)", lexer,
-             *lexer->cchar, (int)*lexer->cchar);
+void lexer_do_confused() {
+    log_dbgf("lexer @ %p entered confused mode @ char '%c' (%d)", thelexer,
+             *thelexer->cchar, (int)*thelexer->cchar);
 
-    if (isspace(*lexer->cchar)) lexer_inc(lexer);
+    if (isspace(*thelexer->cchar)) lexer_inc();
 
-    if (isdigit(*lexer->cchar)) {
-        lexer->state = LEXER_STATE_NUM;
-        lexer_do_number(lexer);
+    if (isdigit(*thelexer->cchar)) {
+        thelexer->state = LEXER_STATE_NUM;
+        lexer_do_number();
     } else {
-        lexer->state = LEXER_STATE_CALL;
-        lexer_do_call(lexer);
+        thelexer->state = LEXER_STATE_CALL;
+        lexer_do_call();
     }
 }
 
-void lexer_do_number(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered number mode @ char '%c' (%d)", lexer,
-             *lexer->cchar, (int)*lexer->cchar);
+void lexer_do_number() {
+    log_dbgf("lexer @ %p entered number mode @ char '%c' (%d)", thelexer,
+             *thelexer->cchar, (int)*thelexer->cchar);
 
     // Length of the number string.
     size_t numln;
 
     // Where the number string starts.
-    char* start = lexer->cchar;
+    char* start = thelexer->cchar;
 
-    for (numln = 0; *lexer->cchar && isdigit(*lexer->cchar); numln++)
-        lexer_inc(lexer);
+    for (numln = 0; *thelexer->cchar && isdigit(*thelexer->cchar); numln++)
+        lexer_inc();
 
     char* num = malloc(numln + 1);
     memcpy(num, start, numln);
     num[numln] = '\0';
 
-    lexer_add_token(lexer, token_init(TOKEN_TYPE_NUMBER, num, numln));
-    lexer->state = LEXER_STATE_CONFUSED;
+    lexer_add_token(token_init(TOKEN_TYPE_NUMBER, num, numln));
+    thelexer->state = LEXER_STATE_CONFUSED;
 }
 
-void lexer_do_call(Lexer* lexer) {
-    log_dbgf("lexer @ %p entered call mode @ char '%c' (%d)", lexer,
-             *lexer->cchar, (int)*lexer->cchar);
+void lexer_do_call() {
+    log_dbgf("lexer @ %p entered call mode @ char '%c' (%d)", thelexer,
+             *thelexer->cchar, (int)*thelexer->cchar);
 
     // Size of the call string.
     size_t callln;
 
     // Where the call string starts.
-    char* start = lexer->cchar;
+    char* start = thelexer->cchar;
 
     for (callln = 0;
-         *lexer->cchar && (!isdigit(*lexer->cchar) && !isspace(*lexer->cchar));
+         *thelexer->cchar && (!isdigit(*thelexer->cchar) && !isspace(*thelexer->cchar));
          callln++)
-        lexer_inc(lexer);
+        lexer_inc();
 
     char* call = malloc(callln + 1);
     memcpy(call, start, callln);
     call[callln] = '\0';
 
-    lexer_add_token(lexer, token_init(TOKEN_TYPE_CALL, call, callln));
+    lexer_add_token(token_init(TOKEN_TYPE_CALL, call, callln));
 
-    lexer->state = LEXER_STATE_CONFUSED;
+    thelexer->state = LEXER_STATE_CONFUSED;
 }
 
-void lexer_inc(Lexer* lexer) {
-    lexer->cchar += sizeof(char);
+void lexer_inc() {
+    thelexer->cchar += sizeof(char);
 }
 
-void lexer_add_token(Lexer* lexer, Token* token) {
-    assert(lexer->ntokens < TOKENS_MAX);
+void lexer_add_token(Token* token) {
+    assert(thelexer->ntokens < TOKENS_MAX);
 
-    if (lexer->ntokens < TOKENS_MAX - 1) {
-        lexer->tokens[lexer->ntokens] = token;
-        lexer->ntokens++;
+    if (thelexer->ntokens < TOKENS_MAX - 1) {
+        thelexer->tokens[thelexer->ntokens] = token;
+        thelexer->ntokens++;
 
-        log_dbgf("added token (total: %ld)", lexer->ntokens);
+        log_dbgf("added token (total: %ld)", thelexer->ntokens);
     }
 }
 
-void lexer_print(Lexer* lexer) { lexer_print_i(lexer, 0); }
+void lexer_print() { lexer_print_i(0); }
 
-void lexer_print_i(Lexer* lexer, int ilvl) {
+void lexer_print_i(int ilvl) {
     INDENT_BEGIN(ilvl);
-    INDENT_TITLE("Lexer", lexer);
+    INDENT_TITLE("Lexer", thelexer);
     INDENT_FIELD_NONL_START("state")
-        lexerstate_print_raw(lexer->state);
+        lexerstate_print_raw();
     INDENT_FIELD_NONL_END
-    INDENT_FIELD("srcln", "%ld", lexer->srcln);
-    INDENT_FIELD_NL("src", "\"%s\"", lexer->src);
-    INDENT_FIELD("cchar", "'%c'", *lexer->cchar);
-    INDENT_FIELD("ntokens", "%ld", lexer->ntokens);
-    INDENT_FIELD_LIST("tokens", lexer->tokens, lexer->ntokens, token_print_i);
-#if 0
-    printf("%s tokens: [\n", INDENT_spacing->buf);
-
-    for (int i = 0; i < lexer->ntokens; i++) {
-        token_print_i(lexer->tokens[i], ilvl + 2);
-        printf(",\n\n");
-    }
-#endif
+    INDENT_FIELD("srcln", "%ld", thelexer->srcln);
+    INDENT_FIELD_NL("src", "\"%s\"", thelexer->src);
+    INDENT_FIELD("cchar", "'%c'", *thelexer->cchar);
+    INDENT_FIELD("ntokens", "%ld", thelexer->ntokens);
+    INDENT_FIELD_LIST("tokens", thelexer->tokens, thelexer->ntokens, token_print_i);
 }
 
-void lexerstate_print_raw(LexerState s) {
+void lexerstate_print_raw() {
+    LexerState s = thelexer->state;
     if (s > LEXER_STATE_MAX) {
         printf("Unknown (%d)", s);
         log_dbgf("%d is not a valid LexerState (max: %d)", s, TOKEN_TYPE_MAX);

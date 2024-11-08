@@ -37,36 +37,36 @@ typedef struct {
 // Create a lexer.
 void lexer_init(char* src);
 
-// Destroy a lexer.
-// Does not destroy `lexer->src`!
-void lexer_destroy(Lexer* lexer);
+// Destroy the lexer.
+// Does not destroy `thelexer->src`.
+void lexer_destroy();
 
 // Convert text to tokens.
-void lexer_lex(Lexer* lexer);
+void lexer_lex();
 
 // Lex in confused mode.
-void lexer_do_confused(Lexer* lexer);
+void lexer_do_confused();
 
 // Lex in number mode.
-void lexer_do_number(Lexer* lexer);
+void lexer_do_number();
 
 // Lex in call mode.
-void lexer_do_call(Lexer* lexer);
+void lexer_do_call();
 
 // Increment the lexer's current character pointer.
-void lexer_inc(Lexer* lexer);
+void lexer_inc();
 
 // Add a token to the lexer.
-void lexer_add_token(Lexer* lexer, Token* token);
+void lexer_add_token(Token* token);
 
 // Print a representation of a Lexer.
-void lexer_print(Lexer* lexer);
+void lexer_print();
 
 // Print a representation of a Lexer at specified indentation level.
-void lexer_print_i(Lexer* lexer, int ilvl);
+void lexer_print_i(int ilvl);
 
 // Print a representation of a LexerState.
-void lexerstate_print_raw(LexerState s);
+void lexerstate_print_raw();
 
 // Create the input string.
 void lexer_set_global(const char* str);
