@@ -44,19 +44,25 @@ grammars: $(SRC_DIR)/grammar.y
 	@ echo -e "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR) bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h"
 	@ bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
 
-# Link to final binary.
-$(TARGET): $(OBJ_FILES)
-	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$(TARGET)$(WHITE_BOLD)...$(RESETCOLOR) $(CC) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)"
-	@ $(LINK) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)
+
+# Compile grammars.
+$(OBJ_DIR)/grammar.o: $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h $(OBJ_DIR)/lexer.o
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Lexer depends on grammars.
-$(OBJ_DIR)/lexer.o: grammars
+$(OBJ_DIR)/lexer.o: $(SRC_DIR)/lexer.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile project sources.
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@ mkdir -p $(OBJ_DIR)
 	@ echo -e "$(WHITE_BOLD)Compiling $(WHITE)$<$(WHITE_BOLD)... $(RESETCOLOR)$(CC) $(CFLAGS) -c $< -o $@"
 	@ $(CC) $(CFLAGS) -c $< -o $@
+
+# Link to final binary.
+$(TARGET): $(OBJ_FILES) $(OBJ_DIR)/grammar.o
+	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$(TARGET)$(WHITE_BOLD)...$(RESETCOLOR) $(CC) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)"
+	@ $(LINK) -o $(TARGET) $(OBJ_FILES) $(OBJ_DIR)/grammar.o $(LDFLAGS)
 
 # Compile test sources.
 $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.c
@@ -76,4 +82,3 @@ clean:
 	@ rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)
 
 .PHONY: all clean test nocolor release run
-

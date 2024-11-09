@@ -72,5 +72,6 @@ void lexerstate_print_raw();
 void lexer_set_global(const char* str);
 
 int yylex();
+void yyerror(char const* s);
 
 #endif

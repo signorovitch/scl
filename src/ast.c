@@ -10,7 +10,7 @@ static char* asttype_names[] = {
 };
 #endif
 
-ASTTypeNum* ast_type_num_init(int val) {
+ASTTypeNum* ast_type_num_init(AST* val) {
     talloc(ASTTypeNum, num);
 
     num->val = val;
@@ -19,9 +19,10 @@ ASTTypeNum* ast_type_num_init(int val) {
 }
 
 void ast_type_num_destroy(ASTTypeNum* num) {
-    if (!num) return
+    if (!num)
+        return
 
-    free(num);
+            free(num);
 }
 
 ASTTypeCall* ast_type_call_init(char* to, size_t argc, AST** argv) {
@@ -35,9 +36,10 @@ ASTTypeCall* ast_type_call_init(char* to, size_t argc, AST** argv) {
 }
 
 void ast_type_call_destroy(ASTTypeCall* call) {
-    if (!call) return
+    if (!call)
+        return
 
-    free(call->to);
+            free(call->to);
     for (size_t i = 0; i < call->argc; i++) free(call->argv[i]);
     free(call);
 }

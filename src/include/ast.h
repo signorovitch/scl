@@ -18,10 +18,10 @@ AST* ast_init(ASTType type, void* data);
 void ast_destroy(AST* ast);
 
 typedef struct {
-    int val;
+    AST* val;
 } ASTTypeNum;
 
-ASTTypeNum* ast_type_num_init(int val);
+ASTTypeNum* ast_type_num_init(AST* val);
 void ast_type_num_destroy(ASTTypeNum* num);
 
 typedef struct {

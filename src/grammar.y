@@ -1,10 +1,13 @@
+%{
+#include "../../src/include/ast.h"
+#include "../../src/include/lexer.h"
+int yylex (void);
+void yyerror (char const *);
+%}
+
 %code requires {
     #include "../../src/include/ast.h"
 }
-
-%{
-#include "../../src/include/ast.h"
-%}
 
 %union {
     int intval;
@@ -20,8 +23,8 @@
 %%
 
 exp:
-   NUM {}
-   | exp PLUS exp { $$ = ast_type_call_init("+", 2, [ast_type_num_init($1), ast_type_num_init(int val)]}
+   NUM { $$ = ast_type_num_init($1); }
+   | NUM PLUS NUM { AST* argv[2] = {ast_type_num_init($1), ast_type_num_init($1)}; $$ = ast_type_call_init("+", 2, argv);}
    ;
 
 %%
