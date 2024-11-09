@@ -1,10 +1,10 @@
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 
-#include "include/lexer.h"
 #include "include/dstr.h"
+#include "include/lexer.h"
 #include "include/token.h"
 #include "include/util.h"
 
@@ -26,7 +26,8 @@ void lexer_init(char* src) {
 
 void lexer_destroy() {
     // Does not free lexer->src.
-    for (int i = 0; i < thelexer->ntokens; i++) token_destroy(thelexer->tokens[i]);
+    for (int i = 0; i < thelexer->ntokens; i++)
+        token_destroy(thelexer->tokens[i]);
 }
 
 void lexer_lex() {
@@ -86,8 +87,8 @@ void lexer_do_call() {
     // Where the call string starts.
     char* start = thelexer->cchar;
 
-    for (callln = 0;
-         *thelexer->cchar && (!isdigit(*thelexer->cchar) && !isspace(*thelexer->cchar));
+    for (callln = 0; *thelexer->cchar &&
+                     (!isdigit(*thelexer->cchar) && !isspace(*thelexer->cchar));
          callln++)
         lexer_inc();
 
@@ -100,9 +101,7 @@ void lexer_do_call() {
     thelexer->state = LEXER_STATE_CONFUSED;
 }
 
-void lexer_inc() {
-    thelexer->cchar += sizeof(char);
-}
+void lexer_inc() { thelexer->cchar += sizeof(char); }
 
 void lexer_add_token(Token* token) {
     assert(thelexer->ntokens < TOKENS_MAX);
@@ -121,13 +120,14 @@ void lexer_print_i(int ilvl) {
     INDENT_BEGIN(ilvl);
     INDENT_TITLE("Lexer", thelexer);
     INDENT_FIELD_NONL_START("state")
-        lexerstate_print_raw();
+    lexerstate_print_raw();
     INDENT_FIELD_NONL_END
     INDENT_FIELD("srcln", "%ld", thelexer->srcln);
     INDENT_FIELD_NL("src", "\"%s\"", thelexer->src);
     INDENT_FIELD("cchar", "'%c'", *thelexer->cchar);
     INDENT_FIELD("ntokens", "%ld", thelexer->ntokens);
-    INDENT_FIELD_LIST("tokens", thelexer->tokens, thelexer->ntokens, token_print_i);
+    INDENT_FIELD_LIST("tokens", thelexer->tokens, thelexer->ntokens,
+                      token_print_i);
 }
 
 void lexerstate_print_raw() {
@@ -140,31 +140,32 @@ void lexerstate_print_raw() {
 
 #include "../build/grammars/grammar.tab.h"
 
+extern YYSTYPE yylval;
+
 int yylex(void) {
     if (*thelexer->cchar == '\0') return YYEOF;
 
     switch (*thelexer->cchar) {
-        case ' ':
-        case '\t':
-            thelexer->cchar++;
+    case ' ':
+    case '\t': thelexer->cchar++;
     }
 
     // Assign & consume current character.
     int c = *thelexer->cchar++;
 
     switch (c) {
-        case '+':
-            return PLUS;
+    case '+': return PLUS;
+    default:  return CALL;
     }
 
     if (isdigit(c)) {
-        int value = c - '0';  // Start with the first digit
+        int value = c - '0'; // Start with the first digit
         while (isdigit(*thelexer->cchar)) {
-            value = value * 10 + (*thelexer->cchar - '0');  // Accumulate value
+            value = value * 10 + (*thelexer->cchar - '0'); // Accumulate value
             thelexer++;
         }
-        yylval.intval = value;  // Set the token value
-        return NUM; // Return the INTEGER token type
+        yylval.intval = value; // Set the token value
+        return NUM;            // Return the INTEGER token type
     }
 
     fprintf(stderr, "Unexpected character: %c\n", c);
