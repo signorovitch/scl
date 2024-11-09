@@ -8,6 +8,10 @@
 #include "include/token.h"
 #include "include/util.h"
 
+#include "../build/grammars/grammar.tab.h"
+
+extern YYSTYPE yylval;
+
 Lexer* thelexer = NULL;
 
 void lexer_init(char* src) {
@@ -138,34 +142,30 @@ void lexerstate_print_raw() {
     } else printf("%s", lexerstate_names[s]);
 }
 
-#include "../build/grammars/grammar.tab.h"
-
-extern YYSTYPE yylval;
-
-int yylex(void) {
+int yylex() {
     if (*thelexer->cchar == '\0') return YYEOF;
 
-    switch (*thelexer->cchar) {
-    case ' ':
-    case '\t': thelexer->cchar++;
-    }
+    // Skip all whitespace.
+    while (*thelexer->cchar == ' ' || *thelexer->cchar == '\t')
+        thelexer->cchar++;
 
     // Assign & consume current character.
     int c = *thelexer->cchar++;
 
+    // Check for NUM.
+    if (isdigit(c)) {
+        int value = c - '0';
+        while (isdigit(*thelexer->cchar)) {
+            value = value * 10 + (*thelexer->cchar - '0'); // Accumulate value.
+            thelexer->cchar++;
+        }
+        yylval.intval = value; // Set the token value.
+        return NUM;
+    }
+
     switch (c) {
     case '+': return PLUS;
     default:  return CALL;
-    }
-
-    if (isdigit(c)) {
-        int value = c - '0'; // Start with the first digit
-        while (isdigit(*thelexer->cchar)) {
-            value = value * 10 + (*thelexer->cchar - '0'); // Accumulate value
-            thelexer++;
-        }
-        yylval.intval = value; // Set the token value
-        return NUM;            // Return the INTEGER token type
     }
 
     fprintf(stderr, "Unexpected character: %c\n", c);

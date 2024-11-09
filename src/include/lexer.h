@@ -71,4 +71,6 @@ void lexerstate_print_raw();
 // Create the input string.
 void lexer_set_global(const char* str);
 
+int yylex();
+
 #endif

@@ -14,6 +14,9 @@ typedef struct {
     void* data;
 } AST;
 
+AST* ast_init(ASTType type, void* data);
+void ast_destroy(AST* ast);
+
 typedef struct {
     int val;
 } ASTTypeNum;
@@ -29,8 +32,5 @@ typedef struct {
 
 ASTTypeCall* ast_type_call_init(char* to, size_t argc, AST** argv);
 void ast_type_call_destroy(ASTTypeCall* call);
-
-AST* ast_init(ASTType type, void* data);
-void ast_destroy(AST* ast);
 
 #endif

@@ -35,4 +35,3 @@ Variables can be defined, with several attributes:
 > d:lazy = (1 + 1)  // Interpreter will wait as long as possible before
                     // evaluating.
 ```
-
