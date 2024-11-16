@@ -1,8 +1,10 @@
 %{
+    #include <stdio.h>
     #include "../../src/include/ast.h"
     #include "../../src/include/lexer.h"
-        int yylex(void);
-        void yyerror(char const*);
+    
+    int yylex(void);
+    void yyerror(char const*);
 %}
 
 %code requires {
@@ -15,12 +17,25 @@
     AST* ast;
 }
 
+%define parse.error verbose
+
 %token<intval> NUM
 %token<strval> CALL
 %token PLUS
 %type<ast> exp
 
 %%
+
+input:
+    %empty
+    | input line
+    ;
+
+
+line:
+    '\n'
+    | exp '\n' { printf("it worked. 👍\n"); }
+    ;
 
 exp: 
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_type_num_init($1)); }

@@ -77,7 +77,7 @@
     printf(COL_BWHI "%s ]\n" COL_RESET, INDENT_spacing->buf);
 
 // End an indent block.
-#define INDENT_END dstr_destroy(INDENT_spacing);
+#define INDENT_END printf(COL_RESET); dstr_destroy(INDENT_spacing);
 
 // Allocate a pointer with a type.
 #define talloc(T, X) T* X = malloc(sizeof(T));
