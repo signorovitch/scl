@@ -19,6 +19,7 @@ LDFLAGS =
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 OBJ_FILES_NOMAIN = $(filter-out $(OBJ_DIR)/main.o, $(OBJ_FILES)) # Object files without main.c.
+GRAM_FILES = $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h
 UNITY_C = $(TEST_DIR)/unity/unity.c
 TEST_SRC_FILES = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_OBJ_DIR)/%.o, $(TEST_SRC_FILES))
@@ -39,7 +40,7 @@ run: $(TARGET)
 	@ ./$(TARGET)
 
 # Generate grammars with bison.
-grammars: $(SRC_DIR)/grammar.y
+$(GRAM_FILES): $(SRC_DIR)/grammar.y
 	@ mkdir -p $(GRAM_DIR)
 	@ echo -e "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR) bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h"
 	@ bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
@@ -50,7 +51,7 @@ $(OBJ_DIR)/grammar.o: $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h $(OBJ_
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Lexer depends on grammars.
-$(OBJ_DIR)/lexer.o: $(SRC_DIR)/lexer.c
+$(OBJ_DIR)/lexer.o: $(SRC_DIR)/lexer.c $(GRAM_FILES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile project sources.
@@ -60,7 +61,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@ $(CC) $(CFLAGS) -c $< -o $@
 
 # Link to final binary.
-$(TARGET): $(OBJ_FILES) $(OBJ_DIR)/grammar.o
+$(TARGET): $(OBJ_DIR)/grammar.o $(OBJ_FILES)
 	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$(TARGET)$(WHITE_BOLD)...$(RESETCOLOR) $(CC) -o $(TARGET) $(OBJ_FILES) $(LDFLAGS)"
 	@ $(LINK) -o $(TARGET) $(OBJ_FILES) $(OBJ_DIR)/grammar.o $(LDFLAGS)
 
@@ -78,7 +79,7 @@ test: $(TEST_OBJ_FILES) $(OBJ_FILES_NOMAIN) $(UNITY_C)
 	@ ./$(TEST_BUILD_DIR)/test.out
 
 clean:
-	@ echo -e "$(WHITE_BOLD)Cleaning up...$(WHITE) $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)$(RESETCOLOR)"
-	@ rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET)
+	@ echo -e "$(WHITE_BOLD)Cleaning up...$(WHITE) $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/* $(RESETCOLOR)"
+	@ rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/*
 
 .PHONY: all clean test nocolor release run
