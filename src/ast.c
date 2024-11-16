@@ -10,7 +10,7 @@ static char* asttype_names[] = {
 };
 #endif
 
-ASTTypeNum* ast_type_num_init(AST* val) {
+ASTTypeNum* ast_type_num_init(int val) {
     talloc(ASTTypeNum, num);
 
     num->val = val;
