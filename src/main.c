@@ -2,13 +2,14 @@
 
 #include "include/ast.h"
 #include "include/dstr.h"
+#include "include/exec.h"
 #include "include/lexer.h"
 #include "include/util.h"
 
 #include "../build/grammars/grammar.tab.h"
 
 // Global Abstract Syntax Tree.
-AST* root = NULL;
+extern AST* root;
 
 extern int yyparse();
 
@@ -30,6 +31,7 @@ int main(int argc, char** argv) {
             lexer_print();
             if (yyparse() == 0) {
                 printf("Parsed successfully!\n");
+                exec(root);
             } else {
                 printf("Parse error.\n");
             }

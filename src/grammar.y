@@ -2,9 +2,11 @@
     #include <stdio.h>
     #include "../../src/include/ast.h"
     #include "../../src/include/lexer.h"
-    
+
     int yylex(void);
     void yyerror(char const*);
+
+    AST* root = NULL;
 %}
 
 %code requires {
@@ -34,10 +36,10 @@ input:
 
 line:
     '\n'
-    | exp '\n' { printf("it worked. 👍\n"); }
+    | exp '\n' { root = $1; }
     ;
 
-exp: 
+exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_type_num_init($1)); }
     | NUM PLUS NUM {
         AST* argv[2] = {
