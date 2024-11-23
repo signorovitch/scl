@@ -24,7 +24,6 @@ UNITY_C = $(TEST_DIR)/unity/unity.c
 TEST_SRC_FILES = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_OBJ_DIR)/%.o, $(TEST_SRC_FILES))
 
-# Stupid things.
 RESETCOLOR = \033[0m
 WHITE = $(RESETCOLOR)\033[37m
 WHITE_BOLD = $(RESETCOLOR)\033[37;1m
@@ -45,13 +44,13 @@ $(GRAM_FILES): $(SRC_DIR)/grammar.y
 	@ echo -e "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR) bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h"
 	@ bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
 
-
 # Compile grammars.
 $(OBJ_DIR)/grammar.o: $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h $(OBJ_DIR)/lexer.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Lexer depends on grammars.
 $(OBJ_DIR)/lexer.o: $(SRC_DIR)/lexer.c $(GRAM_FILES)
+	@ mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile project sources.

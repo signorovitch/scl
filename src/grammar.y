@@ -30,7 +30,7 @@
 
 input:
     %empty
-    | input line
+    | line
     ;
 
 

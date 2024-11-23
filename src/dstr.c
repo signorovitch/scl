@@ -1,8 +1,8 @@
 #include "include/dstr.h"
 #include "include/util.h"
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 Dstr* dstr_init(void) {
     Dstr* dstr = malloc(sizeof(Dstr));
@@ -25,7 +25,8 @@ void dstr_append(Dstr* dest, char* src, size_t ln) {
         // Double the buffer size when overflown.
         dest->bufsz *= 2;
         dest->buf = realloc(dest->buf, dest->bufsz);
-        log_dbgf("dstr @ %p doubled from %ld to %ld", dest, dest->bufsz/2, dest->bufsz);
+        log_dbgf("dstr @ %p doubled from %ld to %ld", dest, dest->bufsz / 2,
+                 dest->bufsz);
     }
 
     // Overwrites the \0 at the end of the string, keeps the null from the given
@@ -34,16 +35,17 @@ void dstr_append(Dstr* dest, char* src, size_t ln) {
     dest->ln += ln;
 }
 
-void dstr_appendch(Dstr *dest, char ch) {
+void dstr_appendch(Dstr* dest, char ch) {
     if (dest->ln + 1 + 1 > dest->bufsz) {
         // Double the buffer size when overflown.
         dest->bufsz *= 2;
         dest->buf = realloc(dest->buf, dest->bufsz);
-        log_dbgf("dstr @ %p doubled from %ld to %ld", dest, dest->bufsz/2, dest->bufsz);
+        log_dbgf("dstr @ %p doubled from %ld to %ld", dest, dest->bufsz / 2,
+                 dest->bufsz);
     }
 
     // Overwrites the preexisting null terminator, and adds one of its own.
     dest->buf[dest->ln] = ch;
-    dest->buf[dest->ln+1] = '\0';
+    dest->buf[dest->ln + 1] = '\0';
     dest->ln += 1;
 }

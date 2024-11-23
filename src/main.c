@@ -2,7 +2,6 @@
 
 #include "include/ast.h"
 #include "include/dstr.h"
-#include "include/exec.h"
 #include "include/lexer.h"
 #include "include/util.h"
 
@@ -10,6 +9,9 @@
 
 // Global Abstract Syntax Tree.
 extern AST* root;
+
+// Global input text.
+char* inp = NULL;
 
 extern int yyparse();
 
@@ -22,20 +24,18 @@ int main(int argc, char** argv) {
             log_dbgf("cchar: %c", cch);
             dstr_appendch(cline, cch);
         }
+        dstr_appendch(cline, '\n');
 
         log_dbgf("cline: %s", cline->buf);
 
         if (cline->ln > 0) {
-            lexer_init(cline->buf);
-            lexer_lex();
-            lexer_print();
+            // I hope it's null-terminated.
+            inp = cline->buf;
             if (yyparse() == 0) {
                 printf("Parsed successfully!\n");
-                exec(root);
             } else {
                 printf("Parse error.\n");
             }
-            lexer_destroy();
         }
 
         dstr_destroy(cline);
