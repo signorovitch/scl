@@ -1,8 +1,44 @@
 #include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "include/lexer.h"
+
+int acc_int(int c) {
+    int value = c - '0';
+    while (isdigit(*inp)) {
+        value = value * 10 + (*inp - '0'); // Accumulate value.
+        inp++;
+    }
+    return value;
+}
+
+double acc_float(int c) {
+    double value = (double)(c - '0');
+
+    // Grab everything prior to '.'.
+    while (isdigit(*inp)) {
+        value = value * 10 + (*inp - '0'); // Accumulate value.
+        inp++;
+    }
+
+    if (*inp ==  '.') {
+        char* oinp = inp++;
+        while (isdigit(*inp)) {
+            // Accumulate as int, divide once at end.
+            value = value + (((double)(*inp - '0'))/pow(10.0l, (double)(inp-oinp))); // Accumulate value.
+            inp++;
+        }
+    }
+
+    // > 1.20000
+    // = 1.0 + 2/10
+
+    // > 1.23
+    // = 1.2 + 3/100
+    return value;
+}
 
 int yylex() {
     if (*inp == '\0') return YYEOF;
@@ -15,12 +51,7 @@ int yylex() {
 
     // Check for NUM.
     if (isdigit(c)) {
-        int value = c - '0';
-        while (isdigit(*inp)) {
-            value = value * 10 + (*inp - '0'); // Accumulate value.
-            inp++;
-        }
-        yylval.fval = value; // Set the token value.
+        yylval.fval = acc_float(c); // Set the token value.
         return NUM;
     }
 

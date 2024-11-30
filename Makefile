@@ -14,7 +14,7 @@ TEST_OBJ_DIR = $(TEST_BUILD_DIR)/obj
 CC = clang
 LINK = clang
 CFLAGS = -Wall -DDBG -ggdb
-LDFLAGS =
+LDFLAGS = -lm
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
