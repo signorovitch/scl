@@ -4,6 +4,7 @@
 #include "include/dstr.h"
 #include "include/lexer.h"
 #include "include/util.h"
+#include "include/exec.h"
 
 #include "../build/grammars/grammar.tab.h"
 
@@ -16,28 +17,41 @@ char* inp = NULL;
 extern int yyparse();
 
 int main(int argc, char** argv) {
+
     while (1) {
-        Dstr* cline = dstr_init(); // The current line.
+        Dstr* ln = dstr_init();
+        char c;
+
         printf("> ");
         fflush(stdout);
-        for (char cch; (cch = getc(stdin)) != '\n';) {
-            log_dbgf("cchar: %c", cch);
-            dstr_appendch(cline, cch);
-        }
-        dstr_appendch(cline, '\n');
 
-        log_dbgf("cline: %s", cline->buf);
+        // Accumulate line.
+        do {
+            c = getc(stdin);
+            switch (c) {
+            case EOF:  dstr_destroy(ln); goto lnskip;
+            case '\n': goto lnend;
 
-        if (cline->ln > 0) {
-            // I hope it's null-terminated.
-            inp = cline->buf;
-            if (yyparse() == 0) {
-                printf("Parsed successfully!\n");
-            } else {
-                printf("Parse error.\n");
+            default:   dstr_appendch(ln, c); log_dbgf("cchar: %c", c);
             }
+        } while (1);
+
+    lnend:
+
+        log_dbgf("cline: %s", ln->buf);
+
+        if (ln->ln > 0) {
+            // I hope it's null-terminated.
+            inp = ln->buf;
+            if (yyparse() == 0)
+                printf("Parsed successfully!\n");
+            else
+                printf("Parse error.\n");
+
+            exec_expr();
         }
 
-        dstr_destroy(cline);
+        dstr_destroy(ln);
     }
+lnskip:;
 }

@@ -5,26 +5,27 @@
 #include "include/exec.h"
 #include "include/util.h"
 
-void exec(AST* ast) {
+extern AST* root;
+
+void exec_expr() {
+    ast_print(root);
     log_dbg("Started execution.");
-    switch (ast->type) {
-    case AST_TYPE_CALL: exec_call(ast); break;
+    switch (root->type) {
+    case AST_TYPE_CALL: exec_call(); break;
     default:            printf("what\n");
     }
 }
 
-void exec_call(AST* ast) {
+void exec_call() {
     log_dbg("Started call execution.");
-    ASTTypeCall* calldata = (ASTTypeCall*)ast->data;
+    fflush(stdout);
+    ASTCallData* calldata = (ASTCallData*)root->data;
     if (!strcmp(calldata->to, "+") && calldata->argc == 2) {
 
-        exec_return(1);
-        /*
-        ASTTypeNum* n1 = (ASTTypeNum*)calldata->argv[0]->data;
-        ASTTypeNum* n2 = (ASTTypeNum*)calldata->argv[1]->data;
+        ASTNumData* n1 = (ASTNumData*)calldata->argv[0]->data;
+        ASTNumData* n2 = (ASTNumData*)calldata->argv[1]->data;
 
         exec_return(n1->val + n2->val);
-        */
     }
 }
 

@@ -24,19 +24,14 @@
 %token<intval> NUM
 %token<strval> CALL
 %token PLUS
+%token NL
 %type<ast> exp
 
 %%
 
 input:
     %empty
-    | line
-    ;
-
-
-line:
-    '\n'
-    | exp '\n' { root = $1; }
+    | exp { root = $1; }
     ;
 
 exp:
@@ -44,7 +39,7 @@ exp:
     | NUM PLUS NUM {
         AST* argv[2] = {
             ast_init(AST_TYPE_NUM, ast_type_num_init($1)),
-            ast_init(AST_TYPE_NUM, ast_type_num_init($1))
+            ast_init(AST_TYPE_NUM, ast_type_num_init($3))
         };
         $$ = ast_init(AST_TYPE_CALL, ast_type_call_init("+", 2, argv));
     };

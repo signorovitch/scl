@@ -26,6 +26,7 @@ int yylex() {
 
     switch (c) {
     case '+': return PLUS;
+    case '\n': return NL;
     default:  return CALL;
     }
 
