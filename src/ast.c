@@ -23,8 +23,8 @@ void ast_destroy(AST* ast) {
     if (!ast) return;
 
     switch (ast->type) {
-    case AST_TYPE_NUM:  ast_type_num_destroy(ast->data); break;
-    case AST_TYPE_CALL: ast_type_call_destroy(ast->data); break;
+    case AST_TYPE_NUM:  ast_num_data_destroy(ast->data); break;
+    case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
     default:            log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
 }
@@ -35,22 +35,19 @@ void ast_print(AST* ast) {
 }
 
 
-ASTNumData* ast_type_num_init(int val) {
+ASTNumData* ast_num_data_init(double val) {
     talloc(ASTNumData, num);
 
-    num->val = val;
+    *num = val;
 
     return num;
 }
 
-void ast_type_num_destroy(ASTNumData* num) {
-    if (!num)
-        return
-
-            free(num);
+void ast_num_data_destroy(ASTNumData* num) {
+    if (!num) return free(num);
 }
 
-ASTCallData* ast_type_call_init(char* to, size_t argc, AST** argv) {
+ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv) {
     talloc(ASTCallData, call);
 
     call->to = to;
@@ -60,11 +57,8 @@ ASTCallData* ast_type_call_init(char* to, size_t argc, AST** argv) {
     return call;
 }
 
-void ast_type_call_destroy(ASTCallData* call) {
-    if (!call)
-        return
-
-            free(call->to);
+void ast_call_data_destroy(ASTCallData* call) {
+    if (!call) return free(call->to);
     for (size_t i = 0; i < call->argc; i++) free(call->argv[i]);
     free(call);
 }

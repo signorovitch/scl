@@ -3,6 +3,6 @@
 
 void exec_expr();
 void exec_call();
-void exec_return(int n);
+void exec_return(double n);
 
 #endif

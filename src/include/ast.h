@@ -18,12 +18,10 @@ AST* ast_init(ASTType type, void* data);
 void ast_destroy(AST* ast);
 void ast_print(AST* ast);
 
-typedef struct {
-    int val;
-} ASTNumData;
+typedef double ASTNumData;
 
-ASTNumData* ast_type_num_init(int val);
-void ast_type_num_destroy(ASTNumData* num);
+ASTNumData* ast_num_data_init(double val);
+void ast_num_data_destroy(ASTNumData* num);
 
 typedef struct {
     char* to;       // What the call's to.
@@ -31,7 +29,7 @@ typedef struct {
     AST** argv;     // Argument vector.
 } ASTCallData;
 
-ASTCallData* ast_type_call_init(char* to, size_t argc, AST** argv);
-void ast_type_call_destroy(ASTCallData* call);
+ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
+void ast_call_data_destroy(ASTCallData* call);
 
 #endif

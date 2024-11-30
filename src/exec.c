@@ -25,8 +25,8 @@ void exec_call() {
         ASTNumData* n1 = (ASTNumData*)calldata->argv[0]->data;
         ASTNumData* n2 = (ASTNumData*)calldata->argv[1]->data;
 
-        exec_return(n1->val + n2->val);
+        exec_return(*n1 + *n2);
     }
 }
 
-void exec_return(int n) { printf("= %d\n", n); }
+void exec_return(double n) { printf("= %lf\n", n); }

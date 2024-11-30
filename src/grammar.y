@@ -14,14 +14,14 @@
 }
 
 %union {
-    int intval;
+    double fval;
     char* strval;
     AST* ast;
 }
 
 %define parse.error verbose
 
-%token<intval> NUM
+%token<fval> NUM
 %token<strval> CALL
 %token PLUS
 %token NL

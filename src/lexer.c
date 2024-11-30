@@ -20,7 +20,7 @@ int yylex() {
             value = value * 10 + (*inp - '0'); // Accumulate value.
             inp++;
         }
-        yylval.intval = value; // Set the token value.
+        yylval.fval = value; // Set the token value.
         return NUM;
     }
 
