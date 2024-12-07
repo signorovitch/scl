@@ -50,7 +50,7 @@
 
 // Print & indent the title of a section.
 #define INDENT_TITLE(THING, WHERE)                                             \
-    printf("%s" COL_BCYA THING " @ %p\n" COL_RESET, INDENT_spacing->buf, WHERE);
+    printf("%s" COL_BCYA THING COL_RESET " @" COL_MAG " %p\n" COL_RESET, INDENT_spacing->buf, WHERE);
 
 // Print & indent a thing.
 #define INDENT_FIELD(FIELD, VAL, ...)                                          \

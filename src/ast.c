@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "include/ast.h"
-#include "include/util.h"
 #include "include/dstr.h"
+#include "include/util.h"
 
 extern AST* root;
 
@@ -30,9 +30,7 @@ void ast_destroy(AST* ast) {
     }
 }
 
-void ast_print(AST* ast) {
-    ast_print_i(ast, 0);
-}
+void ast_print(AST* ast) { ast_print_i(ast, 0); }
 
 void ast_print_i(AST* ast, int i) {
     INDENT_BEGIN(i);
@@ -41,9 +39,11 @@ void ast_print_i(AST* ast, int i) {
     INDENT_FIELD("type", "%s", asttype_names[ast->type]);
     INDENT_FIELD_EXT_NONL_START("data");
     switch (ast->type) {
-        case AST_TYPE_NUM: ast_num_print(ast->data, i + 1); break;
-        case AST_TYPE_CALL: ast_call_print(ast->data, i + 1); break;
-        default: exit(1);
+    case AST_TYPE_NUM:
+        printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
+        break;
+    case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
+    default:            exit(1);
     }
     INDENT_FIELD_NONL_END;
     INDENT_END;
