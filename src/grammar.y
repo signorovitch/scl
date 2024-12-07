@@ -43,16 +43,5 @@ exp:
         };
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
     }
-    /*| NUM PLUS exp {
-        AST* argv[2] = {
-            ast_init(AST_TYPE_NUM, ast_num_data_init($1)),
-            $3
-        };
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
-    }
-    | exp PLUS exp {
-        AST* argv[2] = { $1, $3 };
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
-    };*/
 
 %%
