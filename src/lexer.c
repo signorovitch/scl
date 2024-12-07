@@ -26,6 +26,7 @@ double acc_float(int c) {
     if (*inp ==  '.') {
         char* oinp = inp++;
         while (isdigit(*inp)) {
+            // TODO:
             // Accumulate as int, divide once at end.
             value = value + (((double)(*inp - '0'))/pow(10.0l, (double)(inp-oinp))); // Accumulate value.
             inp++;
