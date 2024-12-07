@@ -15,6 +15,7 @@ int acc_int(int c) {
 }
 
 double acc_float(int c) {
+    int dplaces = 0;
     double value = (double)(c - '0');
 
     // Grab everything prior to '.'.
@@ -24,13 +25,17 @@ double acc_float(int c) {
     }
 
     if (*inp ==  '.') {
-        char* oinp = inp++;
+        inp++;
+
         while (isdigit(*inp)) {
             // TODO:
             // Accumulate as int, divide once at end.
-            value = value + (((double)(*inp - '0'))/pow(10.0l, (double)(inp-oinp))); // Accumulate value.
+            // value = value + (((double)(*inp - '0'))/pow(10.0l, (double)(inp-oinp))); // Accumulate value.
+            value = value * 10 + (*inp - '0'); // Accumulate value.
+            dplaces++;
             inp++;
         }
+        value = value / pow(10, dplaces);
     }
 
     // > 1.20000
@@ -66,4 +71,4 @@ int yylex() {
 
     return 0;
 }
-void yyerror(char const* s) { fprintf(stderr, "Syntax error:\n%s\n", s); }
+void yyerror(char const* s) { fprintf(stderr, "Parse error: %s\n", s); }

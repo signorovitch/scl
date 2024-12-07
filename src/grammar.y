@@ -36,12 +36,16 @@ input:
 
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
-    | NUM PLUS NUM {
+    | NUM PLUS exp {
         AST* argv[2] = {
             ast_init(AST_TYPE_NUM, ast_num_data_init($1)),
-            ast_init(AST_TYPE_NUM, ast_num_data_init($3))
+            $3
         };
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
-    };
+    }/*
+    | exp PLUS exp {
+        AST* argv[2] = { $1, $3 };
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
+    };*/
 
 %%

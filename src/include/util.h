@@ -64,8 +64,8 @@
            INDENT_spacing->buf, INDENT_spacing->buf, __VA_ARGS__);
 
 // Print & indent a thing without any newline.
-#define INDENT_FIELD_NONL_START(FIELD)                                         \
-    printf("%s " COL_BWHI FIELD ": " COL_RESET COL_WHI, INDENT_spacing->buf);
+#define INDENT_FIELD_EXT_NONL_START(FIELD)                                         \
+    printf("%s " COL_BWHI FIELD ":\n" COL_RESET COL_WHI, INDENT_spacing->buf);
 #define INDENT_FIELD_NONL_END printf( "\n" COL_RESET);
 
 // Print an array A of N things, by calling the function F.

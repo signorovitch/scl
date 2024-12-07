@@ -7,26 +7,35 @@
 
 extern AST* root;
 
-void exec_expr() {
-    ast_print(root);
+ASTNumData exec_expr(AST* ast) {
+    ast_print(ast);
     log_dbg("Started execution.");
-    switch (root->type) {
-    case AST_TYPE_CALL: exec_call(); break;
-    default:            printf("what\n");
+    switch (ast->type) {
+    case AST_TYPE_CALL: return exec_call(ast);
+    case AST_TYPE_NUM:
+        exec_print(*(ASTNumData*)ast->data);
+        return *(ASTNumData*)ast->data;
+    default: printf("what\n");
     }
 }
 
-void exec_call() {
+ASTNumData exec_call(AST* ast) {
     log_dbg("Started call execution.");
     fflush(stdout);
-    ASTCallData* calldata = (ASTCallData*)root->data;
+    ASTCallData* calldata = (ASTCallData*)ast->data;
     if (!strcmp(calldata->to, "+") && calldata->argc == 2) {
 
+        /*
         ASTNumData* n1 = (ASTNumData*)calldata->argv[0]->data;
         ASTNumData* n2 = (ASTNumData*)calldata->argv[1]->data;
+        */
 
-        exec_return(*n1 + *n2);
+        ASTNumData n1 = exec_expr(calldata->argv[0]);
+        ASTNumData n2 = exec_expr(calldata->argv[1]);
+
+        return n1 + n2;
     }
+    return -1000;
 }
 
-void exec_return(double n) { printf("= %lf\n", n); }
+void exec_print(double n) { printf("= %lf\n", n); }

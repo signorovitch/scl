@@ -17,11 +17,13 @@ typedef struct {
 AST* ast_init(ASTType type, void* data);
 void ast_destroy(AST* ast);
 void ast_print(AST* ast);
+void ast_print_i(AST* ast, int i);
 
 typedef double ASTNumData;
 
 ASTNumData* ast_num_data_init(double val);
 void ast_num_data_destroy(ASTNumData* num);
+void ast_num_print(ASTNumData*, int i);
 
 typedef struct {
     char* to;       // What the call's to.
@@ -31,5 +33,6 @@ typedef struct {
 
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
 void ast_call_data_destroy(ASTCallData* call);
+void ast_call_print(ASTCallData*, int i);
 
 #endif

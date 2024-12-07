@@ -2,6 +2,7 @@
 
 #include "include/ast.h"
 #include "include/util.h"
+#include "include/dstr.h"
 
 extern AST* root;
 
@@ -30,13 +31,28 @@ void ast_destroy(AST* ast) {
 }
 
 void ast_print(AST* ast) {
-    log_dbgf("Tree type: %s", asttype_names[ast->type]);
-    fflush(stdout);
+    ast_print_i(ast, 0);
 }
 
+void ast_print_i(AST* ast, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("AST", ast);
+    INDENT_FIELD("type", "%s", asttype_names[ast->type]);
+    INDENT_FIELD_EXT_NONL_START("data");
+    switch (ast->type) {
+        case AST_TYPE_NUM: ast_num_print(ast->data, i + 1); break;
+        case AST_TYPE_CALL: ast_call_print(ast->data, i + 1); break;
+        default: exit(1);
+    }
+    INDENT_FIELD_NONL_END;
+    INDENT_END;
+}
 
 ASTNumData* ast_num_data_init(double val) {
     talloc(ASTNumData, num);
+
+    log_dbgf("val: %lf", val);
 
     *num = val;
 
@@ -47,8 +63,18 @@ void ast_num_data_destroy(ASTNumData* num) {
     if (!num) return free(num);
 }
 
+void ast_num_print(ASTNumData* data, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_FIELD("data", "%lf", *data);
+
+    INDENT_END;
+}
+
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv) {
     talloc(ASTCallData, call);
+
+    log_dbgf("to: %s", to);
 
     call->to = to;
     call->argc = argc;
@@ -61,4 +87,15 @@ void ast_call_data_destroy(ASTCallData* call) {
     if (!call) return free(call->to);
     for (size_t i = 0; i < call->argc; i++) free(call->argv[i]);
     free(call);
+}
+
+void ast_call_print(ASTCallData* data, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("ASTCallData", data);
+    INDENT_FIELD("to", "%s", data->to);
+    INDENT_FIELD("argc", "%ld", data->argc);
+    INDENT_FIELD_LIST("argv", data->argv, data->argc, ast_print_i);
+
+    INDENT_END;
 }

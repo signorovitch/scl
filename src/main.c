@@ -48,7 +48,8 @@ int main(int argc, char** argv) {
             else
                 printf("Parse error.\n");
 
-            exec_expr();
+            //exec_expr(root);
+            ast_print(root);
         }
 
         dstr_destroy(ln);
