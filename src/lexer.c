@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <limits.h>
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "include/lexer.h"
 
@@ -24,13 +24,14 @@ double acc_float(int c) {
         inp++;
     }
 
-    if (*inp ==  '.') {
+    if (*inp == '.') {
         inp++;
 
         while (isdigit(*inp)) {
             // TODO:
             // Accumulate as int, divide once at end.
-            // value = value + (((double)(*inp - '0'))/pow(10.0l, (double)(inp-oinp))); // Accumulate value.
+            // value = value + (((double)(*inp - '0'))/pow(10.0l,
+            // (double)(inp-oinp))); // Accumulate value.
             value = value * 10 + (*inp - '0'); // Accumulate value.
             dplaces++;
             inp++;
@@ -62,9 +63,9 @@ int yylex() {
     }
 
     switch (c) {
-    case '+': return PLUS;
-    case '\n': return NL;
-    default:  return CALL;
+        case '+':  return PLUS;
+        case '\n': return NL;
+        default:   return CALL;
     }
 
     fprintf(stderr, "Unexpected character: %c\n", c);

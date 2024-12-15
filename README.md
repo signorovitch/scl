@@ -1,4 +1,4 @@
-# SCL: Simple Calculator Language
+# SCL: Simple CAS Language
 
 ## Syntax
 
@@ -12,16 +12,24 @@ As one would expect, you can evaluate simple infix expressions:
 You can also define your own functions:
 
 ```scl
-> f(x) 2x
+> f(x) = 2x
 > f(2)
 = 4
+```
+
+Symbolic algebra is done in the following manner:
+
+```scl
+> f(x) = e^x
+> diff(f, x:sym, 2)
+= e^x
 ```
 
 SCL will dynamically decide on types, but you can state them explicitly as
 well:
 
 ```scl
-> f(x:int) 2x
+> f(x:int) = 2x
 > f(2.2)
 ! f(x:int): x must be of type int.
 ```
@@ -32,6 +40,5 @@ Variables can be defined, with several attributes:
 > a = 1             // Interpret type automatically.
 > b:int = 1         // Must be int.
 > c:const:int = 1   // Constant: value can never change.
-> d:lazy = (1 + 1)  // Interpreter will wait as long as possible before
-                    // evaluating.
+> x:sym             // Treated symbolicaly.
 ```

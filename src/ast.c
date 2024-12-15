@@ -24,9 +24,10 @@ void ast_destroy(AST* ast) {
     if (!ast) return;
 
     switch (ast->type) {
-    case AST_TYPE_NUM:  ast_num_data_destroy(ast->data); break;
-    case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
-    default:            log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
+        case AST_TYPE_NUM:  ast_num_data_destroy(ast->data); break;
+        case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
+        default:
+            log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
 }
 
@@ -39,11 +40,11 @@ void ast_print_i(AST* ast, int i) {
     INDENT_FIELD("type", "%s", asttype_names[ast->type]);
     INDENT_FIELD_EXT_NONL_START("data");
     switch (ast->type) {
-    case AST_TYPE_NUM:
-        printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
-        break;
-    case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
-    default:            exit(1);
+        case AST_TYPE_NUM:
+            printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
+            break;
+        case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
+        default:            exit(1);
     }
     INDENT_FIELD_NONL_END;
     INDENT_END;

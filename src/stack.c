@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "include/util.h"
 #include "include/stack.h"
+#include "include/util.h"
 
 Stack* stack_init() {
     talloc(Stack, stack);
