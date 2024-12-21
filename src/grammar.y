@@ -37,10 +37,9 @@ input:
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
     | NUM PLUS NUM {
-        AST* argv[2] = {
-            ast_init(AST_TYPE_NUM, ast_num_data_init($1)),
-            ast_init(AST_TYPE_NUM, ast_num_data_init($3))
-        };
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
+        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
     }
 

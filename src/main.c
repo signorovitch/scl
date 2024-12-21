@@ -40,12 +40,11 @@ int main(int argc, char** argv) {
         log_dbgf("cline: %s", ln->buf);
 
         if (ln->ln > 0) {
-            // I hope to god it's null-terminated.
             inp = ln->buf;
             if (yyparse() == 0) printf("Parsed successfully!\n");
             else printf("Parse error.\n");
 
-            // exec_expr(root);
+            exec_print(exec_expr(root));
             ast_print(root);
         }
 

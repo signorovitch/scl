@@ -8,14 +8,12 @@
 extern AST* root;
 
 ASTNumData exec_expr(AST* ast) {
-    ast_print(ast);
+    // ast_print(ast);
     log_dbg("Started execution.");
     switch (ast->type) {
         case AST_TYPE_CALL: return exec_call(ast);
-        case AST_TYPE_NUM:
-            exec_print(*(ASTNumData*)ast->data);
-            return *(ASTNumData*)ast->data;
-        default: printf("what\n");
+        case AST_TYPE_NUM:  return *(ASTNumData*)ast->data;
+        default:            printf("what\n");
     }
 }
 
