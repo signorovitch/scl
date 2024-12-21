@@ -66,6 +66,7 @@ int yylex() {
         case '+':  return PLUS;
         case '\n': return NL;
         case '-':  return NEG;
+        case '*':  return MULT;
         default:   return CALL;
     }
 

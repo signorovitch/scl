@@ -23,11 +23,6 @@ ASTNumData exec_call(AST* ast) {
     ASTCallData* calldata = (ASTCallData*)ast->data;
     if (!strcmp(calldata->to, "+") && calldata->argc == 2) {
 
-        /*
-        ASTNumData* n1 = (ASTNumData*)calldata->argv[0]->data;
-        ASTNumData* n2 = (ASTNumData*)calldata->argv[1]->data;
-        */
-
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
@@ -37,6 +32,11 @@ ASTNumData exec_call(AST* ast) {
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
         return n1 - n2;
+    } else if (!strcmp(calldata->to, "*") && calldata->argc == 2) {
+        ASTNumData n1 = exec_expr(calldata->argv[0]);
+        ASTNumData n2 = exec_expr(calldata->argv[1]);
+
+        return n1 * n2;
     }
     return -1000;
 }
