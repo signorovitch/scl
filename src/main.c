@@ -41,11 +41,14 @@ int main(int argc, char** argv) {
 
         if (ln->ln > 0) {
             inp = ln->buf;
-            if (yyparse() == 0) printf("Parsed successfully!\n");
-            else printf("Parse error.\n");
+            if (yyparse() == 0) {
+                log_dbg("Parsed successfully!\n");
+            } else printf("Parse error.\n");
 
             exec_print(exec_expr(root));
+#ifdef DBG
             ast_print(root);
+#endif
         }
 
         dstr_destroy(ln);

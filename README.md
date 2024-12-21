@@ -1,6 +1,15 @@
 # SCL: Simple CAS Language
 
-## Syntax
+## Current State
+
+The following things are possible:
+  1. Floating-point numbers
+  2. Negative numbers
+  3. Addition
+  4. Subtraction
+  5. Multiplication
+
+## Syntax (Planned)
 
 As one would expect, you can evaluate simple infix expressions:
 
@@ -20,9 +29,9 @@ You can also define your own functions:
 Symbolic algebra is done in the following manner:
 
 ```scl
-> f(x) = e^x
+> f(x) = x^4
 > diff(f, x:sym, 2)
-= e^x
+= 12x^2
 ```
 
 SCL will dynamically decide on types, but you can state them explicitly as
