@@ -22,6 +22,7 @@
 %define parse.error verbose
 
 %token<fval> NUM
+%token NEG
 %token<strval> CALL
 %token PLUS
 %token NL
@@ -36,11 +37,30 @@ input:
 
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
+    | NEG NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2)); }
     | NUM PLUS NUM {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
         argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
+    }
+    | NEG NUM PLUS NUM {
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
+        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("+", 2, argv));
+    }
+    | NUM NEG NUM {
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
+        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("-", 2, argv));
+    }
+    | NEG NUM NEG NUM {
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
+        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("-", 2, argv));
     }
 
 %%
