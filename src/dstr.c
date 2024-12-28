@@ -1,6 +1,7 @@
 #include "include/dstr.h"
 #include "include/util.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -20,16 +21,21 @@ void dstr_destroy(Dstr* dstr) {
     free(dstr);
 }
 
-void dstr_append(Dstr* dest, char* src, size_t ln) {
-    while (dest->ln + ln + 1 > dest->bufsz) {
+// Check whether the buffer is overflowing and resize it if necessary.
+void check_resz(Dstr* dstr, size_t ln) {
+    while (dstr->ln + ln + 1 > dstr->bufsz) {
         // Double the buffer size when overflown.
-        dest->bufsz *= 2;
-        dest->buf = realloc(dest->buf, dest->bufsz);
+        dstr->bufsz *= 2;
+        dstr->buf = realloc(dstr->buf, dstr->bufsz);
         log_dbgf(
-            "dstr @ %p doubled from %ld to %ld", dest, dest->bufsz / 2,
-            dest->bufsz
+            "dstr @ %p doubled from %ld to %ld", dstr, dstr->bufsz / 2,
+            dstr->bufsz
         );
     }
+}
+
+void dstr_append(Dstr* dest, char* src, size_t ln) {
+    check_resz(dest, ln);
 
     // Overwrites the \0 at the end of the string, keeps the null from the given
     // string.
@@ -38,15 +44,7 @@ void dstr_append(Dstr* dest, char* src, size_t ln) {
 }
 
 void dstr_appendch(Dstr* dest, char ch) {
-    if (dest->ln + 1 + 1 > dest->bufsz) {
-        // Double the buffer size when overflown.
-        dest->bufsz *= 2;
-        dest->buf = realloc(dest->buf, dest->bufsz);
-        log_dbgf(
-            "dstr @ %p doubled from %ld to %ld", dest, dest->bufsz / 2,
-            dest->bufsz
-        );
-    }
+    check_resz(dest, 1);
 
     // Overwrites the preexisting null terminator, and adds one of its own.
     dest->buf[dest->ln] = ch;
