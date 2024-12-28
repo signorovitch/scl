@@ -21,23 +21,23 @@ ASTNumData exec_call(AST* ast) {
     log_dbg("Started call execution.");
     fflush(stdout);
     ASTCallData* calldata = (ASTCallData*)ast->data;
-    if (!strcmp(calldata->to, "+") && calldata->argc == 2) {
+    if (!strcmp(calldata->to, "sum") && calldata->argc == 2) {
 
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
         return n1 + n2;
-    } else if (!strcmp(calldata->to, "-") && calldata->argc == 2) {
+    } else if (!strcmp(calldata->to, "sub") && calldata->argc == 2) {
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
         return n1 - n2;
-    } else if (!strcmp(calldata->to, "*") && calldata->argc == 2) {
+    } else if (!strcmp(calldata->to, "mul") && calldata->argc == 2) {
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
         return n1 * n2;
-    } else if (!strcmp(calldata->to, "/") && calldata->argc == 2) {
+    } else if (!strcmp(calldata->to, "div") && calldata->argc == 2) {
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
