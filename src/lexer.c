@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "include/dstr.h"
 #include "include/lexer.h"
 
 int acc_int(int c) {
@@ -37,6 +38,17 @@ double acc_float(int c) {
     return value;
 }
 
+char* acc_word(int c) {
+    Dstr* val = dstr_init();
+    do {
+        dstr_appendch(val, *(inp - 1));
+        inp++;
+    } while (isalpha(*inp));
+    dstr_appendch(val, *(inp - 1));
+
+    return val->buf;
+}
+
 int yylex() {
     if (*inp == '\0') return YYEOF;
 
@@ -52,16 +64,22 @@ int yylex() {
         return NUM;
     }
 
+    if (isalpha(c)) {
+        yylval.strval = acc_word(c);
+        return CALL;
+    }
+
     switch (c) {
         case '+':  return PLUS;
         case '\n': return NL;
         case '-':  return NEG;
         case '*':  return MULT;
         case '/':  return DIV;
-        default:   return CALL;
+        case '(':  return LGROUP;
+        case ')':  return RGROUP;
+        case ',':  return SEP;
+        default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
-
-    fprintf(stderr, "Unexpected character: %c\n", c);
 
     return 0;
 }

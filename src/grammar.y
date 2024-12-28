@@ -21,6 +21,10 @@
 
 %define parse.error verbose
 
+%token LGROUP
+%token RGROUP
+%token SEP
+
 %token<strval> CALL
 %token<fval> NUM
 
@@ -42,6 +46,14 @@ input:
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
     | NEG NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2)); }
+
+    | CALL LGROUP NUM SEP NUM RGROUP {
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
+        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($5));
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, 2, argv));
+    }
+
     | NUM PLUS NUM {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
