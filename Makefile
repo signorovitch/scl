@@ -88,10 +88,11 @@ $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OB
 # Run the test files.
 test: $(TEST_BIN_FILES)
 	@ echo -e "$(WHITE_BOLD)Running tests...$(RESETCOLOR)"
-	for test in $< do ./$${test}; done
+	for test in $<; do ./$${test}; done
 
 clean:
 	@ echo -e "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
 	rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/* $(UNITY_OBJ)
 
 .PHONY: all clean test nocolor release run
+.PRECIOUS: $(TEST_OBJ_FILES)
