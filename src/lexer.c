@@ -28,22 +28,12 @@ double acc_float(int c) {
         inp++;
 
         while (isdigit(*inp)) {
-            // TODO:
-            // Accumulate as int, divide once at end.
-            // value = value + (((double)(*inp - '0'))/pow(10.0l,
-            // (double)(inp-oinp))); // Accumulate value.
             value = value * 10 + (*inp - '0'); // Accumulate value.
             dplaces++;
             inp++;
         }
         value = value / pow(10, dplaces);
     }
-
-    // > 1.20000
-    // = 1.0 + 2/10
-
-    // > 1.23
-    // = 1.2 + 3/100
     return value;
 }
 
@@ -67,6 +57,7 @@ int yylex() {
         case '\n': return NL;
         case '-':  return NEG;
         case '*':  return MULT;
+        case '/':  return DIV;
         default:   return CALL;
     }
 
