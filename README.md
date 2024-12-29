@@ -1,13 +1,20 @@
 # SCL: Simple CAS Language
 
+## Usage
+
+```bash
+git clone https://git.signorovitch.org/jacob/scl && cd scl
+make release    # Build.
+./scl           # Run.
+```
+
 ## Current State
 
 The following things are possible:
   1. Floating-point numbers
   2. Negative numbers
-  3. Addition
-  4. Subtraction
-  5. Multiplication
+  3. Basic binary infix operators; +, -, \*, /
+  4. The same as conventional functions; sum(), sub(), mul(), div()
 
 ## Syntax (Planned)
 
