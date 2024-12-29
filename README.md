@@ -13,8 +13,8 @@ make release    # Build.
 The following things are possible:
   1. Floating-point numbers
   2. Negative numbers
-  3. Basic binary infix operators; +, -, \*, /
-  4. The same as conventional functions; sum(), sub(), mul(), div()
+  3. Basic binary infix operators; `+`, `-`, `*`, `/`
+  4. The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
 
 ## Syntax (Planned)
 
