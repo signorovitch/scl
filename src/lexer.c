@@ -72,7 +72,7 @@ int yylex() {
     switch (c) {
         case '+':  return PLUS;
         case '\n': return NL;
-        case '-':  return NEG;
+        case '-':  return SUB;
         case '*':  return MULT;
         case '/':  return DIV;
         case '(':  return LGROUP;

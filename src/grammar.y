@@ -28,13 +28,19 @@
 %token<strval> CALL
 %token<fval> NUM
 
-%token NEG
+%token SUB
 %token PLUS
 %token MULT
 %token DIV
 
 %token NL
-%type<ast> exp
+
+%left DIV PLUS MULT SUB
+
+%precedence NEG
+
+%type<fval> num;
+%type<ast> exp;
 
 %%
 
@@ -43,89 +49,47 @@ input:
     | exp { root = $1; }
     ;
 
-exp:
-    NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
-    | NEG NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2)); }
+num:
+    NUM { $$ = $1; }
+    | SUB NUM { $$ = -$2; } %prec NEG
+    ;
 
-    | CALL LGROUP NUM SEP NUM RGROUP {
+exp:
+    num { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
+
+    // name(thing, thing)
+    | CALL LGROUP exp SEP exp RGROUP {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($5));
+        argv[0] = $3;
+        argv[1] = $5;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, 2, argv));
     }
 
-    | NUM PLUS NUM {
+    | exp PLUS exp {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
+        argv[0] = $1;
+        argv[1] = $3;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sum", 2, argv));
     }
-    | NEG NUM PLUS NUM {
+
+    | exp SUB exp {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sum", 2, argv));
-    }
-    | NUM NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sub", 2, argv));
-    }
-    | NEG NUM NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
+        argv[0] = $1;
+        argv[1] = $3;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sub", 2, argv));
     }
 
-    | NUM MULT NUM {
+    | exp MULT exp {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
-    }
-    | NEG NUM MULT NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
-    }
-    | NEG NUM MULT NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$5));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
-    }
-    | NUM MULT NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$4));
+        argv[0] = $1;
+        argv[1] = $3;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
     }
 
-    | NUM DIV NUM {
+    | exp DIV exp {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($3));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("div", 2, argv));
-    }
-    | NEG NUM DIV NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init($4));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("div", 2, argv));
-    }
-    | NEG NUM DIV NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$2));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$5));
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("div", 2, argv));
-    }
-    | NUM DIV NEG NUM {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init($1));
-        argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init(-$4));
+        argv[0] = $1;
+        argv[1] = $3;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("div", 2, argv));
     }
 %%

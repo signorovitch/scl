@@ -22,7 +22,6 @@ ASTNumData exec_call(AST* ast) {
     fflush(stdout);
     ASTCallData* calldata = (ASTCallData*)ast->data;
     if (!strcmp(calldata->to, "sum") && calldata->argc == 2) {
-
         ASTNumData n1 = exec_expr(calldata->argv[0]);
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
