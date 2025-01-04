@@ -15,6 +15,7 @@ CC = clang
 LINK = clang
 CFLAGS = -Wall -DDBG -ggdb
 LDFLAGS = -lm
+BATS = bats
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
@@ -27,6 +28,7 @@ UNITY_OBJ = $(TEST_BUILD_DIR)/unity.o
 TEST_SRC_FILES = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_OBJ_DIR)/%.o, $(TEST_SRC_FILES))
 TEST_BIN_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_BUILD_DIR)/%.out, $(TEST_SRC_FILES))
+TEST_VAL_DIR = $(TEST_DIR)/validation
 
 RESETCOLOR = \033[0m
 WHITE = $(RESETCOLOR)\033[37m
@@ -87,8 +89,11 @@ $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OB
 
 # Run the test files.
 test: $(TEST_BIN_FILES)
-	@ echo -e "$(WHITE_BOLD)Running tests...$(RESETCOLOR)"
+	@ echo -e "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
 	for test in $<; do ./$${test}; done
+	@ echo -e "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
+	$(BATS) $(TEST_VAL_DIR)
+
 
 clean:
 	@ echo -e "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
