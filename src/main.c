@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "include/ast.h"
 #include "include/dstr.h"
@@ -17,6 +18,12 @@ char* inp = NULL;
 extern int yyparse();
 
 int main(int argc, char** argv) {
+
+    if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
+        log_dbg("Parsed successfully!\n");
+        exec_print(exec_expr(root));
+        exit(0);
+    }
 
     while (1) {
         Dstr* ln = dstr_init();
