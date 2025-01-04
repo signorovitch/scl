@@ -35,8 +35,8 @@
 
 %token NL
 
-%left DIV PLUS MULT SUB
-
+%left PLUS SUB
+%left MULT DIV
 %precedence NEG
 
 %type<fval> num;
