@@ -9,7 +9,7 @@ make release    # Build.
 ```
 
 If you wish to run tests, make sure to run `git clone --recurse-submodules` to
-include the `[Unity](https://github.com/ThrowTheSwitch/Unity)` test framework.
+include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 
 ## Current State
 
