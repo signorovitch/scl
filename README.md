@@ -8,6 +8,9 @@ make release    # Build.
 ./scl           # Run.
 ```
 
+If you wish to run tests, make sure to run `git clone --recurse-submodules` to
+include the `(Unity)[https://github.com/ThrowTheSwitch/Unity]` test framework.
+
 ## Current State
 
 The following things are possible:
