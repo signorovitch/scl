@@ -13,11 +13,14 @@ include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 
 ## Current State
 
-The following things are possible:
-  1. Floating-point numbers
-  2. Negative numbers
-  3. Basic binary infix operators; `+`, `-`, `*`, `/`
-  4. The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
+[x] Floating-point numbers
+[x] Negative numbers
+[x] Basic binary infix operators; `+`, `-`, `*`, `/`
+[x] The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
+[ ] Arbitrary length functions
+[ ] User-defined variables
+[ ] Control flow
+[ ] User-defined functions
 
 ## Syntax (Planned)
 
