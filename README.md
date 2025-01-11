@@ -13,14 +13,14 @@ include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 
 ## Current State
 
-[x] Floating-point numbers
-[x] Negative numbers
-[x] Basic binary infix operators; `+`, `-`, `*`, `/`
-[x] The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
-[ ] Arbitrary length functions
-[ ] User-defined variables
-[ ] Control flow
-[ ] User-defined functions
+- [x] Floating-point numbers
+- [x] Negative numbers
+- [x] Basic binary infix operators; `+`, `-`, `*`, `/`
+- [x] The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
+- [ ] Arbitrary length functions
+- [ ] User-defined variables
+- [ ] Control flow
+- [ ] User-defined functions
 
 ## Syntax (Planned)
 
