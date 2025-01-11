@@ -17,7 +17,7 @@ include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 - [x] Negative numbers
 - [x] Basic binary infix operators; `+`, `-`, `*`, `/`
 - [x] The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
-- [ ] Arbitrary length functions
+- [x] Arbitrary length functions
 - [ ] User-defined variables
 - [ ] Control flow
 - [ ] User-defined functions

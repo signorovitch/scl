@@ -41,6 +41,12 @@ ASTNumData exec_call(AST* ast) {
         ASTNumData n2 = exec_expr(calldata->argv[1]);
 
         return n1 / n2;
+    } else if (!strcmp(calldata->to, "sum") && calldata->argc == 3) {
+        ASTNumData n1 = exec_expr(calldata->argv[0]);
+        ASTNumData n2 = exec_expr(calldata->argv[1]);
+        ASTNumData n3 = exec_expr(calldata->argv[2]);
+
+        return n1 + n2 + n3;
     }
     return -1000;
 }

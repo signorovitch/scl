@@ -17,6 +17,7 @@
     double fval;
     char* strval;
     AST* ast;
+    ArgArr* argarr;
 }
 
 %define parse.error verbose
@@ -41,6 +42,8 @@
 
 %type<fval> num;
 %type<ast> exp;
+%type<argarr> arg;
+%type<argarr> argstart;
 
 %%
 
@@ -54,15 +57,35 @@ num:
     | SUB NUM { $$ = -$2; } %prec NEG
     ;
 
+argstart:
+    exp {
+        ArgArr* argarr = argarr_init();
+        argarr_add(argarr, $1);
+        $$ = argarr;
+    }
+
+arg:
+    argstart { $$ = $1; }
+    | arg SEP exp {
+        argarr_add($1, $3);
+        $$ = $1;
+    }
+    ;
+
 exp:
     num { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
-    // name(thing, thing)
-    | CALL LGROUP exp SEP exp RGROUP {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = $3;
-        argv[1] = $5;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, 2, argv));
+    // name(thing-1, thing-2, ..., thing-n)
+    // name(thing)
+    // name()
+
+    // larg: lgroup marg
+    //       lgroup rgroup
+    // marg: exp sep marg
+    //       exp rgroup
+
+    | CALL LGROUP arg RGROUP {
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, $3->ln, $3->buf));
     }
 
     | exp PLUS exp {

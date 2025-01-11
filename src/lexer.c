@@ -1,10 +1,42 @@
+#include <complex.h>
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
 
 #include "include/dstr.h"
+#include "include/util.h"
 #include "include/lexer.h"
+
+ArgArr* argarr_init() {
+    ArgArr* argarr = malloc(sizeof(ArgArr));
+
+    argarr->sz = ARLN;
+    argarr->ln = 0;
+    argarr->buf = malloc(ARLN);
+
+    return argarr;
+}
+
+void argarr_destroy(ArgArr* argarr) {
+    free(argarr->buf);
+    free(argarr);
+}
+
+void argarr_add(ArgArr* argarr, AST* arg) {
+    if (argarr->ln + 1 > argarr->sz) {
+        argarr->sz *= 2;
+        argarr->buf = realloc(argarr->buf, argarr->sz);
+        log_dbgf(
+            "ArgArr @ %p doubled from %ld to %ld",
+            argarr,
+            argarr->sz/2,
+            argarr->sz
+        );
+    }
+
+    argarr->buf[argarr->ln++] = arg;
+}
 
 int acc_int(int c) {
     int value = c - '0';
