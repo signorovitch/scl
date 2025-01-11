@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -21,32 +22,46 @@ ASTNumData exec_call(AST* ast) {
     log_dbg("Started call execution.");
     fflush(stdout);
     ASTCallData* calldata = (ASTCallData*)ast->data;
-    if (!strcmp(calldata->to, "sum") && calldata->argc == 2) {
-        ASTNumData n1 = exec_expr(calldata->argv[0]);
-        ASTNumData n2 = exec_expr(calldata->argv[1]);
+    if (!strcmp(calldata->to, "sum")) {
+        double total = 0;
 
-        return n1 + n2;
-    } else if (!strcmp(calldata->to, "sub") && calldata->argc == 2) {
-        ASTNumData n1 = exec_expr(calldata->argv[0]);
-        ASTNumData n2 = exec_expr(calldata->argv[1]);
+        for (
+            size_t i = 0;
+            i < calldata->argc;
+            total += exec_expr(calldata->argv[i++])
+        );
 
-        return n1 - n2;
-    } else if (!strcmp(calldata->to, "mul") && calldata->argc == 2) {
-        ASTNumData n1 = exec_expr(calldata->argv[0]);
-        ASTNumData n2 = exec_expr(calldata->argv[1]);
+        return total;
+    } else if (!strcmp(calldata->to, "sub")) {
+        double total = 0;
 
-        return n1 * n2;
-    } else if (!strcmp(calldata->to, "div") && calldata->argc == 2) {
-        ASTNumData n1 = exec_expr(calldata->argv[0]);
-        ASTNumData n2 = exec_expr(calldata->argv[1]);
+        for (
+            size_t i = 0;
+            i < calldata->argc;
+            total -= exec_expr(calldata->argv[i++])
+        );
 
-        return n1 / n2;
-    } else if (!strcmp(calldata->to, "sum") && calldata->argc == 3) {
-        ASTNumData n1 = exec_expr(calldata->argv[0]);
-        ASTNumData n2 = exec_expr(calldata->argv[1]);
-        ASTNumData n3 = exec_expr(calldata->argv[2]);
+        return total;
+    } else if (!strcmp(calldata->to, "mul")) {
+        double total = 1;
 
-        return n1 + n2 + n3;
+        for (
+            size_t i = 0;
+            i < calldata->argc;
+            total *= exec_expr(calldata->argv[i++])
+        );
+
+        return total;
+    } else if (!strcmp(calldata->to, "div")) {
+        double total = 1;
+
+        for (
+            size_t i = 0;
+            i < calldata->argc;
+            total /= exec_expr(calldata->argv[i++])
+        );
+
+        return total;
     }
     return -1000;
 }

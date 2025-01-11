@@ -11,9 +11,9 @@
 ArgArr* argarr_init() {
     ArgArr* argarr = malloc(sizeof(ArgArr));
 
-    argarr->sz = ARLN;
+    argarr->sz = ARLN * sizeof(AST*);
     argarr->ln = 0;
-    argarr->buf = malloc(ARLN);
+    argarr->buf = malloc(argarr->sz);
 
     return argarr;
 }
@@ -24,7 +24,7 @@ void argarr_destroy(ArgArr* argarr) {
 }
 
 void argarr_add(ArgArr* argarr, AST* arg) {
-    if (argarr->ln + 1 > argarr->sz) {
+    if ((argarr->ln + 1) * argarr->sz > argarr->sz) {
         argarr->sz *= 2;
         argarr->buf = realloc(argarr->buf, argarr->sz);
         log_dbgf(
