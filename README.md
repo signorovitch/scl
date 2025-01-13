@@ -13,14 +13,8 @@ include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 
 ## Current State
 
-- [x] Floating-point numbers
-- [x] Negative numbers
-- [x] Basic binary infix operators; `+`, `-`, `*`, `/`
-- [x] The same as conventional functions; `sum()`, `sub()`, `mul()`, `div()`
-- [x] Arbitrary length functions
-- [ ] User-defined variables
-- [ ] Control flow
-- [ ] User-defined functions
+See [STATUS.md](STATUS.md). Currently, one is able to use `scl` as a basic,
+interactive, four-function calculator.
 
 ## Syntax (Planned)
 

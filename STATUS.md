@@ -1,0 +1,55 @@
+# SCL Design Status
+
+- [x] Data definitions
+  - [x] Token Definitions
+  - [x] AST Definitions
+
+- [ ] Parser
+  - [x] Parse numbers
+  - [x] Parse floats
+  - [x] Parse negative numbers
+  - [x] Parse infix operators
+  - [x] Order of operations
+  - [x] Parse function application
+  - [ ] Parse order of operations with parenthesis
+  - [ ] Parse variable invocation
+  - [ ] Parse variable definition
+    - [ ] Parse types
+  - [ ] Parse function definition
+  - [ ] Parse lists/arrays/vectors
+  - [ ] Parse blocks
+  - [ ] Parse control flow
+    - [ ] Parse `if` statements
+    - [ ] Parse `loop`s
+    - [ ] Parse `for` loops
+    - [ ] Parse `while` loops
+    - [ ] Parse `case` statements
+    - [ ] Parse `goto` statements
+  - [ ] Parse lambda function definition
+  - [ ] Parse function calling with positional arguments
+  - [ ] Parse variadic functions
+  - [ ] Parse infix function definition
+
+  - [ ] Executer
+    - [x] Exec function calls
+    - [ ] Exec variable use
+    - [ ] Exec variable definition
+    - [ ] Exec function definition
+    - [ ] Exec symbolic variables
+    - [ ] Exec control flow statements
+    - [ ] Exec variadic functions
+    - [ ] Exec lambda functions
+    - [ ] Exec lists
+    - [ ] Exec arrays
+    - [ ] Exec vectors
+
+- [ ] Interface
+  - [ ] Interactive interpreter
+    - [ ] Use GNU readline
+    - [ ] Multi-line input
+    - [ ] Syntax highlighting
+    - [ ] Autocompletion/suggestion
+  - [ ] Command line interface
+    - [ ] Pass in a file
+    - [ ] Save AST to a file
+    - [ ] Run from AST file
