@@ -88,9 +88,9 @@ $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OB
 	$(LINK) -o $@ $? $(LDFLAGS)
 
 # Run the test files.
-test: $(TEST_BIN_FILES)
+test: $(TARGET) $(TEST_BIN_FILES)
 	@ echo -e "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
-	for test in $<; do ./$${test}; done
+	for test in $(TEST_BIN_FILES); do ./$${test}; done
 	@ echo -e "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
 	$(BATS) $(TEST_VAL_DIR)
 
