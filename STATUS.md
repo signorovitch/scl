@@ -30,18 +30,18 @@
   - [ ] Parse variadic functions
   - [ ] Parse infix function definition
 
-  - [ ] Executer
-    - [x] Exec function calls
-    - [ ] Exec variable use
-    - [ ] Exec variable definition
-    - [ ] Exec function definition
-    - [ ] Exec symbolic variables
-    - [ ] Exec control flow statements
-    - [ ] Exec variadic functions
-    - [ ] Exec lambda functions
-    - [ ] Exec lists
-    - [ ] Exec arrays
-    - [ ] Exec vectors
+- [ ] Executer
+  - [x] Exec function calls
+  - [ ] Exec variable use
+  - [ ] Exec variable definition
+  - [ ] Exec function definition
+  - [ ] Exec symbolic variables
+  - [ ] Exec control flow statements
+  - [ ] Exec variadic functions
+  - [ ] Exec lambda functions
+  - [ ] Exec lists
+  - [ ] Exec arrays
+  - [ ] Exec vectors
 
 - [ ] Interface
   - [ ] Interactive interpreter
