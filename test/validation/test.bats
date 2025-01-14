@@ -72,14 +72,13 @@ bin() { ./scl.out $1 | tail -n1; }
     [ "$output" = "= -2.000000" ]
 }
 
-# Doesn't run without hanging for now.
-# @test "order of operations with parenthesis" {
-#     run bin "(1+2)*3"
-#     [ "$output" = "= 9.000000" ]
-# 
-#     run bin "-(1+2*3)"
-#     [ "$output" = "= -7.000000" ]
-# 
-#     run bin "-(-(1+2)*3)"
-#     [ "$output" = "= 9.000000" ]
-# }
+@test "order of operations with parenthesis" {
+    run bin "(1+2)*3"
+    [ "$output" = "= 9.000000" ]
+
+    run bin "-(1+2*3)"
+    [ "$output" = "= -7.000000" ]
+
+    run bin "-(-(1+2)*3)"
+    [ "$output" = "= 9.000000" ]
+}
