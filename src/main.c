@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
     if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
         log_dbg("Parsed successfully!\n");
-        exec_print(exec_expr(root));
+        exec_print(exec_exp(root));
         exit(0);
     }
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
                 log_dbg("Parsed successfully!\n");
             } else printf("Parse error.\n");
 
-            exec_print(exec_expr(root));
+            exec_print(exec_exp(root));
 #ifdef DBG
             ast_print(root);
 #endif

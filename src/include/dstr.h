@@ -7,7 +7,7 @@
 
 typedef struct {
     char* buf;    // The buffer containing the string.
-    size_t bufsz; // The size of the buffer.
+    size_t sz; // The size of the buffer.
     size_t ln;    // The number of characters in the buffer.
 } Dstr;
 

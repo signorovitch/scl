@@ -39,7 +39,6 @@
 %left MULT DIV
 %precedence NEG
 
-%type<fval> num;
 %type<ast> exp;
 
 %%

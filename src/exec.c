@@ -8,7 +8,7 @@
 
 extern AST* root;
 
-ASTNumData exec_expr(AST* ast) {
+ASTNumData exec_exp(AST* ast) {
     log_dbg("Started execution.");
     switch (ast->type) {
         case AST_TYPE_CALL: return exec_call(ast);
@@ -23,42 +23,42 @@ ASTNumData exec_call(AST* ast) {
     ASTCallData* calldata = (ASTCallData*)ast->data;
     if (calldata->argc >= 1) {
     if (!strcmp(calldata->to, "sum")) {
-        double total = exec_expr(calldata->argv[0]);
+        double total = exec_exp(calldata->argv[0]);
 
         for (
             size_t i = 1;
             i < calldata->argc;
-            total += exec_expr(calldata->argv[i++])
+            total += exec_exp(calldata->argv[i++])
         );
 
         return total;
     } else if (!strcmp(calldata->to, "sub")) {
-        double total = exec_expr(calldata->argv[0]);
+        double total = exec_exp(calldata->argv[0]);
 
         for (
             size_t i = 1;
             i < calldata->argc;
-            total -= exec_expr(calldata->argv[i++])
+            total -= exec_exp(calldata->argv[i++])
         );
 
         return total;
     } else if (!strcmp(calldata->to, "mul")) {
-        double total = exec_expr(calldata->argv[0]);
+        double total = exec_exp(calldata->argv[0]);
 
         for (
             size_t i = 1;
             i < calldata->argc;
-            total *= exec_expr(calldata->argv[i++])
+            total *= exec_exp(calldata->argv[i++])
         );
 
         return total;
     } else if (!strcmp(calldata->to, "div")) {
-        double total = exec_expr(calldata->argv[0]);
+        double total = exec_exp(calldata->argv[0]);
 
         for (
             size_t i = 1;
             i < calldata->argc;
-            total /= exec_expr(calldata->argv[i++])
+            total /= exec_exp(calldata->argv[i++])
         );
 
         return total;
