@@ -98,7 +98,7 @@ int yylex() {
 
     if (isalpha(c)) {
         yylval.strval = acc_word(c);
-        return CALL;
+        return WORD;
     }
 
     switch (c) {

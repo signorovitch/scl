@@ -11,7 +11,7 @@
   - [x] Parse infix operators
   - [x] Order of operations
   - [x] Parse function application
-  - [ ] Parse order of operations with parenthesis
+  - [x] Parse order of operations with parenthesis
   - [ ] Parse variable invocation
   - [ ] Parse variable definition
     - [ ] Parse types

@@ -7,8 +7,9 @@
 extern AST* root;
 
 static char* asttype_names[] = {
-    [AST_TYPE_CALL] = "CALL",
+    [AST_TYPE_CALL] = "FUNC CALL",
     [AST_TYPE_NUM] = "NUMBER",
+    [AST_TYPE_VREF] = "VAR REFERENCE"
 };
 
 AST* ast_init(ASTType type, void* data) {
@@ -44,6 +45,7 @@ void ast_print_i(AST* ast, int i) {
             printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
             break;
         case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
+        case AST_TYPE_VREF: ast_vref_print(ast->data, i + 2); break;
         default:            exit(1);
     }
     INDENT_FIELD_NONL_END;
@@ -97,6 +99,15 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_FIELD("to", "%s", data->to);
     INDENT_FIELD("argc", "%ld", data->argc);
     INDENT_FIELD_LIST("argv", data->argv, data->argc, ast_print_i);
+
+    INDENT_END;
+}
+
+void ast_vref_print(ASTVrefData* data, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("ASTVrefData", data);
+    INDENT_FIELD("to", "%s", data->to);
 
     INDENT_END;
 }

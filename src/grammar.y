@@ -25,7 +25,7 @@
 %token RGROUP
 %token SEP
 
-%token<strval> CALL
+%token<strval> WORD
 %token<fval> NUM
 
 %token SUB
@@ -60,8 +60,12 @@ exp:
 
     | LGROUP exp RGROUP { $$ = $2; }
 
+    // Variable reference.
+    | WORD
+
+    // Function call.
     // name(thing, thing)
-    | CALL LGROUP exp SEP exp RGROUP {
+    | WORD LGROUP exp SEP exp RGROUP {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $3;
         argv[1] = $5;
