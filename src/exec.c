@@ -14,6 +14,7 @@ ASTNumData exec_exp(AST* ast) {
         case AST_TYPE_CALL: return exec_call(ast);
         case AST_TYPE_NUM:  return *(ASTNumData*)ast->data;
         default:            printf("what\n");
+                            exit(1);
     }
 }
 

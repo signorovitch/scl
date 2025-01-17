@@ -61,7 +61,7 @@ exp:
     | LGROUP exp RGROUP { $$ = $2; }
 
     // Variable reference.
-    | WORD
+    //| WORD
 
     // Function call.
     // name(thing, thing)
