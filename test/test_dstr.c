@@ -9,7 +9,7 @@ void test_dstr_init() {
     Dstr* dstr = dstr_init();
     TEST_ASSERT_EQUAL(0, strlen(dstr->buf));
     TEST_ASSERT_EQUAL(0, dstr->ln);
-    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->bufsz);
+    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->sz);
 }
 
 void test_dstr_append() {
@@ -22,7 +22,7 @@ void test_dstr_append() {
 
     TEST_ASSERT_EQUAL_STRING(hello_world, dstr->buf);
     TEST_ASSERT_EQUAL(strlen(hello_world), dstr->ln);
-    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->bufsz);
+    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->sz);
 
     dstr_destroy(dstr);
 
@@ -36,7 +36,7 @@ void test_dstr_append() {
 
     TEST_ASSERT_EQUAL_STRING(h, dstr->buf);
     TEST_ASSERT_EQUAL(strlen(h), dstr->ln);
-    TEST_ASSERT_EQUAL(DSTR_INITSZ * 2, dstr->bufsz);
+    TEST_ASSERT_EQUAL(DSTR_INITSZ * 2, dstr->sz);
 }
 
 void test_dstr_appendch() {
@@ -50,7 +50,7 @@ void test_dstr_appendch() {
 
     TEST_ASSERT_EQUAL_STRING(c_str, dstr->buf);
     TEST_ASSERT_EQUAL(strlen(c_str), dstr->ln);
-    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->bufsz);
+    TEST_ASSERT_EQUAL(DSTR_INITSZ, dstr->sz);
 
     dstr_destroy(dstr);
 
@@ -66,7 +66,7 @@ void test_dstr_appendch() {
 
     TEST_ASSERT_EQUAL_STRING(h, dstr->buf);
     TEST_ASSERT_EQUAL(strlen(h), dstr->ln);
-    TEST_ASSERT_EQUAL(DSTR_INITSZ * 2, dstr->bufsz);
+    TEST_ASSERT_EQUAL(DSTR_INITSZ * 2, dstr->sz);
 }
 
 // not needed when using generate_test_runner.rb
