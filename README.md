@@ -1,5 +1,7 @@
 # SCL: Simple CAS Language
 
+Version 0.0.1
+
 ## Usage
 
 ```bash
