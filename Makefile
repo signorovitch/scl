@@ -91,6 +91,7 @@ $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OB
 
 # Run the test files.
 test: $(TARGET) $(TEST_BIN_FILES)
+	mkdir -p $(TEST_BUILD_DIR)
 	@ $(PRINT) "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
 	for test in $(TEST_BIN_FILES); do ./$${test}; done
 	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
