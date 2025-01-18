@@ -1,6 +1,6 @@
 # SCL: Simple CAS Language
 
-Version 1.0-alpha
+Version v1.0-alpha
 
 ## Usage
 
