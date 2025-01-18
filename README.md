@@ -5,9 +5,8 @@ Version v1.0-alpha
 ## Usage
 
 ```bash
-git clone https://git.signorovitch.org/jacob/scl \
-    --depth 1 \
-    -b stable
+git clone https://git.signorovitch.org/jacob/scl -b stable
+cd scl
 make release
 ./scl
 ```
@@ -16,8 +15,8 @@ make release
 
 ```bash
 git clone git@signorovitch.org:jacob/scl --recurse-submodules && cd scl
-make    # Build.
-./scl   # Run.
+make all test
+./scl
 ```
 
 If you wish to run tests, make sure to run `git clone --recurse-submodules` to
