@@ -16,6 +16,8 @@ LINK = clang
 CFLAGS = -Wall -DDBG -ggdb
 LDFLAGS = -lm
 BATS = bats
+BISON = bison
+PRINT = $(PRINT)
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
@@ -47,56 +49,56 @@ run: $(TARGET)
 # Generate grammars with bison.
 $(GRAM_FILES): $(SRC_DIR)/grammar.y
 	@ mkdir -p $(GRAM_DIR)
-	@ echo -e "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR)"
-	bison $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
+	@ $(PRINT) "$(WHITE_BOLD)Generating grammars...$(RESETCOLOR)"
+	$(BISON) $< -o$(GRAM_DIR)/grammar.tab.c -H$(GRAM_DIR)/grammar.tab.h
 
 # Compile grammars.
 $(OBJ_DIR)/grammar.o: $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h $(OBJ_DIR)/lexer.o
-	@ echo -e "$(WHITE_BOLD)Compiling grammars...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Compiling grammars...$(RESETCOLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Lexer depends on grammars.
 $(OBJ_DIR)/lexer.o: $(SRC_DIR)/lexer.c $(GRAM_FILES)
 	@ mkdir -p $(OBJ_DIR)
-	@ echo -e "$(WHITE_BOLD)Compiling source object $(WHITE)$@$(WHITE_BOLD)... $(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Compiling source object $(WHITE)$@$(WHITE_BOLD)... $(RESETCOLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile project source objects.
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@ mkdir -p $(OBJ_DIR)
-	@ echo -e "$(WHITE_BOLD)Compiling source object $(WHITE)$@$(WHITE_BOLD)... $(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Compiling source object $(WHITE)$@$(WHITE_BOLD)... $(RESETCOLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link to final binary.
 $(TARGET): $(OBJ_DIR)/grammar.o $(OBJ_FILES)
-	@ echo -e "$(WHITE_BOLD)Linking $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Linking $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(LINK) -o $(TARGET) $(OBJ_FILES) $(OBJ_DIR)/grammar.o $(LDFLAGS)
 
 # Compile Unity object.
 $(UNITY_OBJ): $(UNITY_C) $(UNITY_H)
-	@ echo -e "$(WHITE_BOLD)Compiling Unity...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Compiling Unity...$(RESETCOLOR)"
 	$(CC) $(CFLAGS) -D UNITY_OUTPUT_COLOR -c $< -o $@
 
 # Compile test object.
 $(TEST_OBJ_DIR)/test_%.o: $(TEST_DIR)/test_%.c
-	@ echo -e "$(WHITE_BOLD)Compiling test object $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Compiling test object $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link final test binary.
 $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OBJ)
-	@ echo -e "$(WHITE_BOLD)Linking test binary $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Linking test binary $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(LINK) -o $@ $? $(LDFLAGS)
 
 # Run the test files.
 test: $(TARGET) $(TEST_BIN_FILES)
-	@ echo -e "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
 	for test in $(TEST_BIN_FILES); do ./$${test}; done
-	@ echo -e "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
 	$(BATS) $(TEST_VAL_DIR)
 
 
 clean:
-	@ echo -e "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
+	@ $(PRINT) "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
 	rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/* $(UNITY_OBJ)
 
 .PHONY: all clean test nocolor release run
