@@ -12,7 +12,7 @@ Dstr* dstr_init(void) {
     dstr->buf = malloc(DSTR_INITSZ);
     *dstr->buf = '\0';
     dstr->ln = 0;
-
+    
     return dstr;
 }
 

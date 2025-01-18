@@ -17,6 +17,7 @@
     double fval;
     char* strval;
     AST* ast;
+    ArgArr* argarr;
 }
 
 %define parse.error verbose
@@ -40,12 +41,31 @@
 %precedence NEG
 
 %type<ast> exp;
+%type<argarr> arg;
+%type<argarr> argstart;
 
 %%
 
 input:
     %empty
     | exp { root = $1; }
+    ;
+
+
+argstart:
+    exp {
+        ArgArr* argarr = argarr_init();
+        argarr_add(argarr, $1);
+        $$ = argarr;
+    }
+    ;
+
+arg:
+    argstart { $$ = $1; }
+    | arg SEP exp {
+        argarr_add($1, $3);
+        $$ = $1;
+    }
     ;
 
 exp:
@@ -63,13 +83,8 @@ exp:
     // Variable reference.
     //| WORD
 
-    // Function call.
-    // name(thing, thing)
-    | WORD LGROUP exp SEP exp RGROUP {
-        AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = $3;
-        argv[1] = $5;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, 2, argv));
+    | WORD LGROUP arg RGROUP {
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, $3->ln, $3->buf));
     }
 
     | exp PLUS exp {

@@ -103,6 +103,12 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_END;
 }
 
+ASTVrefData* ast_vref_data_init(char* to) {
+    
+}
+
+void ast_vref_data_destroy(ASTVrefData* vref) {}
+
 void ast_vref_print(ASTVrefData* data, int i) {
     INDENT_BEGIN(i);
 

@@ -40,8 +40,8 @@ typedef struct {
     char* to;       // What the reference's to.
 } ASTVrefData;
 
-ASTCallData* ast_vref_data_init(char* to);
-void ast_vref_data_destroy(ASTCallData* call);
+ASTVrefData* ast_vref_data_init(char* to);
+void ast_vref_data_destroy(ASTVrefData* call);
 void ast_vref_print(ASTVrefData*, int i);
 
 #endif
