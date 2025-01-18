@@ -5,8 +5,8 @@
 #include <stdio.h>
 
 #include "include/dstr.h"
-#include "include/util.h"
 #include "include/lexer.h"
+#include "include/util.h"
 
 ArgArr* argarr_init() {
     ArgArr* argarr = malloc(sizeof(ArgArr));
@@ -23,14 +23,14 @@ void argarr_destroy(ArgArr* argarr) {
     free(argarr);
 }
 
+void argarr_destroypsv(ArgArr* argarr) { free(argarr); }
+
 void argarr_add(ArgArr* argarr, AST* arg) {
     if ((argarr->ln + 1) * argarr->sz > argarr->sz) {
         argarr->sz *= 2;
         argarr->buf = realloc(argarr->buf, argarr->sz);
         log_dbgf(
-            "ArgArr @ %p doubled from %ld to %ld",
-            argarr,
-            argarr->sz/2,
+            "ArgArr @ %p doubled from %ld to %ld", argarr, argarr->sz / 2,
             argarr->sz
         );
     }
@@ -78,14 +78,16 @@ char* acc_word(int c) {
     } while (isalpha(*inp));
     dstr_appendch(val, *(inp - 1));
 
-    return val->buf;
+    char* ret = val->buf;
+    dstr_destroypsv(val);
+    return ret;
 }
 
 int yylex() {
     if (*inp == '\0') return YYEOF;
 
     // Skip all whitespace.
-    while (*inp == ' ' || *inp == '\t') { inp++; }
+    while (*inp == ' ' || *inp == '\t') inp++;
 
     // Assign & consume current character.
     int c = *inp++;

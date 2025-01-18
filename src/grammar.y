@@ -1,4 +1,5 @@
 %{
+    #include <string.h>
     #include <stdio.h>
     #include "../../src/include/ast.h"
     #include "../../src/include/lexer.h"
@@ -75,7 +76,9 @@ exp:
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-1));
         argv[1] = $2;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
+        char* to = malloc(4);
+        strcpy(to, "mul");
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
     | LGROUP exp RGROUP { $$ = $2; }
@@ -84,34 +87,45 @@ exp:
     //| WORD
 
     | WORD LGROUP arg RGROUP {
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, $3->ln, $3->buf));
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, argc, argv));
     }
 
     | exp PLUS exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sum", 2, argv));
+        char* to = malloc(4);
+        strcpy(to, "sum");
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
     | exp SUB exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("sub", 2, argv));
+        char* to = malloc(4);
+        strcpy(to, "sub");
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
     | exp MULT exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("mul", 2, argv));
+        char* to = malloc(4);
+        strcpy(to, "mul");
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
     | exp DIV exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init("div", 2, argv));
+        char* to = malloc(4);
+        strcpy(to, "div");
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 %%

@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
     if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
         log_dbg("Parsed successfully!\n");
         exec_print(exec_exp(root));
+        ast_destroy(root);
         exit(0);
     }
 
@@ -56,9 +57,12 @@ int main(int argc, char** argv) {
 #ifdef DBG
             ast_print(root);
 #endif
+            ast_destroy(root);
         }
 
         dstr_destroy(ln);
     }
 lnskip:;
+
+    return 0;
 }

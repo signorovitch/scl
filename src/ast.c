@@ -30,6 +30,8 @@ void ast_destroy(AST* ast) {
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
+
+    free(ast);
 }
 
 void ast_print(AST* ast) { ast_print_i(ast, 0); }
@@ -55,16 +57,12 @@ void ast_print_i(AST* ast, int i) {
 ASTNumData* ast_num_data_init(double val) {
     talloc(ASTNumData, num);
 
-    log_dbgf("val: %lf", val);
-
     *num = val;
 
     return num;
 }
 
-void ast_num_data_destroy(ASTNumData* num) {
-    if (!num) return free(num);
-}
+void ast_num_data_destroy(ASTNumData* num) { free(num); }
 
 void ast_num_print(ASTNumData* data, int i) {
     INDENT_BEGIN(i);
@@ -87,8 +85,10 @@ ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv) {
 }
 
 void ast_call_data_destroy(ASTCallData* call) {
-    if (!call) return free(call->to);
-    for (size_t i = 0; i < call->argc; i++) free(call->argv[i]);
+    if (!call) return;
+    free(call->to);
+    for (size_t i = 0; i < call->argc; i++) ast_destroy(call->argv[i]);
+    free(call->argv);
     free(call);
 }
 
@@ -103,9 +103,7 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_END;
 }
 
-ASTVrefData* ast_vref_data_init(char* to) {
-    
-}
+ASTVrefData* ast_vref_data_init(char* to) {}
 
 void ast_vref_data_destroy(ASTVrefData* vref) {}
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 typedef enum {
-    AST_TYPE_NUM, // A number.
+    AST_TYPE_NUM,  // A number.
     AST_TYPE_CALL, // A function call.
     AST_TYPE_VREF, // A variable reference.
     AST_TYPE_MAX = AST_TYPE_CALL
@@ -27,9 +27,9 @@ void ast_num_data_destroy(ASTNumData* num);
 void ast_num_print(ASTNumData*, int i);
 
 typedef struct {
-    char* to;       // What the call's to.
-    size_t argc;    // Argument count.
-    AST** argv;     // Argument vector.
+    char* to;    // What the call's to.
+    size_t argc; // Argument count.
+    AST** argv;  // Argument vector.
 } ASTCallData;
 
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
@@ -37,7 +37,7 @@ void ast_call_data_destroy(ASTCallData* call);
 void ast_call_print(ASTCallData*, int i);
 
 typedef struct {
-    char* to;       // What the reference's to.
+    char* to; // What the reference's to.
 } ASTVrefData;
 
 ASTVrefData* ast_vref_data_init(char* to);

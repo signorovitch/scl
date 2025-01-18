@@ -18,6 +18,8 @@ typedef struct {
 
 ArgArr* argarr_init();
 void argarr_destroy(ArgArr* argarr);
+// Destroy ArgArr structure but preserve -> buf.
+void argarr_destroypsv(ArgArr* argarr);
 void argarr_add(ArgArr* argarr, AST* arg);
 
 #include "../../build/grammars/grammar.tab.h"

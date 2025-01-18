@@ -12,7 +12,7 @@ Dstr* dstr_init(void) {
     dstr->buf = malloc(DSTR_INITSZ);
     *dstr->buf = '\0';
     dstr->ln = 0;
-    
+
     return dstr;
 }
 
@@ -21,6 +21,8 @@ void dstr_destroy(Dstr* dstr) {
     free(dstr);
 }
 
+void dstr_destroypsv(Dstr* dstr) { free(dstr); }
+
 // Check whether the buffer is overflowing and resize it if necessary.
 void check_resz(Dstr* dstr, size_t ln) {
     while (dstr->ln + ln + 1 > dstr->sz) {
@@ -28,8 +30,7 @@ void check_resz(Dstr* dstr, size_t ln) {
         dstr->sz *= 2;
         dstr->buf = realloc(dstr->buf, dstr->sz);
         log_dbgf(
-            "dstr @ %p doubled from %ld to %ld", dstr, dstr->sz / 2,
-            dstr->sz
+            "dstr @ %p doubled from %ld to %ld", dstr, dstr->sz / 2, dstr->sz
         );
     }
 }
