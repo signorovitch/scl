@@ -81,17 +81,18 @@ $(UNITY_OBJ): $(UNITY_C) $(UNITY_H)
 
 # Compile test object.
 $(TEST_OBJ_DIR)/test_%.o: $(TEST_DIR)/test_%.c
+	@ mkdir -p $(TEST_OBJ_DIR)
 	@ $(PRINT) "$(WHITE_BOLD)Compiling test object $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link final test binary.
 $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OBJ)
+	@ mkdir -p $(TEST_BUILD_DIR)
 	@ $(PRINT) "$(WHITE_BOLD)Linking test binary $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(LINK) -o $@ $? $(LDFLAGS)
 
 # Run the test files.
 test: $(TARGET) $(TEST_BIN_FILES)
-	mkdir -p $(TEST_BUILD_DIR)
 	@ $(PRINT) "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
 	for test in $(TEST_BIN_FILES); do ./$${test}; done
 	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
