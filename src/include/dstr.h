@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define DSTR_INITSZ 2
+#define DSTR_INITSZ 128
 
 typedef struct {
     char* buf; // The buffer containing the string.
