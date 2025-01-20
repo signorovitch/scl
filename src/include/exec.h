@@ -5,6 +5,7 @@
 
 ASTNumData exec_exp(AST* ast);
 ASTNumData exec_call(AST* ast);
+ASTNumData exec_vref(AST* ast);
 void exec_print(double n);
 
 #endif

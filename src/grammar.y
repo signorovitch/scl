@@ -84,7 +84,9 @@ exp:
     | LGROUP exp RGROUP { $$ = $2; }
 
     // Variable reference.
-    //| WORD
+    | WORD {
+        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+    }
 
     | WORD LGROUP arg RGROUP {
         size_t argc = $3->ln;
