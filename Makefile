@@ -35,6 +35,7 @@ TEST_VAL_DIR = $(TEST_DIR)/validation
 RESETCOLOR = \033[0m
 WHITE = $(RESETCOLOR)\033[37m
 WHITE_BOLD = $(RESETCOLOR)\033[37;1m
+RED_BOLD = $(RESETCOLOR)\033[31;1m
 
 all: $(TARGET)
 
@@ -94,7 +95,7 @@ $(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/grammar.o $(OB
 # Run the test files.
 test: $(TARGET) $(TEST_BIN_FILES)
 	@ $(PRINT) "$(WHITE_BOLD)Running unit tests...$(RESETCOLOR)"
-	for test in $(TEST_BIN_FILES); do ./$${test}; done
+	for test in $(TEST_BIN_FILES); do ./$${test} || echo -e "$(RED_BOLD) BAD EXIT ON $${test} $(RESETCOLOR)"; done
 	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
 	$(BATS) $(TEST_VAL_DIR)
 
