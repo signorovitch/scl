@@ -86,7 +86,7 @@ $(TEST_OBJ_DIR)/test_%.o: $(TEST_DIR)/test_%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link final test binary.
-$(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/%.o $(UNITY_OBJ)
+$(TEST_BUILD_DIR)/test_%.out: $(TEST_OBJ_DIR)/test_%.o $(OBJ_DIR)/grammar.o $(OBJ_FILES_NOMAIN) $(UNITY_OBJ)
 	@ mkdir -p $(TEST_BUILD_DIR)
 	@ $(PRINT) "$(WHITE_BOLD)Linking test binary $(WHITE)$@$(WHITE_BOLD)...$(RESETCOLOR)"
 	$(LINK) -o $@ $? $(LDFLAGS)

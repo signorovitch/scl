@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "include/global.h"
 #include "include/ast.h"
 #include "include/dstr.h"
 #include "include/exec.h"
@@ -11,10 +12,7 @@
 
 // Global Abstract Syntax Tree.
 extern AST* root;
-
-// Global input text.
-char* inp = NULL;
-
+extern char* inp;
 extern int yyparse();
 
 int main(int argc, char** argv) {

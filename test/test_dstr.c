@@ -69,8 +69,7 @@ void test_dstr_appendch() {
     TEST_ASSERT_EQUAL(DSTR_INITSZ * 2, dstr->sz);
 }
 
-// not needed when using generate_test_runner.rb
-int main(void) {
+int main() {
     UNITY_BEGIN();
     RUN_TEST(test_dstr_init);
     RUN_TEST(test_dstr_append);
