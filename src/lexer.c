@@ -112,6 +112,7 @@ int yylex() {
         case '(':  return LGROUP;
         case ')':  return RGROUP;
         case ',':  return SEP;
+        case ';': return EXPSEP;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

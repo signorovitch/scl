@@ -27,6 +27,8 @@
 %token RGROUP
 %token SEP
 
+%token EXPSEP
+
 %token<strval> WORD
 %token<fval> NUM
 
@@ -50,6 +52,7 @@
 input:
     %empty
     | exp { root = $1; }
+    | input EXPSEP exp { root = $3; }
     ;
 
 
