@@ -82,3 +82,16 @@ bin() { ./scl.out $1 | tail -n1; }
     run bin "-(-(1+2)*3)"
     [ "$output" = "= 9.000000" ]
 }
+
+@test "multiple expressions per line" {
+    run bin "1+1;2"
+    [ "$output" = "= 2.000000" ]
+}
+
+@test "variable definition" {
+    run bin "x = 1"
+    [ "$output" = "= 1.000000" ]
+
+    run bin "x = 1; x + 1"
+    [ "$output" = "= 2.000000" ]
+}

@@ -27,6 +27,7 @@ void ast_destroy(AST* ast) {
     switch (ast->type) {
         case AST_TYPE_NUM:  ast_num_data_destroy(ast->data); break;
         case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
+        case AST_TYPE_VREF: ast_vref_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -103,9 +104,18 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_END;
 }
 
-ASTVrefData* ast_vref_data_init(char* to) {}
+ASTVrefData* ast_vref_data_init(char* to) {
+    talloc(ASTVrefData, vref);
 
-void ast_vref_data_destroy(ASTVrefData* vref) {}
+    vref->to = to;
+
+    return vref;
+}
+
+void ast_vref_data_destroy(ASTVrefData* vref) {
+    free(vref->to);
+    free(vref);
+}
 
 void ast_vref_print(ASTVrefData* data, int i) {
     INDENT_BEGIN(i);
