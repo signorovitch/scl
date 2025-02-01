@@ -4,10 +4,11 @@
 #include <stdlib.h>
 
 typedef enum {
-    AST_TYPE_NUM,  // A number.
-    AST_TYPE_CALL, // A function call.
-    AST_TYPE_VREF, // A variable reference.
-    AST_TYPE_MAX = AST_TYPE_CALL
+    AST_TYPE_NUM,   // A number.
+    AST_TYPE_CALL,  // A function call.
+    AST_TYPE_VREF,  // A variable reference.
+    AST_TYPE_BLOCK, // A block of code (scope).
+    AST_TYPE_MAX = AST_TYPE_BLOCK,
 } ASTType;
 
 typedef struct {
@@ -43,5 +44,15 @@ typedef struct {
 ASTVrefData* ast_vref_data_init(char* to);
 void ast_vref_data_destroy(ASTVrefData* call);
 void ast_vref_print(ASTVrefData*, int i);
+
+typedef struct {
+    AST** inside; // What's inside the block.
+    size_t ln;    // How many ASTs are in the block.
+} ASTBlockData;
+
+ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
+// Destroy a block. Also destroy all ASTs inside.
+void ast_block_data_destroy(ASTBlockData* block);
+void ast_block_data_print(ASTBlockData*, int i);
 
 #endif

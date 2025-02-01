@@ -23,8 +23,11 @@
 
 %define parse.error verbose
 
-%token LGROUP
-%token RGROUP
+%token BLOCKS
+%token BLOCKE
+
+%token GROUPS
+%token GROUPE
 %token SEP
 
 %token EXPSEP
@@ -91,7 +94,7 @@ exp:
         $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
     }
 
-    | WORD LGROUP arg RGROUP {
+    | WORD GROUPS arg GROUPE {
         size_t argc = $3->ln;
         AST** argv = $3->buf;
         argarr_destroypsv($3);

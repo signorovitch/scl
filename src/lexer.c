@@ -113,6 +113,8 @@ int yylex() {
         case ')':  return RGROUP;
         case ',':  return SEP;
         case ';': return EXPSEP;
+        case '{': return BLOCKS;
+        case '}': return BLOCKE;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

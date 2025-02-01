@@ -9,7 +9,8 @@ extern AST* root;
 static char* asttype_names[] = {
     [AST_TYPE_CALL] = "FUNC CALL",
     [AST_TYPE_NUM] = "NUMBER",
-    [AST_TYPE_VREF] = "VAR REFERENCE"
+    [AST_TYPE_VREF] = "VAR REFERENCE",
+    [AST_TYPE_BLOCK] = "BLOCK",
 };
 
 AST* ast_init(ASTType type, void* data) {
@@ -122,6 +123,34 @@ void ast_vref_print(ASTVrefData* data, int i) {
 
     INDENT_TITLE("ASTVrefData", data);
     INDENT_FIELD("to", "%s", data->to);
+
+    INDENT_END;
+}
+
+ASTBlockData* ast_block_data_init(AST** inside, size_t ln) {
+    ASTBlockData* block = malloc(sizeof(ASTBlockData));
+
+    block->inside = calloc(ln, sizeof(AST));
+    block->ln = ln;
+
+    return block;
+}
+
+void ast_block_data_destroy(ASTBlockData* block) {
+    for (size_t i = 0; i < block->ln; i++) {
+        ast_destroy(block->inside[i]);
+    }
+
+    free(block->inside);
+    free(block);
+}
+
+void ast_block_data_print(ASTBlockData* data, int depth) {
+    INDENT_BEGIN(depth);
+
+    INDENT_TITLE("BLOCK", data);
+    INDENT_FIELD("ln", "%ld", data->ln);
+    INDENT_FIELD_LIST("inside", data->inside, data->ln, ast_print_i);
 
     INDENT_END;
 }

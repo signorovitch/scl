@@ -95,3 +95,8 @@ bin() { ./scl.out $1 | tail -n1; }
     run bin "x = 1; x + 1"
     [ "$output" = "= 2.000000" ]
 }
+
+@test "function definition" {
+    run bin "f(n)=2*n; f(2)"
+    [ "$output" = "= 4.000000" ]
+}

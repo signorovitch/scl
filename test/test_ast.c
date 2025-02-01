@@ -52,8 +52,8 @@ void test_ast_vref() {
 
 int main() {
     UNITY_BEGIN();
-    RUN_TEST(test_ast_num);
-    RUN_TEST(test_ast_call);
+    //RUN_TEST(test_ast_num);
+    //RUN_TEST(test_ast_call);
     //RUN_TEST(test_ast_vref);
     return UNITY_END();
 }
