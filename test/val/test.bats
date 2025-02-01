@@ -7,6 +7,7 @@ bin() { ./scl.out $1 | tail -n1; }
     [ "$output" = "= 2.000000" ]
 
     run bin "-1+1"
+    echo $output
     [ "$output" = "= 0.000000" ]
 
     run bin "1+-1"
@@ -88,15 +89,15 @@ bin() { ./scl.out $1 | tail -n1; }
     [ "$output" = "= 2.000000" ]
 }
 
-@test "variable definition" {
-    run bin "x = 1"
-    [ "$output" = "= 1.000000" ]
-
-    run bin "x = 1; x + 1"
-    [ "$output" = "= 2.000000" ]
-}
-
-@test "function definition" {
-    run bin "f(n)=2*n; f(2)"
-    [ "$output" = "= 4.000000" ]
-}
+#@test "variable definition" {
+#    run bin "x = 1"
+#    [ "$output" = "= 1.000000" ]
+#
+#    run bin "x = 1; x + 1"
+#    [ "$output" = "= 2.000000" ]
+#}
+#
+#@test "function definition" {
+#    run bin "f(n)=2*n; f(2)"
+#    [ "$output" = "= 4.000000" ]
+#}

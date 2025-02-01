@@ -24,7 +24,7 @@ void dstr_destroy(Dstr* dstr) {
 void dstr_destroypsv(Dstr* dstr) { free(dstr); }
 
 // Check whether the buffer is overflowing and resize it if necessary.
-void check_resz(Dstr* dstr, size_t ln) {
+void dstr_check_resz(Dstr* dstr, size_t ln) {
     while (dstr->ln + ln + 1 > dstr->sz) {
         // Double the buffer size when overflown.
         dstr->sz *= 2;
@@ -36,7 +36,7 @@ void check_resz(Dstr* dstr, size_t ln) {
 }
 
 void dstr_append(Dstr* dest, char* src, size_t ln) {
-    check_resz(dest, ln);
+    dstr_check_resz(dest, ln);
 
     // Overwrites the \0 at the end of the string, keeps the null from the given
     // string.
@@ -45,7 +45,7 @@ void dstr_append(Dstr* dest, char* src, size_t ln) {
 }
 
 void dstr_appendch(Dstr* dest, char ch) {
-    check_resz(dest, 1);
+    dstr_check_resz(dest, 1);
 
     // Overwrites the preexisting null terminator, and adds one of its own.
     dest->buf[dest->ln] = ch;

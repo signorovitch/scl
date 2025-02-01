@@ -3,6 +3,7 @@
     #include <stdio.h>
     #include "../../src/include/ast.h"
     #include "../../src/include/lexer.h"
+    #include "../../src/include/dlist.h"
 
     int yylex(void);
     void yyerror(char const*);
@@ -12,6 +13,7 @@
 
 %code requires {
     #include "../../src/include/ast.h"
+    #include "../../src/include/dlist.h"
 }
 
 %union {
@@ -19,36 +21,39 @@
     char* strval;
     AST* ast;
     ArgArr* argarr;
+    DList* exps;
 }
 
 %define parse.error verbose
 
-%token BLOCKS
-%token BLOCKE
+%token BLOCKS // Block start {.
+%token BLOCKE // Block end }.
 
-%token GROUPS
-%token GROUPE
-%token SEP
+%token GROUPS // Group start (.
+%token GROUPE // Group end ).
+%token SEP // Seperator ,.
 
-%token EXPSEP
+%token EXPSEP // Expression seperator ;.
 
-%token<strval> WORD
-%token<fval> NUM
+%token<strval> WORD // Word, i.e. keyword.
+%token<fval> NUM // Number.
 
-%token SUB
-%token PLUS
-%token MULT
-%token DIV
+%token SUB // Subtract -.
+%token ADD // Addition *. 
+%token MUL // Multiplication *.
+%token DIV // Division /.
 
-%token NL
+%token NL // Newline.
 
-%left PLUS SUB
-%left MULT DIV
+%left ADD SUB
+%left MUL DIV
 %precedence NEG
 
 %type<ast> exp;
 %type<argarr> arg;
 %type<argarr> argstart;
+%type<exps> blockstart;
+%type<exps> block;
 
 %%
 
@@ -57,7 +62,6 @@ input:
     | exp { root = $1; }
     | input EXPSEP exp { root = $3; }
     ;
-
 
 argstart:
     exp {
@@ -75,8 +79,31 @@ arg:
     }
     ;
 
+blockstart:
+    exp {
+        DList* exps = dlist_init(); // List of expressions.
+        dlist_append(exps, $1);
+        $$ = exps;
+    }
+    ;
+
+block:
+     blockstart { $$ = $1; }
+     | block EXPSEP exp {
+        dlist_append($1, $3);
+        $$ = $1;
+    }
+    ;
+
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
+
+    | BLOCKS exp BLOCKE { $$ = $2; }
+
+    | BLOCKS block BLOCKE {
+        size_t i = $2->ln - 1;
+        $$ = $2->buf[i];
+    }
 
     | SUB exp {
         AST** argv = calloc(2, sizeof(AST*));
@@ -87,7 +114,7 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
-    | LGROUP exp RGROUP { $$ = $2; }
+    | GROUPS exp GROUPE { $$ = $2; }
 
     // Variable reference.
     | WORD {
@@ -101,7 +128,7 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init($1, argc, argv));
     }
 
-    | exp PLUS exp {
+    | exp ADD exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
@@ -119,7 +146,7 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 
-    | exp MULT exp {
+    | exp MUL exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;

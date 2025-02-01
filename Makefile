@@ -30,7 +30,7 @@ UNITY_OBJ = $(TEST_BUILD_DIR)/unity.o
 TEST_SRC_FILES = $(wildcard $(TEST_DIR)/*.c)
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_OBJ_DIR)/%.o, $(TEST_SRC_FILES))
 TEST_BIN_FILES = $(patsubst $(TEST_DIR)/%.c, $(TEST_BUILD_DIR)/%.out, $(TEST_SRC_FILES))
-TEST_VAL_DIR = $(TEST_DIR)/validation
+TEST_VAL_DIR = $(TEST_DIR)/val
 
 RESETCOLOR = \033[0m
 WHITE = $(RESETCOLOR)\033[37m

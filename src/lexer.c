@@ -104,13 +104,13 @@ int yylex() {
     }
 
     switch (c) {
-        case '+':  return PLUS;
+        case '+':  return ADD;
         case '\n': return NL;
         case '-':  return SUB;
-        case '*':  return MULT;
+        case '*':  return MUL;
         case '/':  return DIV;
-        case '(':  return LGROUP;
-        case ')':  return RGROUP;
+        case '(':  return GROUPS;
+        case ')':  return GROUPE;
         case ',':  return SEP;
         case ';': return EXPSEP;
         case '{': return BLOCKS;
