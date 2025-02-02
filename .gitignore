@@ -4,5 +4,5 @@ tags
 *.out
 .cache
 build/*
-compile_commands.json
 vgcore.*
+compile_commands.json
