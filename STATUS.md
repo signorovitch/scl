@@ -13,11 +13,11 @@
   - [x] Parse function application
   - [x] Parse order of operations with parenthesis
   - [ ] Parse variable invocation
-  - [ ] Parse variable definition
+  - [x] Parse variable definition
     - [ ] Parse types
   - [ ] Parse function definition
   - [ ] Parse lists/arrays/vectors
-  - [ ] Parse blocks
+  - [x] Parse blocks
   - [ ] Parse control flow
     - [ ] Parse `if` statements
     - [ ] Parse `loop`s
