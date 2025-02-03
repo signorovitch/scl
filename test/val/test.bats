@@ -84,25 +84,26 @@ bin() { ./scl.out $1 | tail -n1; }
     [ "$output" = "= 9.000000" ]
 }
 
-#@test "basic blocks" {
-#    run bin "{ 1 }"
-#    [ "$output" = "= 1.000000" ]
-#
-#    run bin "2 + { 3; 4 }"
-#    [ "$output" = "= 6.000000" ]
-#
-#    run bin "5 * { 1 + 1; 5 * 2 }"
-#    [ "$output" = "50.000000" ]
-#}
+@test "basic blocks" {
+    run bin "{1}"
+    [ "$output" = "= 1.000000" ]
 
-#@test "variable definition" {
-#    run bin "x = 1"
-#    [ "$output" = "= 1.000000" ]
-#
+    run bin "2+{3;4}"
+    [ "$output" = "= 6.000000" ]
+
+    run bin "5*{1+1;5*2}"
+    echo $output
+    [ "$output" = "= 50.000000" ]
+}
+
+@test "variable definition" {
+    run bin "x=1"
+    [ "$output" = "= 1.000000" ]
+
 #    run bin "x = 1; x + 1"
 #    [ "$output" = "= 2.000000" ]
-#}
-#
+}
+
 #@test "function definition" {
 #    run bin "f(n)=2*n; f(2)"
 #    [ "$output" = "= 4.000000" ]
