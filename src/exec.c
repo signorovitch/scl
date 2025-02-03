@@ -14,6 +14,7 @@ ASTNumData exec_exp(AST* ast) {
         case AST_TYPE_CALL: return exec_call(ast);
         case AST_TYPE_NUM:  return *(ASTNumData*)ast->data;
         case AST_TYPE_VREF: return exec_vref(ast);
+        case AST_TYPE_VDEF: return exec_vdef(ast);
         default:            printf("what\n");
                             exit(1);
     }
@@ -66,6 +67,12 @@ ASTNumData exec_call(AST* ast) {
         return total;
     }}
     return -1000;
+}
+
+ASTNumData exec_vdef(AST* ast) {
+    ASTVDefData* data = (ASTVDefData*) ast->data;
+    AST* val = data->val;
+    return exec_exp(val);
 }
 
 ASTNumData exec_vref(AST* ast) {

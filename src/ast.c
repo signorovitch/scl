@@ -10,6 +10,7 @@ static char* asttype_names[] = {
     [AST_TYPE_CALL] = "FUNC CALL",
     [AST_TYPE_NUM] = "NUMBER",
     [AST_TYPE_VREF] = "VAR REFERENCE",
+    [AST_TYPE_VDEF] = "VAR DEFINITION",
     [AST_TYPE_BLOCK] = "BLOCK",
 };
 
@@ -29,6 +30,7 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_NUM:  ast_num_data_destroy(ast->data); break;
         case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
         case AST_TYPE_VREF: ast_vref_data_destroy(ast->data); break;
+        case AST_TYPE_VDEF: ast_vdef_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -50,6 +52,7 @@ void ast_print_i(AST* ast, int i) {
             break;
         case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
         case AST_TYPE_VREF: ast_vref_print(ast->data, i + 2); break;
+        case AST_TYPE_VDEF: ast_vdef_print(ast->data, i + 2); break;
         default:            exit(1);
     }
     INDENT_FIELD_NONL_END;
@@ -101,6 +104,33 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_FIELD("to", "%s", data->to);
     INDENT_FIELD("argc", "%ld", data->argc);
     INDENT_FIELD_LIST("argv", data->argv, data->argc, ast_print_i);
+
+    INDENT_END;
+}
+
+ASTVDefData* ast_vdef_data_init(char* name, AST* val) {
+    talloc(ASTVDefData, vdef);
+
+    vdef->name = name;
+    vdef->val = val;
+
+    return vdef;
+}
+
+void ast_vdef_data_destroy(ASTVDefData* vdef) {
+    ast_destroy(vdef->val);
+    free(vdef->name);
+    free(vdef);
+}
+
+void ast_vdef_print(ASTVDefData* vdef, int depth) {
+    INDENT_BEGIN(depth);
+
+    INDENT_TITLE("ASTVDefData", vdef);
+    INDENT_FIELD("name", "%s", vdef->name);
+    INDENT_FIELD_EXT_NONL_START("val");
+    ast_print_i(vdef->val, depth + 2);  // 2 because already indented.
+    INDENT_FIELD_NONL_END;
 
     INDENT_END;
 }

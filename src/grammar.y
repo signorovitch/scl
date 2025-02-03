@@ -33,6 +33,8 @@
 %token GROUPE // Group end ).
 %token SEP // Seperator ,.
 
+%token EQ // Equals =.
+
 %token EXPSEP // Expression seperator ;.
 
 %token<strval> WORD // Word, i.e. keyword.
@@ -116,10 +118,15 @@ exp:
 
     | GROUPS exp GROUPE { $$ = $2; }
 
-    // Variable reference.
-    | WORD {
-        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+    // Variable definition.
+    | WORD EQ exp {
+        $$ = ast_init(AST_TYPE_VDEF, ast_vdef_data_init($1, $3));
     }
+
+    // Variable reference.
+    //| WORD {
+    //    $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+    //}
 
     | WORD GROUPS arg GROUPE {
         size_t argc = $3->ln;

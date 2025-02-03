@@ -6,6 +6,7 @@
 typedef enum {
     AST_TYPE_NUM,   // A number.
     AST_TYPE_CALL,  // A function call.
+    AST_TYPE_VDEF,  // A variable definition.
     AST_TYPE_VREF,  // A variable reference.
     AST_TYPE_BLOCK, // A block of code (scope).
     AST_TYPE_MAX = AST_TYPE_BLOCK,
@@ -37,6 +38,18 @@ ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
 void ast_call_data_destroy(ASTCallData* call);
 void ast_call_print(ASTCallData*, int i);
 
+// A variable definition's data.
+typedef struct {
+    char* name;
+    AST* val;
+} ASTVDefData;
+
+ASTVDefData* ast_vdef_data_init(char* name, AST* val);
+// Destroys the vdef, its name, and its ->val.
+void ast_vdef_data_destroy(ASTVDefData* vdef);
+void ast_vdef_print(ASTVDefData*, int depth);
+
+// A variable reference's data.
 typedef struct {
     char* to; // What the reference's to.
 } ASTVrefData;
