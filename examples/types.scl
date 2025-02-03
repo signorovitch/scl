@@ -1,0 +1,48 @@
+# Vectors
+# - Must have fixed size and type
+
+# Lists
+# - Variable size, variable type
+
+# Define a variable of type int:
+n: int = 3
+
+# Define v as a 3-dimensional vector of integers:
+v: int<3> = <4, 5, 6>
+
+# Define l as list of length 3:
+l: [3] = [1, 2, "These can be any type at all"]
+# This would also work, as length values for lists are optional (and mutable),
+# unlike vectors:
+l: [] = [1, 2, "whatever"]
+# This is also the same, being more explicit about the any type:
+l: any[] = [1, 2, "whatever"]
+# This must be a list of integers, however:
+l: int[] = [1, 2, 3]
+
+# Define a list of either integers or strings:
+l: union(int, str)[] = ["hello", 4, "world"]
+# union() is a complex type generator; "returns" a union of the int and str types.
+
+# Use vectors wherever possible, as they are much faster than lists.
+
+# Matrix
+# - Must have a fixed size and type (just like vectors)
+m: int<2, 2> = <<0, 1>, <2, 3>>
+# Can also be written as
+m: int<2, 2> = <<0, 1, 2, 3>>
+# When using this syntax, will fill remaining space with default value of type
+# to make data rectangular. E.g., to fill a 2 x 2 matrix with 0:
+m: int<2, 2> = <<>>
+
+# To define custom data types, e.g. structs:
+typedef(Vec2, struct( a: int, b: int ))
+vector_two: Vec2 = Vec2(2, 3)
+
+typedef(IntOrStr, union(str, int))
+one: IntOrStr = 1
+alsoOne: IntOrStr = "one"
+
+# To define custom data types with type arguments:
+typedef(Vec1Of(T), T<1>)
+hello: Vec1Of(str) = <"Hello">
