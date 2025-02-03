@@ -72,10 +72,10 @@ double acc_float(int c) {
 
 char* acc_word(int c) {
     Dstr* val = dstr_init();
-    do {
+    while (isalpha(*inp)) {
         dstr_appendch(val, *(inp - 1));
         inp++;
-    } while (isalpha(*inp));
+    }
     dstr_appendch(val, *(inp - 1));
 
     char* ret = val->buf;
