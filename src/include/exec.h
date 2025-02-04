@@ -4,6 +4,8 @@
 #include "ast.h"
 #include "stack.h"
 
+// The `Stack` of `HTab` that makes up the scope of any given `AST`.
+extern Stack* scope;
 
 // Start executing at the root of the AST. Initialize the `scope`.
 ASTNumData exec_start(AST* ast);

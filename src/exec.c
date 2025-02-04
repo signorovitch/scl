@@ -4,15 +4,14 @@
 
 #include "include/ast.h"
 #include "include/exec.h"
+#include "include/htab.h"
 #include "include/stack.h"
 #include "include/util.h"
-#include "include/htab.h"
 
 extern AST* root;
 
 ASTNumData exec_start(AST* ast) {
-    // The `Stack` of `HTab` that makes up the scope of any given `AST`.
-    Stack* scope = stack_init();
+    scope = stack_init();
 
     // Global scope. Just dummy values for testing.
     HTab* global = htab_init();
@@ -20,11 +19,16 @@ ASTNumData exec_start(AST* ast) {
     // n = 42.02
     char* name = malloc(2); // TODO: Write a macro for this pattern.
     strcpy(name, "n");
-    AST* n = ast_init(AST_TYPE_VDEF, ast_vdef_data_init(name,
-        ast_init(AST_TYPE_NUM, ast_num_data_init(42.02))
-    ));
+    AST* n = ast_init(
+        AST_TYPE_VDEF,
+        ast_vdef_data_init(
+            name, ast_init(AST_TYPE_NUM, ast_num_data_init(42.02))
+        )
+    );
 
-    htab_ins(global, ((ASTVDefData*)n->data)->name, ((ASTVDefData*)n->data)->val);
+    htab_ins(
+        global, ((ASTVDefData*)n->data)->name, ((ASTVDefData*)n->data)->val
+    );
 
     // Push global namespace to `scope`.
     stack_push(scope, global);
@@ -36,21 +40,19 @@ ASTNumData exec_exp(AST* ast, Stack* scope) {
     log_dbg("Started execution.");
     switch (ast->type) {
         case AST_TYPE_BLOCK: return exec_block(ast, scope);
-        case AST_TYPE_CALL: return exec_call(ast, scope);
-        case AST_TYPE_NUM:  return *(ASTNumData*)ast->data;
-        case AST_TYPE_VREF: return exec_vref(ast, scope);
-        case AST_TYPE_VDEF: return exec_vdef(ast, scope);
-        default:            printf("what\n");
-                            exit(1);
+        case AST_TYPE_CALL:  return exec_call(ast, scope);
+        case AST_TYPE_NUM:   return *(ASTNumData*)ast->data;
+        case AST_TYPE_VREF:  return exec_vref(ast, scope);
+        case AST_TYPE_VDEF:  return exec_vdef(ast, scope);
+        default:             printf("what\n"); exit(1);
     }
 }
 
 ASTNumData exec_block(AST* ast, Stack* scope) {
-    ASTBlockData* block = (ASTBlockData*) ast->data;
+    ASTBlockData* block = (ASTBlockData*)ast->data;
 
     // Loop through all but last ast.
-    for (int i = 0; i < block->ln - 1; i++)
-        exec_exp(block->inside[i], scope);
+    for (int i = 0; i < block->ln - 1; i++) exec_exp(block->inside[i], scope);
 
     return exec_exp(block->inside[block->ln - 1], scope);
 }
@@ -60,52 +62,41 @@ ASTNumData exec_call(AST* ast, Stack* scope) {
     fflush(stdout);
     ASTCallData* calldata = (ASTCallData*)ast->data;
     if (calldata->argc >= 1) {
-    if (!strcmp(calldata->to, "sum")) {
-        double total = exec_exp(calldata->argv[0], scope);
+        if (!strcmp(calldata->to, "sum")) {
+            double total = exec_exp(calldata->argv[0], scope);
 
-        for (
-            size_t i = 1;
-            i < calldata->argc;
-            total += exec_exp(calldata->argv[i++], scope)
-        );
+            for (size_t i = 1; i < calldata->argc;
+                 total += exec_exp(calldata->argv[i++], scope));
 
-        return total;
-    } else if (!strcmp(calldata->to, "sub")) {
-        double total = exec_exp(calldata->argv[0], scope);
+            return total;
+        } else if (!strcmp(calldata->to, "sub")) {
+            double total = exec_exp(calldata->argv[0], scope);
 
-        for (
-            size_t i = 1;
-            i < calldata->argc;
-            total -= exec_exp(calldata->argv[i++], scope)
-        );
+            for (size_t i = 1; i < calldata->argc;
+                 total -= exec_exp(calldata->argv[i++], scope));
 
-        return total;
-    } else if (!strcmp(calldata->to, "mul")) {
-        double total = exec_exp(calldata->argv[0], scope);
+            return total;
+        } else if (!strcmp(calldata->to, "mul")) {
+            double total = exec_exp(calldata->argv[0], scope);
 
-        for (
-            size_t i = 1;
-            i < calldata->argc;
-            total *= exec_exp(calldata->argv[i++], scope)
-        );
+            for (size_t i = 1; i < calldata->argc;
+                 total *= exec_exp(calldata->argv[i++], scope));
 
-        return total;
-    } else if (!strcmp(calldata->to, "div")) {
-        double total = exec_exp(calldata->argv[0], scope);
+            return total;
+        } else if (!strcmp(calldata->to, "div")) {
+            double total = exec_exp(calldata->argv[0], scope);
 
-        for (
-            size_t i = 1;
-            i < calldata->argc;
-            total /= exec_exp(calldata->argv[i++], scope)
-        );
+            for (size_t i = 1; i < calldata->argc;
+                 total /= exec_exp(calldata->argv[i++], scope));
 
-        return total;
-    }}
+            return total;
+        }
+    }
     return -1000;
 }
 
 ASTNumData exec_vdef(AST* ast, Stack* scope) {
-    ASTVDefData* data = (ASTVDefData*) ast->data;
+    ASTVDefData* data = (ASTVDefData*)ast->data;
     AST* val = data->val;
     char* key = data->name;
     htab_ins(scope->val[0], key, val);
@@ -114,13 +105,14 @@ ASTNumData exec_vdef(AST* ast, Stack* scope) {
 
 ASTNumData exec_vref(AST* ast, Stack* scope) {
     log_dbg("attempting to reference var");
-    ASTVrefData* vref = (ASTVrefData*) ast->data;
+    ASTVrefData* vref = (ASTVrefData*)ast->data;
 
     char* key = vref->to;
     AST* val;
 
     val = htab_get(scope->val[0], key);
-    if (val != NULL) return exec_exp(val, scope); else log_dbg("didn't find def");
+    if (val != NULL) return exec_exp(val, scope);
+    else log_dbg("didn't find def");
 
     return *ast_num_data_init(101.0);
 }

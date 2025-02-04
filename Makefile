@@ -13,7 +13,7 @@ TEST_OBJ_DIR = $(TEST_BUILD_DIR)/obj
 
 CC = clang
 LINK = clang
-CFLAGS = -Wall -DDBG -ggdb
+CFLAGS = -Wall -DDBG -ggdb -fsanitize=leak
 LDFLAGS = -lm
 BATS = bats
 BISON = bison

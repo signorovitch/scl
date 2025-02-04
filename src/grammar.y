@@ -85,7 +85,7 @@ input:
 inputend:
     %empty
     | input {
-        root = ast_init(AST_TYPE_BLOCK, ast_block_data_init($1->buf, $1->ln));
+        root = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $1->buf, $1->ln));
     }
     ;
 
