@@ -35,6 +35,7 @@ ASTNumData exec_start(AST* ast) {
 ASTNumData exec_exp(AST* ast, Stack* scope) {
     log_dbg("Started execution.");
     switch (ast->type) {
+        case AST_TYPE_BLOCK: return exec_block(ast, scope);
         case AST_TYPE_CALL: return exec_call(ast, scope);
         case AST_TYPE_NUM:  return *(ASTNumData*)ast->data;
         case AST_TYPE_VREF: return exec_vref(ast, scope);
@@ -42,6 +43,16 @@ ASTNumData exec_exp(AST* ast, Stack* scope) {
         default:            printf("what\n");
                             exit(1);
     }
+}
+
+ASTNumData exec_block(AST* ast, Stack* scope) {
+    ASTBlockData* block = (ASTBlockData*) ast->data;
+
+    // Loop through all but last ast.
+    for (int i = 0; i < block->ln - 1; i++)
+        exec_exp(block->inside[i], scope);
+
+    return exec_exp(block->inside[block->ln - 1], scope);
 }
 
 ASTNumData exec_call(AST* ast, Stack* scope) {

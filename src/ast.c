@@ -29,6 +29,7 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_CALL: ast_call_data_destroy(ast->data); break;
         case AST_TYPE_VREF: ast_vref_data_destroy(ast->data); break;
         case AST_TYPE_VDEF: ast_vdef_data_destroy(ast->data); break;
+        case AST_TYPE_BLOCK: ast_block_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
