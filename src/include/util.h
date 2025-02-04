@@ -5,13 +5,17 @@
 
 // Log a message.
 #define log_dbg(msg)                                                           \
-    printf("\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg "\033[0m\n", \
-           __func__);
+    printf(                                                                    \
+        "\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg "\033[0m\n",    \
+        __func__                                                               \
+    );
 
 // Log a message with formatting.
 #define log_dbgf(msg, ...)                                                     \
-    printf("\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg "\033[0m\n", \
-           __func__, __VA_ARGS__);
+    printf(                                                                    \
+        "\033[37;1mdbg\033[0m:\033[37m%s\033[0m:\033[32m " msg "\033[0m\n",    \
+        __func__, __VA_ARGS__                                                  \
+    );
 
 #else // ifdef DBG
 #define log_dbg(msg)
@@ -50,23 +54,30 @@
 
 // Print & indent the title of a section.
 #define INDENT_TITLE(THING, WHERE)                                             \
-    printf("%s" COL_BCYA THING COL_RESET " @" COL_MAG " %p\n" COL_RESET, INDENT_spacing->buf, WHERE);
+    printf(                                                                    \
+        "%s" COL_BCYA THING COL_RESET " @" COL_MAG " %p\n" COL_RESET,          \
+        INDENT_spacing->buf, WHERE                                             \
+    );
 
 // Print & indent a thing.
 #define INDENT_FIELD(FIELD, VAL, ...)                                          \
-    printf("%s " COL_BWHI FIELD ": " COL_RESET COL_WHI VAL COL_RESET "\n",     \
-           INDENT_spacing->buf, __VA_ARGS__);
+    printf(                                                                    \
+        "%s " COL_BWHI FIELD ": " COL_RESET COL_WHI VAL COL_RESET "\n",        \
+        INDENT_spacing->buf, __VA_ARGS__                                       \
+    );
 
 // Print & indent a thing with a newline before the val.
 #define INDENT_FIELD_NL(FIELD, VAL, ...)                                       \
-    printf("%s " COL_BWHI FIELD ":" COL_RESET "\n %s " COL_WHI VAL COL_RESET   \
-           "\n",                                                               \
-           INDENT_spacing->buf, INDENT_spacing->buf, __VA_ARGS__);
+    printf(                                                                    \
+        "%s " COL_BWHI FIELD ":" COL_RESET "\n %s " COL_WHI VAL COL_RESET      \
+        "\n",                                                                  \
+        INDENT_spacing->buf, INDENT_spacing->buf, __VA_ARGS__                  \
+    );
 
 // Print & indent a thing without any newline.
-#define INDENT_FIELD_EXT_NONL_START(FIELD)                                         \
+#define INDENT_FIELD_EXT_NONL_START(FIELD)                                     \
     printf("%s " COL_BWHI FIELD ":\n" COL_RESET COL_WHI, INDENT_spacing->buf);
-#define INDENT_FIELD_NONL_END printf( "\n" COL_RESET);
+#define INDENT_FIELD_NONL_END printf("\n" COL_RESET);
 
 // Print an array A of N things, by calling the function F.
 #define INDENT_FIELD_LIST(FIELD, A, N, F)                                      \
@@ -77,7 +88,15 @@
     printf(COL_BWHI "%s ]\n" COL_RESET, INDENT_spacing->buf);
 
 // End an indent block.
-#define INDENT_END printf(COL_RESET); dstr_destroy(INDENT_spacing);
+#define INDENT_END                                                             \
+    printf(COL_RESET);                                                         \
+    dstr_destroy(INDENT_spacing);
+
+#define INDENT_FIELD_LIST_OPEN(FIELD)                                          \
+    printf("%s " COL_BWHI FIELD ": [\n" COL_RESET, INDENT_spacing->buf);
+
+#define INDENT_FIELD_LIST_CLOSE                                                \
+    printf(COL_BWHI "%s ]\n" COL_RESET, INDENT_spacing->buf);
 
 // Allocate a pointer with a type.
 #define talloc(T, X) T* X = malloc(sizeof(T));

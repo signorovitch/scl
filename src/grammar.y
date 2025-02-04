@@ -100,11 +100,10 @@ block:
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
-    | BLOCKS exp BLOCKE { $$ = $2; }
+    //| BLOCKS exp BLOCKE { $$ = $2; }
 
     | BLOCKS block BLOCKE {
-        size_t i = $2->ln - 1;
-        $$ = $2->buf[i];
+        $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init($2->buf, $2->ln));
     }
 
     | SUB exp {

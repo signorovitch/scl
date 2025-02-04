@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
             switch (c) {
                 case EOF:  dstr_destroy(ln); goto lnskip;
                 case '\n': goto lnend;
-                default:   dstr_appendch(ln, c); log_dbgf("cchar: %c", c);
+                default:   dstr_appendch(ln, c);
             }
         } while (1);
 
@@ -51,10 +51,11 @@ int main(int argc, char** argv) {
                 log_dbg("Parsed successfully!\n");
             } else printf("Parse error.\n");
 
+            #ifdef DBG
+                        ast_print(root);
+            #endif
+
             exec_print(exec_start(root));
-#ifdef DBG
-            ast_print(root);
-#endif
             ast_destroy(root);
         }
 

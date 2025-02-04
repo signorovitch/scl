@@ -7,10 +7,8 @@
 extern AST* root;
 
 static char* asttype_names[] = {
-    [AST_TYPE_CALL] = "FUNC CALL",
-    [AST_TYPE_NUM] = "NUMBER",
-    [AST_TYPE_VREF] = "VAR REFERENCE",
-    [AST_TYPE_VDEF] = "VAR DEFINITION",
+    [AST_TYPE_CALL] = "FUNC CALL",     [AST_TYPE_NUM] = "NUMBER",
+    [AST_TYPE_VREF] = "VAR REFERENCE", [AST_TYPE_VDEF] = "VAR DEFINITION",
     [AST_TYPE_BLOCK] = "BLOCK",
 };
 
@@ -50,10 +48,11 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_NUM:
             printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
             break;
-        case AST_TYPE_CALL: ast_call_print(ast->data, i + 2); break;
-        case AST_TYPE_VREF: ast_vref_print(ast->data, i + 2); break;
-        case AST_TYPE_VDEF: ast_vdef_print(ast->data, i + 2); break;
-        default:            exit(1);
+        case AST_TYPE_CALL:  ast_call_print(ast->data, i + 2); break;
+        case AST_TYPE_VREF:  ast_vref_print(ast->data, i + 2); break;
+        case AST_TYPE_VDEF:  ast_vdef_print(ast->data, i + 2); break;
+        case AST_TYPE_BLOCK: ast_block_print(ast->data, i + 2); break;
+        default:             exit(1);
     }
     INDENT_FIELD_NONL_END;
     INDENT_END;
@@ -129,7 +128,7 @@ void ast_vdef_print(ASTVDefData* vdef, int depth) {
     INDENT_TITLE("ASTVDefData", vdef);
     INDENT_FIELD("name", "%s", vdef->name);
     INDENT_FIELD_EXT_NONL_START("val");
-    ast_print_i(vdef->val, depth + 2);  // 2 because already indented.
+    ast_print_i(vdef->val, depth + 2); // 2 because already indented.
     INDENT_FIELD_NONL_END;
 
     INDENT_END;
@@ -160,25 +159,23 @@ void ast_vref_print(ASTVrefData* data, int i) {
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln) {
     ASTBlockData* block = malloc(sizeof(ASTBlockData));
 
-    block->inside = calloc(ln, sizeof(AST));
+    block->inside = inside;
     block->ln = ln;
 
     return block;
 }
 
 void ast_block_data_destroy(ASTBlockData* block) {
-    for (size_t i = 0; i < block->ln; i++) {
-        ast_destroy(block->inside[i]);
-    }
+    for (size_t i = 0; i < block->ln; i++) { ast_destroy(block->inside[i]); }
 
     free(block->inside);
     free(block);
 }
 
-void ast_block_data_print(ASTBlockData* data, int depth) {
+void ast_block_print(ASTBlockData* data, int depth) {
     INDENT_BEGIN(depth);
 
-    INDENT_TITLE("BLOCK", data);
+    INDENT_TITLE("ASTBlockData", data);
     INDENT_FIELD("ln", "%ld", data->ln);
     INDENT_FIELD_LIST("inside", data->inside, data->ln, ast_print_i);
 

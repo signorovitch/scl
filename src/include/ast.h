@@ -66,6 +66,6 @@ typedef struct {
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 // Destroy a block. Also destroy all ASTs inside.
 void ast_block_data_destroy(ASTBlockData* block);
-void ast_block_data_print(ASTBlockData*, int i);
+void ast_block_print(ASTBlockData*, int i);
 
 #endif

@@ -28,13 +28,16 @@ void dlist_check_resz(DList* dlist) {
         dlist->sz *= 2;
         dlist->buf = realloc(dlist->buf, dlist->sz);
         log_dbgf(
-            "dlist @ %p doubled from %ld to %ld", dlist, dlist->sz / 2, dlist->sz
+            "dlist @ %p doubled from %ld to %ld", dlist, dlist->sz / 2,
+            dlist->sz
         );
     }
 }
 
 void dlist_append(DList* dest, void* src) {
     dlist_check_resz(dest);
+
+    log_dbgf("added %p to dlist@%p", src, dest);
 
     dest->buf[dest->ln] = src;
     dest->ln++;
