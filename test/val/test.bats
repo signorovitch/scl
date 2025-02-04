@@ -100,8 +100,12 @@ bin() { ./scl.out $1 | tail -n1; }
     run bin "x=1"
     [ "$output" = "= 1.000000" ]
 
-#    run bin "x = 1; x + 1"
-#    [ "$output" = "= 2.000000" ]
+    run bin "x=1;x+1"
+    [ "$output" = "= 2.000000" ]
+
+    run bin "h=7;j=2;k=8;l=4;h*h-l+j*k"
+    echo $output
+    [ "$output" = "= 61.000000" ]
 }
 
 #@test "function definition" {

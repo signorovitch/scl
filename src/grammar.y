@@ -56,14 +56,40 @@
 %type<argarr> argstart;
 %type<exps> blockstart;
 %type<exps> block;
+%type<exps> inputstart
+%type<exps> input
+
+%start inputend // This makes no sense but w/e.
 
 %%
 
-input:
-    %empty
-    | exp { root = $1; }
-    | input EXPSEP exp { root = $3; }
+inputstart:
+    exp {
+        DList* exps = dlist_init();
+        dlist_append(exps, $1);
+        $$ = exps;
+    }
     ;
+
+
+input:
+    inputstart {
+        $$ = $1;
+    }
+    | input EXPSEP exp {
+        dlist_append($1, $3);
+        $$ = $1;
+    }
+    ;
+
+inputend:
+    %empty
+    | input {
+        root = ast_init(AST_TYPE_BLOCK, ast_block_data_init($1->buf, $1->ln));
+    }
+    ;
+
+
 
 argstart:
     exp {
@@ -103,7 +129,7 @@ exp:
     //| BLOCKS exp BLOCKE { $$ = $2; }
 
     | BLOCKS block BLOCKE {
-        $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init($2->buf, $2->ln));
+        $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));
     }
 
     | SUB exp {
