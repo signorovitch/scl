@@ -20,8 +20,10 @@ BISON = bison
 PRINT = echo -e
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+INC_FILES = $(wildcard $(INC_DIR)/*.h)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 OBJ_FILES_NOMAIN = $(filter-out $(OBJ_DIR)/main.o, $(OBJ_FILES)) # Object files without main.c.
+GRAM_SRC = $(SRC_DIR)/grammar.y
 GRAM_FILES = $(GRAM_DIR)/grammar.tab.c $(GRAM_DIR)/grammar.tab.h
 UNITY_DIR = $(TEST_DIR)/Unity
 UNITY_C = $(UNITY_DIR)/src/unity.c
@@ -99,10 +101,12 @@ test: $(TARGET) $(TEST_BIN_FILES)
 	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
 	$(BATS) $(TEST_VAL_DIR)
 
-
 clean:
 	@ $(PRINT) "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
 	rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/* $(UNITY_OBJ)
 
-.PHONY: all clean test nocolor release run
+lines:
+	@ wc -l $(SRC_FILES) $(INC_FILES) $(GRAM_SRC)
+
+.PHONY: all clean test nocolor release run lines
 .PRECIOUS: $(TEST_OBJ_FILES)
