@@ -124,9 +124,9 @@ exp:
     }
 
     // Variable reference.
-    //| WORD {
-    //    $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
-    //}
+    | WORD {
+        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+    }
 
     | WORD GROUPS arg GROUPE {
         size_t argc = $3->ln;

@@ -10,14 +10,15 @@ typedef struct {
     void* val[STACK_MAX];   // The stack itself.
 } Stack;
 
+// Create a `Stack`.
 Stack* stack_init();
-// Destroy a stack.
-// Note that `stack->i` must be `0`.
+// Destroy a `Stack`.
+// Note that `->i` must be `0`, i.e. the `Stack` must be empty.
 void stack_destroy(Stack* stack);
 
-// Push a value to the stack.
+// Push a value to the `Stack`.
 void stack_push(Stack* stack, void* val);
-// Pop a value from the stack.
+// Pop a value from the `Stack`.
 void* stack_pop(Stack* stack);
 
 #endif
