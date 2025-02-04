@@ -21,9 +21,9 @@ void dlist_destroy(DList* dlist) {
 
 void dlist_destroypsv(DList* dlist) { free(dlist); }
 
-// Check whether the buffer is overflowing and resize it if necessary.
-void dlist_check_resz(DList* dlist, size_t ln) {
-    while (dlist->ln + ln + 1 > dlist->sz) {
+// Check whether the buffer is about to overflow and resize it if necessary.
+void dlist_check_resz(DList* dlist) {
+    while ((dlist->ln + 1) * sizeof(void*) >= dlist->sz) {
         // Double the buffer size when overflown.
         dlist->sz *= 2;
         dlist->buf = realloc(dlist->buf, dlist->sz);
@@ -34,8 +34,8 @@ void dlist_check_resz(DList* dlist, size_t ln) {
 }
 
 void dlist_append(DList* dest, void* src) {
-    dlist_check_resz(dest, 1);
+    dlist_check_resz(dest);
 
     dest->buf[dest->ln] = src;
-    dest->ln += 1;
+    dest->ln++;
 }

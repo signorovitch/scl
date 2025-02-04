@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define DLIST_INITSZ 128
+#define DLIST_INITSZ 128 * sizeof(void*)
 
 typedef struct {
     void** buf; // The buffer containing the list.
