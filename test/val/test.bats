@@ -112,3 +112,8 @@ bin() { ./scl.out $1 | tail -n1; }
 #    run bin "f(n)=2*n; f(2)"
 #    [ "$output" = "= 4.000000" ]
 #}
+
+@test "integer arithmetic" {
+    run bin "x:int=1"
+    [ "$output" = "= 1" ]
+}
