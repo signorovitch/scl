@@ -6,8 +6,8 @@
 #define STACK_MAX 64
 
 typedef struct {
-    size_t i;               // Current index in the stack.
-    void* val[STACK_MAX];   // The stack itself.
+    size_t ln;            // The length of the stack (i.e., how many elements).
+    void* buf[STACK_MAX]; // The stack itself.
 } Stack;
 
 // Create a `Stack`.
