@@ -15,7 +15,7 @@ typedef enum {
     AST_TYPE_LIST,  // A list (variable size, variable type).
 
     // Misc. types.
-    AST_TYP AST_TYPE_CALL,  // A function call.
+    AST_TYPE_CALL,  // A function call.
     AST_TYPE_VDEF,  // A variable definition.
     AST_TYPE_VREF,  // A variable reference.
     AST_TYPE_BLOCK, // A block of code (scope).
