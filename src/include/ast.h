@@ -5,14 +5,15 @@
 
 typedef enum {
     // Primitive types.
-    AST_TYPE_NUM,   // A number (float).
-    AST_TYPE_STR,   // A string
-    AST_TYPE_INT,   // An integer.
-    AST_TYPE_SYM,   // A symbol.
+    AST_TYPE_NUM, // A number (float).
+    AST_TYPE_STR, // A string
+    AST_TYPE_INT, // An integer.
+    AST_TYPE_SYM, // A symbol.
+    AST_TYPE_EXC, // Exception.
 
-    // Complex types:
-    AST_TYPE_VEC,   // A vector (fixed size, fixed type).
-    AST_TYPE_LIST,  // A list (variable size, variable type).
+    // Collection types:
+    AST_TYPE_VEC,  // A vector (fixed size, fixed type).
+    AST_TYPE_LIST, // A list (variable size, variable type).
 
     // Misc. types.
     AST_TYPE_CALL,  // A function call.
@@ -37,6 +38,11 @@ typedef double ASTNumData;
 ASTNumData* ast_num_data_init(double val);
 void ast_num_data_destroy(ASTNumData* num);
 void ast_num_print(ASTNumData*, int i);
+
+// An exception.
+typedef char* ASTExcData;
+ASTExcData* ast_exc_data_init(char* msg);
+void ast_exc_data_destroy(ASTExcData* exc);
 
 typedef struct {
     char* to;    // What the call's to.

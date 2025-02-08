@@ -113,7 +113,19 @@ bin() { ./scl.out $1 | tail -n1; }
 #    [ "$output" = "= 4.000000" ]
 #}
 
-@test "integer arithmetic" {
+@test "type stuff" {
     run bin "x:int=1"
     [ "$output" = "= 1" ]
+
+    run bin "x=1.5; type(x)"
+    [ "$output" = "= num"]
+
+    run bin "x:int=1.5; type(x)"
+    [ "$output" = "= int" ]
+
+    run bin "x:int=1.5"
+    [ "$output" = "= 1" ]
+
+    run bin "print(\"Hello, world!\")"
+    [ "$output" = "= Hello, world!" ]
 }

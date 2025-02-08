@@ -8,12 +8,12 @@
 extern Stack* scope;
 
 // Start executing at the root of the AST. Initialize the `scope`.
-ASTNumData exec_start(AST* ast);
-ASTNumData exec_exp(AST* ast);
-ASTNumData exec_block(AST* ast);
-ASTNumData exec_call(AST* ast);
-ASTNumData exec_vref(AST* ast);
-ASTNumData exec_vdef(AST* ast);
+AST* exec_start(AST* ast);
+AST* exec_exp(AST* ast);
+AST* exec_block(AST* ast);
+AST* exec_call(AST* ast);
+AST* exec_vref(AST* ast);
+AST* exec_vdef(AST* ast);
 void exec_print(double n);
 
 #endif

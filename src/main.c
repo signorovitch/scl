@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 
     if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
         log_dbg("Parsed successfully!\n");
-        exec_print(exec_start(root));
+        ast_print(exec_start(root));
         HTab* global = stack_pop(scope);
         htab_destroy(global);
         stack_destroy(scope);
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
             ast_print(root);
 #endif
 
-            exec_print(exec_start(root));
+            ast_print(exec_start(root));
             HTab* global = stack_pop(scope);
             htab_destroy(global);
             stack_destroy(scope);
