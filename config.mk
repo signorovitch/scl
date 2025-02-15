@@ -11,7 +11,7 @@ TEST_DIR = test
 TEST_BUILD_DIR = $(BUILD_DIR)/test
 TEST_OBJ_DIR = $(TEST_BUILD_DIR)/obj
 
-CC = clang
+CC = clang -std=c2x
 LINK = clang
 CFLAGS = -Wall -DDBG -ggdb -fsanitize=leak
 LDFLAGS = -lm

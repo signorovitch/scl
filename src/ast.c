@@ -9,7 +9,7 @@ extern AST* root;
 static char* asttype_names[] = {
     [AST_TYPE_CALL] = "FUNC CALL",     [AST_TYPE_NUM] = "NUMBER",
     [AST_TYPE_VREF] = "VAR REFERENCE", [AST_TYPE_VDEF] = "VAR DEFINITION",
-    [AST_TYPE_BLOCK] = "BLOCK",
+    [AST_TYPE_BLOCK] = "BLOCK",        [AST_TYPE_EXC] = "EXCEPTION"
 };
 
 AST* ast_init(ASTType type, void* data) {
@@ -50,6 +50,7 @@ void ast_print_i(AST* ast, int i) {
             printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
             break;
         case AST_TYPE_CALL:  ast_call_print(ast->data, i + 2); break;
+        case AST_TYPE_EXC:   ast_exc_print(ast->data, i + 2); break;
         case AST_TYPE_VREF:  ast_vref_print(ast->data, i + 2); break;
         case AST_TYPE_VDEF:  ast_vdef_print(ast->data, i + 2); break;
         case AST_TYPE_BLOCK: ast_block_print(ast->data, i + 2); break;
@@ -77,8 +78,18 @@ void ast_num_print(ASTNumData* data, int i) {
     INDENT_END;
 }
 
-ASTExcData* ast_exc_data_init(char* msg) {
-    return (ASTExcData*) msg;
+ASTExcData* ast_exc_data_init(char* msg) { return (ASTExcData*)msg; }
+
+void ast_exc_print(ASTExcData* data, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("ASTExcData", data);
+    INDENT_FIELD("msg", "\"%s\"", *data);
+    INDENT_END;
+}
+
+ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**)) {
+    return (ASTBIFData*)fn;
 }
 
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv) {

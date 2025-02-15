@@ -16,6 +16,7 @@ typedef enum {
     AST_TYPE_LIST, // A list (variable size, variable type).
 
     // Misc. types.
+    AST_TYPE_BIF,   // Built-in function.
     AST_TYPE_CALL,  // A function call.
     AST_TYPE_VDEF,  // A variable definition.
     AST_TYPE_VREF,  // A variable reference.
@@ -43,6 +44,15 @@ void ast_num_print(ASTNumData*, int i);
 typedef char* ASTExcData;
 ASTExcData* ast_exc_data_init(char* msg);
 void ast_exc_data_destroy(ASTExcData* exc);
+void ast_exc_print(ASTExcData*, int i);
+
+// A built-in function.
+typedef AST* (*ASTBIFData)(size_t argc, AST** argv);
+
+// Create a built-in function.
+ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**));
+
+// There is no `ASTBIFData` destroy function, as function pointers are immortal.
 
 typedef struct {
     char* to;    // What the call's to.

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "include/ast.h"
+#include "include/builtin.h"
 #include "include/exec.h"
 #include "include/htab.h"
 #include "include/stack.h"
@@ -10,10 +11,16 @@
 
 extern AST* root;
 
+AST* exec_find(char* name);
+
 AST* exec_start(AST* ast) {
     scope = stack_init();
 
     HTab* global = htab_init();
+
+    htab_ins(
+        global, "sum", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sum))
+    );
 
     // Push global namespace to `scope`.
     stack_push(scope, global);
@@ -51,48 +58,20 @@ AST* exec_block(AST* ast) {
 
 AST* exec_call(AST* ast) {
     log_dbg("Started call execution.");
-    fflush(stdout);
-    ASTCallData* calldata = (ASTCallData*)ast->data;
-    if (calldata->argc >= 1) {
-        if (!strcmp(calldata->to, "sum")) {
-            AST* total = ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+    ASTCallData* data = (ASTCallData*)ast->data;
+    size_t argc = data->argc;
+    AST** argv = data->argv;
+    char* fname = data->to;
 
-            for (size_t i = 0; i < calldata->argc; i++) {
-                AST* arg = exec_exp(calldata->argv[i]);
+    AST* fdef = exec_find(fname);
 
-                if (arg->type != AST_TYPE_NUM) {
-                    return ast_init(
-                        AST_TYPE_EXC, ast_exc_data_init("Wrong type, fool.")
-                    );
-                }
-
-                *((ASTNumData*) total->data) += *((ASTNumData*)arg->data);
-            }
-
-            return total;
-        } /*else if (!strcmp(calldata->to, "sub")) {
-            double total = exec_exp(calldata->argv[0]);
-
-            for (size_t i = 1; i < calldata->argc;
-                 total -= exec_exp(calldata->argv[i++]));
-
-            return total;
-        } else if (!strcmp(calldata->to, "mul")) {
-            double total = exec_exp(calldata->argv[0]);
-
-            for (size_t i = 1; i < calldata->argc;
-                 total *= exec_exp(calldata->argv[i++]));
-
-            return total;
-        } else if (!strcmp(calldata->to, "div")) {
-            double total = exec_exp(calldata->argv[0]);
-
-            for (size_t i = 1; i < calldata->argc;
-                 total /= exec_exp(calldata->argv[i++]));
-
-            return total;
-            }*/
+    switch (fdef->type) {
+        case AST_TYPE_BIF:
+            ASTBIFData* bifdata = fdef->data;
+            return (*bifdata)(argc, argv);
+        default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job"));
     }
+
     return ast_init(AST_TYPE_EXC, ast_exc_data_init("No such function found."));
 }
 
@@ -105,8 +84,7 @@ AST* exec_find(char* name) {
         if (val != NULL) return val;
     }
 
-    log_dbgf("Could not find var %s", name);
-    exit(1);
+    return ast_init(AST_TYPE_EXC, ast_exc_data_init("Couln't find term."));
 }
 
 AST* exec_vdef(AST* ast) {
