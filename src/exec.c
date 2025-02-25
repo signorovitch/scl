@@ -22,6 +22,10 @@ AST* exec_start(AST* ast) {
         global, "sum", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sum))
     );
 
+    htab_ins(
+        global, "sub", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sub))
+    );
+
     // Push global namespace to `scope`.
     stack_push(scope, global);
 
@@ -74,7 +78,7 @@ AST* exec_call(AST* ast) {
         case AST_TYPE_BIF:
             ASTBIFData bifdata = fdef->data;
             return bifdata(argc, argv);
-        default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job"));
+        default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!"));
     }
 }
 
