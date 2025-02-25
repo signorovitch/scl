@@ -1,5 +1,6 @@
 #include "include/builtin.h"
 #include "include/ast.h"
+#include "include/exec.h"
 #include "include/util.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -9,7 +10,7 @@ AST* builtin_sum(size_t argc, AST** argv) {
     ASTNumData total = 0;
 
     for (int i = 0; i < argc; i++) {
-        AST* arg = argv[i];
+        AST* arg = exec_exp(argv[i]);
         if (arg->type != AST_TYPE_NUM)
             return ast_init(
                 AST_TYPE_EXC,
@@ -24,7 +25,7 @@ AST* builtin_sum(size_t argc, AST** argv) {
 
 AST* builtin_sub(size_t argc, AST** argv) {
     log_dbg("Got here");
-    AST* first = *argv;
+    AST* first = exec_exp(*argv);
     if (first->type != AST_TYPE_NUM)
         return ast_init(
             AST_TYPE_EXC, ast_exc_data_init("Can't subtract non-num arguments.")
@@ -33,7 +34,7 @@ AST* builtin_sub(size_t argc, AST** argv) {
     ASTNumData total = *(ASTNumData*)first->data;
 
     for (int i = 1; i < argc; i++) {
-        AST* arg = argv[i];
+        AST* arg = exec_exp(argv[i]);
         if (arg->type != AST_TYPE_NUM)
             return ast_init(
                 AST_TYPE_EXC,
