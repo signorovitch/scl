@@ -42,9 +42,9 @@ void ast_num_print(ASTNumData*, int i);
 
 // An exception.
 typedef char* ASTExcData;
-ASTExcData* ast_exc_data_init(char* msg);
+ASTExcData ast_exc_data_init(char* msg);
 void ast_exc_data_destroy(ASTExcData* exc);
-void ast_exc_print(ASTExcData*, int i);
+void ast_exc_print(ASTExcData, int i);
 
 // A built-in function.
 typedef AST* (*ASTBIFData)(size_t argc, AST** argv);

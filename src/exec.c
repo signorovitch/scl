@@ -72,7 +72,7 @@ AST* exec_call(AST* ast) {
         default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job"));
     }
 
-    return ast_init(AST_TYPE_EXC, ast_exc_data_init("No such function found."));
+    return ast_init(AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found.")));
 }
 
 AST* exec_find(char* name) {

@@ -78,13 +78,13 @@ void ast_num_print(ASTNumData* data, int i) {
     INDENT_END;
 }
 
-ASTExcData* ast_exc_data_init(char* msg) { return (ASTExcData*)msg; }
+ASTExcData ast_exc_data_init(char* msg) { return (ASTExcData)msg; }
 
-void ast_exc_print(ASTExcData* data, int i) {
+void ast_exc_print(ASTExcData data, int i) {
     INDENT_BEGIN(i);
 
     INDENT_TITLE("ASTExcData", data);
-    INDENT_FIELD("msg", "\"%s\"", *data);
+    INDENT_FIELD("msg", "\"%s\"", data);
     INDENT_END;
 }
 
