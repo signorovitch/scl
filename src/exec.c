@@ -66,12 +66,14 @@ AST* exec_call(AST* ast) {
     AST* fdef = exec_find(fname);
 
     if (fdef == NULL)
-        return ast_init(AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found.")));
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found."))
+        );
 
     switch (fdef->type) {
         case AST_TYPE_BIF:
-            ASTBIFData* bifdata = fdef->data;
-            return (*bifdata)(argc, argv);
+            ASTBIFData bifdata = fdef->data;
+            return bifdata(argc, argv);
         default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job"));
     }
 }
