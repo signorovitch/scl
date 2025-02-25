@@ -1,5 +1,3 @@
-FIX EXCEPTION PRINTING (probably broken because of string literals being dereferenced)
-
-
-1. Change editor to GNU Readline.
-2. Make variables persist through lines in the editor.
+Add the old functions back, now in the new `builtin` format.
+Change editor to GNU Readline.
+Make variables persist through lines in the editor.
