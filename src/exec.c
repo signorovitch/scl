@@ -65,14 +65,15 @@ AST* exec_call(AST* ast) {
 
     AST* fdef = exec_find(fname);
 
+    if (fdef == NULL)
+        return ast_init(AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found.")));
+
     switch (fdef->type) {
         case AST_TYPE_BIF:
             ASTBIFData* bifdata = fdef->data;
             return (*bifdata)(argc, argv);
         default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job"));
     }
-
-    return ast_init(AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found.")));
 }
 
 AST* exec_find(char* name) {
@@ -84,7 +85,7 @@ AST* exec_find(char* name) {
         if (val != NULL) return val;
     }
 
-    return ast_init(AST_TYPE_EXC, ast_exc_data_init("Couln't find term."));
+    return NULL;
 }
 
 AST* exec_vdef(AST* ast) {
