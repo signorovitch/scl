@@ -26,6 +26,14 @@ AST* exec_start(AST* ast) {
         global, "sub", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sub))
     );
 
+    htab_ins(
+        global, "mul", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_mul))
+    );
+
+    htab_ins(
+        global, "div", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_div))
+    );
+
     // Push global namespace to `scope`.
     stack_push(scope, global);
 

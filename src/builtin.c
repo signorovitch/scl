@@ -46,3 +46,51 @@ AST* builtin_sub(size_t argc, AST** argv) {
 
     return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
 }
+
+AST* builtin_mul(size_t argc, AST** argv) {
+    log_dbg("Got here");
+    AST* first = exec_exp(*argv);
+    if (first->type != AST_TYPE_NUM)
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init("Can't multiply non-num arguments.")
+        );
+
+    ASTNumData total = *(ASTNumData*)first->data;
+
+    for (int i = 1; i < argc; i++) {
+        AST* arg = exec_exp(argv[i]);
+        if (arg->type != AST_TYPE_NUM)
+            return ast_init(
+                AST_TYPE_EXC,
+                ast_exc_data_init("Can't multiply non-num arguments.")
+            );
+
+        total *= *(ASTNumData*)arg->data;
+    }
+
+    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+}
+
+AST* builtin_div(size_t argc, AST** argv) {
+    log_dbg("Got here");
+    AST* first = exec_exp(*argv);
+    if (first->type != AST_TYPE_NUM)
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init("Can't divide non-num arguments.")
+        );
+
+    ASTNumData total = *(ASTNumData*)first->data;
+
+    for (int i = 1; i < argc; i++) {
+        AST* arg = exec_exp(argv[i]);
+        if (arg->type != AST_TYPE_NUM)
+            return ast_init(
+                AST_TYPE_EXC,
+                ast_exc_data_init("Can't divide non-num arguments.")
+            );
+
+        total /= *(ASTNumData*)arg->data;
+    }
+
+    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+}
