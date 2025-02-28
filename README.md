@@ -2,11 +2,18 @@
 
 Version v1.0-alpha
 
+SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
+[maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
+its current state, SCL can be used as a basic 4-function calculator with order
+of operations and local variables. The codebase is about 1,400 lines of C,
+including a parser, interpreter, and runtime.
+
 ## Usage
 
+To download and run:
+
 ```bash
-git clone https://git.signorovitch.org/jacob/scl -b stable
-cd scl
+git clone https://git.signorovitch.org/jacob/scl -b stable && cd scl
 make release
 ./scl.out
 ```
@@ -22,12 +29,7 @@ make all test
 If you wish to run tests, make sure to run `git clone --recurse-submodules` to
 include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
 
-## Current State
-
-See [STATUS.md](STATUS.md). Currently, one is able to use `scl` as a basic,
-interactive, four-function calculator.
-
-## Syntax (Planned)
+## Syntax
 
 As one would expect, you can evaluate simple infix expressions:
 
@@ -36,12 +38,13 @@ As one would expect, you can evaluate simple infix expressions:
 = 2
 ```
 
-You can also define your own functions:
+You can also define your own functions and variables:
 
 ```scl
 > f(x) = 2x
-> f(2)
-= 4
+> n = 3
+> f(n)
+= 6
 ```
 
 Symbolic algebra is done in the following manner:
@@ -56,9 +59,13 @@ SCL will dynamically decide on types, but you can state them explicitly as
 well:
 
 ```scl
-> f(x:int) = 2x
-> f(2.2)
-! f(x:int): x must be of type int.
+> f(x: int): int = 2x
+> f(3)
+= 6
+> f(3.1)
+! Traceback:
+! In call to `f(x: int): int`:
+! TypeError (58): Argument `x` must be of type `int`.
 ```
 
 Variables can be defined, with several attributes:
