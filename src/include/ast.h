@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+// The type of an `AST`.
 typedef enum {
     // Primitive types.
     AST_TYPE_NUM, // A number (float).
@@ -24,26 +25,38 @@ typedef enum {
     AST_TYPE_MAX = AST_TYPE_BLOCK,
 } ASTType;
 
+// An Abstract Syntax Tree.
 typedef struct {
-    ASTType type;
-    void* data;
+    ASTType type; // The type of the `AST`.
+    void* data;   // The data of the `AST`.
 } AST;
 
+// Create a new `AST`.
 AST* ast_init(ASTType type, void* data);
+// Destroy an `AST`, recursively.
 void ast_destroy(AST* ast);
+// Print an `AST`, recursively.
 void ast_print(AST* ast);
+// Helper function to `ast_print()`, where `i` is indentation level.
 void ast_print_i(AST* ast, int i);
 
+// A number.
 typedef double ASTNumData;
 
+// Create a new `ASTNumData`.
 ASTNumData* ast_num_data_init(double val);
+// Destroy an `ASTNumData`.
 void ast_num_data_destroy(ASTNumData* num);
+// Print an `ASTNumData`.
 void ast_num_print(ASTNumData*, int i);
 
 // An exception.
 typedef char* ASTExcData;
+// Create a new `ASTExecData.
 ASTExcData ast_exc_data_init(char* msg);
+// Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
+// Print an `ASTExecData`.
 void ast_exc_print(ASTExcData, int i);
 
 // A built-in function.
@@ -54,14 +67,18 @@ ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**));
 
 // There is no `ASTBIFData` destroy function, as function pointers are immortal.
 
+// A call (to a function).
 typedef struct {
     char* to;    // What the call's to.
     size_t argc; // Argument count.
     AST** argv;  // Argument vector.
 } ASTCallData;
 
+// Create a new `ASTCallData`.
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
+// Destroy an `ASTCallData`.
 void ast_call_data_destroy(ASTCallData* call);
+// Print an `ASTCallData`.
 void ast_call_print(ASTCallData*, int i);
 
 // A variable definition's data.
@@ -70,9 +87,11 @@ typedef struct {
     AST* val;
 } ASTVDefData;
 
+// Create a new `ASTVDefData`.
 ASTVDefData* ast_vdef_data_init(char* name, AST* val);
-// Destroys the vdef, its name, and its ->val.
+// Destroys the `ASTVDefData`, `ASTVDefData->name`, and `ASTVDefData->val`.
 void ast_vdef_data_destroy(ASTVDefData* vdef);
+// Print an `ASTVDefData`.
 void ast_vdef_print(ASTVDefData*, int depth);
 
 // A variable reference's data.
@@ -80,18 +99,24 @@ typedef struct {
     char* to; // What the reference's to.
 } ASTVrefData;
 
+// Create a new `ASTVRefData`.
 ASTVrefData* ast_vref_data_init(char* to);
+// Destroy an `ASTVRefData`.
 void ast_vref_data_destroy(ASTVrefData* call);
+// Print an `ASTVRefData`.
 void ast_vref_print(ASTVrefData*, int i);
 
+// A code block.
 typedef struct {
     AST** inside; // What's inside the block.
     size_t ln;    // How many ASTs are in the block.
 } ASTBlockData;
 
+// Create a new `ASTBlockData`.
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
-// Destroy a block. Also destroy all ASTs inside.
+// Destroy an `ASTBlockData`, recursively.
 void ast_block_data_destroy(ASTBlockData* block);
+// Print an `ASTBlockData`.
 void ast_block_print(ASTBlockData*, int i);
 
 #endif

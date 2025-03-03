@@ -1,6 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+// Most of this file is cursed printing macros for `ast_print()`. Do not attempt
+// to comprehend.
+
 #ifdef DBG // Debug macros
 
 // Log a message.

@@ -12,6 +12,7 @@
 // Offset basis.
 #define FNV1A_BASIS_64 0xcbf29ce484222325u
 
+// Hash a string `str` of length `ln`.
 uint64_t fnv1a_hash(char* str, size_t ln);
 
 #endif

@@ -11,12 +11,14 @@ typedef struct {
     size_t ln;  // The number of elements in the list.
 } DList;
 
+// Create a new `DList`.
 DList* dlist_init(void);
+// Destroy a `DList`.
 void dlist_destroy(DList* dstr);
-// Destroy DList structure but preserve ->buf.
+// Destroy `DList` structure but preserve `->buf`.
 void dlist_destroypsv(DList* dstr);
 
-// Append src to dest.
+// Append `src` to `dest`.
 void dlist_append(DList* dest, void* src);
 
 #endif

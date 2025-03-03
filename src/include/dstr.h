@@ -11,15 +11,17 @@ typedef struct {
     size_t ln; // The number of characters in the buffer.
 } Dstr;
 
+// Initialize a `DStr`.
 Dstr* dstr_init(void);
+// Destroy a `DStr`.
 void dstr_destroy(Dstr* dstr);
-// Destroy Dstr structure but preserve ->buf.
+// Destroy `DStr` structure but preserve `DStr->buf`.
 void dstr_destroypsv(Dstr* dstr);
 
-// Append ln characters of src to dest.
+// Append `ln` characters of `src` to `dest`.
 void dstr_append(Dstr* dest, char* src, size_t ln);
 
-// Append ch to dest.
+// Append `ch` to `dest`.
 void dstr_appendch(Dstr* dest, char ch);
 
 #endif
