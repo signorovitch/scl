@@ -114,7 +114,19 @@ AST* exec_vref(AST* ast) {
     log_dbg("attempting to reference var");
     ASTVrefData* vref = (ASTVrefData*)ast->data;
 
-    return exec_exp(exec_find(vref->to));
+    AST* found = exec_find(vref->to);
+
+    if (found == NULL) {
+        // TODO: Better memory management here.
+        static char msg[256];
+        snprintf(
+            msg, sizeof(msg), "Could not find value in scope for `%s`.",
+            vref->to
+        );
+        return ast_init(AST_TYPE_EXC, msg);
+    }
+
+    return exec_exp(found);
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }
