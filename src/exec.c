@@ -18,6 +18,13 @@ AST* exec_start(AST* ast) {
 
     HTab* global = htab_init();
 
+    for (int i = 0; i < NBUILTIN_FNS; i++)
+        htab_ins(
+            global, builtin_fns_names[i],
+            ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_fns[i]))
+        );
+
+    /*
     htab_ins(
         global, "sum", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sum))
     );
@@ -32,7 +39,7 @@ AST* exec_start(AST* ast) {
 
     htab_ins(
         global, "div", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_div))
-    );
+        );*/
 
     // Push global namespace to `scope`.
     stack_push(scope, global);
