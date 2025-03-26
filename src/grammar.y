@@ -41,7 +41,7 @@
 %token<fval> NUM // Number.
 
 %token SUB // Subtract -.
-%token ADD // Addition *. 
+%token ADD // Addition *.
 %token MUL // Multiplication *.
 %token DIV // Division /.
 
@@ -196,4 +196,3 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
     }
 %%
-

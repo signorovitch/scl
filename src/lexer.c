@@ -112,10 +112,10 @@ int yylex() {
         case '(':  return GROUPS;
         case ')':  return GROUPE;
         case ',':  return SEP;
-        case ';': return EXPSEP;
-        case '{': return BLOCKS;
-        case '}': return BLOCKE;
-        case '=': return EQ;
+        case ';':  return EXPSEP;
+        case '{':  return BLOCKS;
+        case '}':  return BLOCKE;
+        case '=':  return EQ;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

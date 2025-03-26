@@ -5,8 +5,9 @@
 #include <stdint.h>
 
 #define HTAB_FN fnv1a_hash // Function used for hashing.
-#define HTAB_SPACE 1024 // Number of entries possible in the hash table; must be
-                        // power of 2.
+#define HTAB_SPACE                                                             \
+    1024 // Number of entries possible in the hash table; must be
+         // power of 2.
 
 // Hash Table.
 typedef void* HTab[HTAB_SPACE];

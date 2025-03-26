@@ -1,11 +1,10 @@
 #include "include/htab.h"
 #include "include/fnv1a.h"
 #include "include/util.h"
-#include "include/util.h"
 
 #include <assert.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 HTab* htab_init() {
     HTab* htab = calloc(1, sizeof(HTab));
@@ -13,9 +12,7 @@ HTab* htab_init() {
     return htab;
 }
 
-void htab_destroy(HTab *htab) {
-    free(htab);
-}
+void htab_destroy(HTab* htab) { free(htab); }
 
 // Get the index of a key.
 size_t geti(char* key) {
@@ -32,7 +29,7 @@ void* htab_get(HTab* htab, char* key) {
 
 void htab_ins(HTab* htab, char* key, void* data) {
     size_t i = geti(key);
-    //assert((*htab)[i] == NULL);
+    // assert((*htab)[i] == NULL);
     (*htab)[i] = data;
     log_dbgf("Inserted something to hash table @ index %lu", i);
 }
