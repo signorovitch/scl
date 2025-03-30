@@ -4,6 +4,12 @@
 // Most of this file is cursed printing macros for `ast_print()`. Do not attempt
 // to comprehend.
 
+// Allocate a pointer with a type.
+#define talloc(T, X) T* X = malloc(sizeof(T));
+
+// Get the length of an array.
+#define arrln(A) (sizeof(A)/sizeof(*A))
+
 #ifdef DBG // Debug macros
 
 // Log a message.
@@ -100,8 +106,5 @@
 
 #define INDENT_FIELD_LIST_CLOSE                                                \
     printf(COL_BWHI "%s ]\n" COL_RESET, INDENT_spacing->buf);
-
-// Allocate a pointer with a type.
-#define talloc(T, X) T* X = malloc(sizeof(T));
 
 #endif

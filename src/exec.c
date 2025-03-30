@@ -14,32 +14,16 @@ extern AST* root;
 AST* exec_find(char* name);
 
 AST* exec_start(AST* ast) {
+    log_dbg("Started execution.");
     scope = stack_init();
 
     HTab* global = htab_init();
 
-    for (int i = 0; i < NBUILTIN_FNS; i++)
+    for (int i = 0; i < BUILTIN_FNS_LN; i++)
         htab_ins(
-            global, builtin_fns_names[i],
-            ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_fns[i]))
+            global, BUILTIN_FNS[i].name,
+            ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
-
-    /*
-    htab_ins(
-        global, "sum", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sum))
-    );
-
-    htab_ins(
-        global, "sub", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sub))
-    );
-
-    htab_ins(
-        global, "mul", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_mul))
-    );
-
-    htab_ins(
-        global, "div", ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_div))
-        );*/
 
     // Push global namespace to `scope`.
     stack_push(scope, global);
@@ -48,7 +32,6 @@ AST* exec_start(AST* ast) {
 }
 
 AST* exec_exp(AST* ast) {
-    log_dbg("Started execution.");
     switch (ast->type) {
         case AST_TYPE_BLOCK: return exec_block(ast);
         case AST_TYPE_CALL:  return exec_call(ast);

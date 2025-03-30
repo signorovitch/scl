@@ -15,12 +15,17 @@ AST* builtin_mul(size_t argc, AST** argv);
 // Divide nums.
 AST* builtin_div(size_t argc, AST** argv);
 
-#define NBUILTIN_FNS 4
-// The list of built-in functions.
-static AST* (*builtin_fns[NBUILTIN_FNS])(size_t argc, AST** argv) = {
-    builtin_sum, builtin_sub, builtin_mul, builtin_div
+struct builtin_data {
+    char* name;
+    AST* (*fn)(size_t argc, AST** argv);
 };
 
-static char* builtin_fns_names[NBUILTIN_FNS] = {"sum", "sub", "mul", "div"};
+static struct builtin_data BUILTIN_FNS[] = {
+    { "sum", builtin_sum },
+    { "sub", builtin_sub },
+    { "mul", builtin_mul },
+    { "div", builtin_div },
+};
+#define BUILTIN_FNS_LN (arrln(BUILTIN_FNS))
 
 #endif
