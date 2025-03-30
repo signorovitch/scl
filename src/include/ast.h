@@ -51,13 +51,16 @@ void ast_num_data_destroy(ASTNumData* num);
 void ast_num_print(ASTNumData*, int i);
 
 // An exception.
-typedef char* ASTExcData;
+typedef struct ASTEXCDATA {
+    char* msg; // The exception message.
+    AST* trace; // The previous exception.
+} ASTExcData;
 // Create a new `ASTExecData.
-ASTExcData ast_exc_data_init(char* msg);
+ASTExcData* ast_exc_data_init(char* msg, AST* trace);
 // Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
 // Print an `ASTExecData`.
-void ast_exc_print(ASTExcData, int i);
+void ast_exc_print(ASTExcData*, int i);
 
 // A built-in function.
 typedef AST* (*ASTBIFData)(size_t argc, AST** argv);

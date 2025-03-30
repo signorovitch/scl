@@ -21,7 +21,6 @@ void stack_destroy(Stack* stack) {
 }
 
 void stack_push(Stack* stack, void* val) {
-    log_dbgf("pushed to stack, inc ln to %ld", stack->ln);
     if (stack->ln >= STACK_MAX) {
         log_dbgf("Ran out of stack (max: %d)", STACK_MAX);
         return;
@@ -29,6 +28,7 @@ void stack_push(Stack* stack, void* val) {
 
     stack->buf[stack->ln] = val;
     stack->ln++;
+    log_dbgf("pushed to stack, inc ln to %ld", stack->ln);
 }
 
 void* stack_pop(Stack* stack) {

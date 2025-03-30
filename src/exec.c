@@ -69,14 +69,15 @@ AST* exec_call(AST* ast) {
 
     if (fdef == NULL)
         return ast_init(
-            AST_TYPE_EXC, ast_exc_data_init(strdup("No such function found."))
+            AST_TYPE_EXC, ast_exc_data_init("No such function found.", NULL)
         );
 
     switch (fdef->type) {
         case AST_TYPE_BIF:
             ASTBIFData bifdata = fdef->data;
             return bifdata(argc, argv);
-        default: return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!"));
+        default:
+            return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
     }
 }
 
@@ -113,7 +114,7 @@ AST* exec_vref(AST* ast) {
             msg, sizeof(msg), "Could not find value in scope for `%s`.",
             vref->to
         );
-        return ast_init(AST_TYPE_EXC, msg);
+        return ast_init(AST_TYPE_EXC, ast_exc_data_init(msg, NULL));
     }
 
     return exec_exp(found);

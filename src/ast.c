@@ -78,13 +78,25 @@ void ast_num_print(ASTNumData* data, int i) {
     INDENT_END;
 }
 
-ASTExcData ast_exc_data_init(char* msg) { return (ASTExcData)msg; }
+ASTExcData* ast_exc_data_init(char* msg, AST* trace) {
+    ASTExcData* data = malloc(sizeof(ASTExcData));
+    data->msg = msg;
+    data->trace = trace;
+    return data;
+}
 
-void ast_exc_print(ASTExcData data, int i) {
+void ast_exc_print(ASTExcData* data, int i) {
     INDENT_BEGIN(i);
 
     INDENT_TITLE("ASTExcData", data);
-    INDENT_FIELD("msg", "\"%s\"", data);
+    INDENT_FIELD("msg", "\"%s\"", data->msg);
+    if (data->trace == NULL) {
+        INDENT_FIELD("trace", "%p", NULL)
+    } else {
+        INDENT_FIELD_EXT_NONL_START("trace");
+        ast_print_i(data->trace, i + 1);
+        INDENT_FIELD_NONL_END;
+    }
     INDENT_END;
 }
 
