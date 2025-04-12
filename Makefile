@@ -62,12 +62,16 @@ test: $(TARGET) $(TEST_BIN_FILES)
 	@ $(PRINT) "$(WHITE_BOLD)Running validation tests...$(RESETCOLOR)"
 	$(BATS) $(TEST_VAL_DIR)
 
+# Clean out objects, binaries, and built artifacts.
 clean:
 	@ $(PRINT) "$(WHITE_BOLD)Cleaning up...$(RESETCOLOR)"
 	rm -rf $(OBJ_DIR)/*.o $(TEST_OBJ_DIR)/*.o $(TEST_BUILD_DIR)/test.out $(TARGET) $(GRAM_DIR)/* $(UNITY_OBJ)
 
+# Get LOC.
 lines:
 	@ wc -l $(SRC_FILES) $(INC_FILES) $(GRAM_SRC)
 
 .PHONY: all clean test nocolor release run lines
+
+# Run this intermediary even though make thinks it's useless.
 .PRECIOUS: $(TEST_OBJ_FILES)
