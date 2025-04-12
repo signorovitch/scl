@@ -23,6 +23,7 @@ typedef enum {
     AST_TYPE_VREF,  // A variable reference.
     AST_TYPE_BLOCK, // A block of code (scope).
     AST_TYPE_FDEF,  // A function definition.
+    AST_TYPE_ARG,   // A definition argument.
     AST_TYPE_MAX = AST_TYPE_FDEF,
 } ASTType;
 
@@ -131,11 +132,21 @@ typedef struct {
 } ASTFDefData;
 
 // Create a new `ASTFDefData`.
-ASTFDefData*
-ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
+ASTFDefData* ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
 // Destroy an `ASTFDefData`.
 void ast_fdef_data_destroy(ASTFDefData* fdef);
 // Print an `ASTFDefData`.
 void ast_fdef_print(ASTFDefData* fdef, int i);
+
+typedef struct {
+    char* name; // Argument name.
+} ASTArgData;
+
+// Create a new `ASTArgData`.
+ASTArgData* ast_arg_data_init(char* name);
+// Destroy an `ASTArgData`.
+void ast_arg_data_destroy(ASTArgData* arg);
+// Print an `ASTArgData`.
+void ast_arg_print(ASTArgData* arg, int i);
 
 #endif

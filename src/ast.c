@@ -13,7 +13,8 @@ static char* asttype_names[] = {
     [AST_TYPE_VDEF] = "VAR DEFINITION",
     [AST_TYPE_BLOCK] = "BLOCK",
     [AST_TYPE_EXC] = "EXCEPTION",
-    [AST_TYPE_FDEF] = "FUNCTION DEFINITION"
+    [AST_TYPE_FDEF] = "FUNCTION DEFINITION",
+    [AST_TYPE_ARG] = "DEFINITION ARGUMENT"
 };
 
 AST* ast_init(ASTType type, void* data) {
@@ -35,6 +36,7 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_VDEF:  ast_vdef_data_destroy(ast->data); break;
         case AST_TYPE_BLOCK: ast_block_data_destroy(ast->data); break;
         case AST_TYPE_FDEF:  ast_fdef_data_destroy(ast->data); break;
+        case AST_TYPE_ARG:   ast_arg_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -60,6 +62,7 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_VDEF:  ast_vdef_print(ast->data, i + 2); break;
         case AST_TYPE_BLOCK: ast_block_print(ast->data, i + 2); break;
         case AST_TYPE_FDEF:  ast_fdef_print(ast->data, i + 2); break;
+        case AST_TYPE_ARG:   ast_arg_print(ast->data, i + 2); break;
         default:             exit(1);
     }
     INDENT_FIELD_NONL_END;
@@ -243,4 +246,19 @@ void ast_fdef_print(ASTFDefData* fdef, int i) {
     INDENT_FIELD_EXT_NONL_START("body");
     ast_print_i(fdef->body, i + 2);
     INDENT_FIELD_NONL_END;
+}
+
+ASTArgData* ast_arg_data_init(char* name) {
+    ASTArgData* arg = malloc(sizeof(ASTArgData));
+    arg->name = name;
+    return arg;
+}
+
+void ast_arg_data_destroy(ASTArgData* arg) { free(arg->name); }
+
+void ast_arg_print(ASTArgData* arg, int i) {
+    INDENT_BEGIN(i);
+    INDENT_TITLE("ASTArgData", arg);
+    INDENT_FIELD("name", "%s", arg->name);
+    INDENT_END;
 }

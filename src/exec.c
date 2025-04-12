@@ -38,6 +38,7 @@ AST* exec_exp(AST* ast) {
         case AST_TYPE_NUM:   return ast;
         case AST_TYPE_VREF:  return exec_vref(ast);
         case AST_TYPE_VDEF:  return exec_vdef(ast);
+        case AST_TYPE_FDEF:  return exec_fdef(ast);
         default:             printf("what\n"); exit(1);
     }
 }
@@ -76,9 +77,21 @@ AST* exec_call(AST* ast) {
         case AST_TYPE_BIF:
             ASTBIFData bifdata = fdef->data;
             return bifdata(argc, argv);
+        case AST_TYPE_FDEF: return exec_cf(fdef, argc, argv);
         default:
             return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
     }
+}
+
+AST* exec_cf(AST* ast, size_t argc, AST** argv) {
+    ASTFDefData* fdef = (ASTFDefData*)ast->data;
+    for (int i = 0; i < argc; i++) {
+        char* key = ((ASTArgData*)fdef->argv[i]->data)->name;
+        AST* val = argv[i];
+        htab_ins(scope->buf[scope->ln - 1], key, val);
+    }
+
+    return exec_exp(fdef->body);
 }
 
 AST* exec_find(char* name) {
@@ -118,6 +131,14 @@ AST* exec_vref(AST* ast) {
     }
 
     return exec_exp(found);
+}
+
+AST* exec_fdef(AST* ast) {
+    ASTFDefData* fdef = (ASTFDefData*)ast->data;
+    AST* val = fdef->body;
+    char* key = fdef->name;
+    htab_ins(scope->buf[scope->ln - 1], key, val);
+    return val; // Function definitions return function body.
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }
