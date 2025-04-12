@@ -71,7 +71,6 @@ inputstart:
     }
     ;
 
-
 input:
     inputstart {
         $$ = $1;
@@ -88,8 +87,6 @@ inputend:
         root = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $1->buf, $1->ln));
     }
     ;
-
-
 
 argstart:
     exp {
@@ -194,5 +191,12 @@ exp:
         char* to = malloc(4);
         strcpy(to, "div");
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
+    }
+
+    | WORD GROUPS arg GROUPE EQ exp {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $6));
     }
 %%

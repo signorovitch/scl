@@ -7,9 +7,13 @@
 extern AST* root;
 
 static char* asttype_names[] = {
-    [AST_TYPE_CALL] = "FUNC CALL",     [AST_TYPE_NUM] = "NUMBER",
-    [AST_TYPE_VREF] = "VAR REFERENCE", [AST_TYPE_VDEF] = "VAR DEFINITION",
-    [AST_TYPE_BLOCK] = "BLOCK",        [AST_TYPE_EXC] = "EXCEPTION"
+    [AST_TYPE_CALL] = "FUNC CALL",
+    [AST_TYPE_NUM] = "NUMBER",
+    [AST_TYPE_VREF] = "VAR REFERENCE",
+    [AST_TYPE_VDEF] = "VAR DEFINITION",
+    [AST_TYPE_BLOCK] = "BLOCK",
+    [AST_TYPE_EXC] = "EXCEPTION",
+    [AST_TYPE_FDEF] = "FUNCTION DEFINITION"
 };
 
 AST* ast_init(ASTType type, void* data) {
@@ -30,6 +34,7 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_VREF:  ast_vref_data_destroy(ast->data); break;
         case AST_TYPE_VDEF:  ast_vdef_data_destroy(ast->data); break;
         case AST_TYPE_BLOCK: ast_block_data_destroy(ast->data); break;
+        case AST_TYPE_FDEF:  ast_fdef_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -54,6 +59,7 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_VREF:  ast_vref_print(ast->data, i + 2); break;
         case AST_TYPE_VDEF:  ast_vdef_print(ast->data, i + 2); break;
         case AST_TYPE_BLOCK: ast_block_print(ast->data, i + 2); break;
+        case AST_TYPE_FDEF:  ast_fdef_print(ast->data, i + 2); break;
         default:             exit(1);
     }
     INDENT_FIELD_NONL_END;
@@ -208,4 +214,33 @@ void ast_block_print(ASTBlockData* data, int depth) {
     INDENT_FIELD_LIST("inside", data->inside, data->ln, ast_print_i);
 
     INDENT_END;
+}
+
+ASTFDefData*
+ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body) {
+    ASTFDefData* fdef = malloc(sizeof(ASTFDefData));
+
+    fdef->name = name;
+    fdef->argc = argc;
+    fdef->argv = argv;
+    fdef->body = body;
+
+    return fdef;
+}
+
+void ast_fdef_data_destroy(ASTFDefData* fdef) {
+    free(fdef->name);
+    for (int i = 0; i < fdef->argc; ast_destroy(fdef->argv[i++]));
+    ast_destroy(fdef->body);
+}
+
+void ast_fdef_print(ASTFDefData* fdef, int i) {
+    INDENT_BEGIN(i)
+    INDENT_TITLE("ASTFDefData", fdef);
+    INDENT_FIELD("name", "%s", fdef->name);
+    INDENT_FIELD("argc", "%ld", fdef->argc);
+    INDENT_FIELD_LIST("argv", fdef->argv, fdef->argc, ast_print_i);
+    INDENT_FIELD_EXT_NONL_START("body");
+    ast_print_i(fdef->body, i + 2);
+    INDENT_FIELD_NONL_END;
 }
