@@ -6,7 +6,8 @@ SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
 [maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
 its current state, SCL can be used as a basic 4-function calculator with order
 of operations and local variables. The codebase is about 1,400 lines of C,
-including a parser, interpreter, and runtime.
+including a parser, interpreter, and runtime. It uses a linked environment
+scoping model.
 
 ## Usage
 
@@ -45,6 +46,23 @@ You can also define your own functions and variables:
 > n = 3
 > f(n)
 = 6
+```
+
+As SCL uses a linked environment model for scope, arguments are passed by
+reference by default. If you would like to pass by value (i.e., a copy) you may
+use the syntax:
+
+```scl
+> f(x) = x = 1
+> n = 4
+> f($n) # Pass a copy of n.
+= 1
+> n
+= 4
+> f(n) # Pass a reference to n.
+= 1
+> n
+> 1
 ```
 
 Symbolic algebra is done in the following manner:
