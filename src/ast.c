@@ -2,6 +2,7 @@
 
 #include "include/ast.h"
 #include "include/dstr.h"
+#include "include/htab.h"
 #include "include/util.h"
 
 extern AST* root;
@@ -22,6 +23,17 @@ AST* ast_init(ASTType type, void* data) {
 
     ast->type = type;
     ast->data = data;
+    ast->scope = NULL;
+
+    return ast;
+}
+
+AST* ast_init_scope(ASTType type, void* data, HTab* scope) {
+    AST* ast = malloc(sizeof(AST));
+
+    ast->type = type;
+    ast->data = data;
+    ast->scope = scope;
 
     return ast;
 }
@@ -42,6 +54,7 @@ void ast_destroy(AST* ast) {
     }
 
     free(ast);
+    htab_destroy(ast->scope);
 }
 
 void ast_print(AST* ast) { ast_print_i(ast, 0); }
