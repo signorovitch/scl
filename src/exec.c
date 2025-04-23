@@ -15,7 +15,7 @@ AST* exec_find(char* name);
 
 AST* exec_start(AST* ast) {
     log_dbg("Started execution.");
-    scope = stack_init();
+    Stack* scope = stack_init();
 
     HTab* global = htab_init();
 
@@ -47,13 +47,13 @@ AST* exec_block(AST* ast) {
     ASTBlockData* block = (ASTBlockData*)ast->data;
 
     HTab* local = htab_init();
-    stack_push(scope, local);
+    //stack_push(scope, local);
 
     // Loop through all but last ast.
     for (int i = 0; i < block->ln - 1; i++) exec_exp(block->inside[i]);
     AST* last = exec_exp(block->inside[block->ln - 1]);
 
-    stack_pop(scope);
+    //stack_pop(scope);
     htab_destroy(local);
 
     return last;
@@ -88,7 +88,7 @@ AST* exec_cf(AST* ast, size_t argc, AST** argv) {
     for (int i = 0; i < argc; i++) {
         char* key = ((ASTArgData*)fdef->argv[i]->data)->name;
         AST* val = argv[i];
-        htab_ins(scope->buf[scope->ln - 1], key, val);
+        //htab_ins(scope->buf[scope->ln - 1], key, val);
     }
 
     return exec_exp(fdef->body);
@@ -97,11 +97,12 @@ AST* exec_cf(AST* ast, size_t argc, AST** argv) {
 AST* exec_find(char* name) {
     AST* val = NULL;
 
+    /*
     for (int i = scope->ln - 1; i >= 0; i--) {
         HTab* lvl = scope->buf[i];
         val = htab_get(lvl, name);
         if (val != NULL) return val;
-    }
+        }*/
 
     return NULL;
 }
@@ -110,7 +111,7 @@ AST* exec_vdef(AST* ast) {
     ASTVDefData* data = (ASTVDefData*)ast->data;
     AST* val = data->val;
     char* key = data->name;
-    htab_ins(scope->buf[scope->ln - 1], key, val);
+    //htab_ins(scope->buf[scope->ln - 1], key, val);
     return exec_exp(val);
 }
 
@@ -137,7 +138,7 @@ AST* exec_fdef(AST* ast) {
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
     AST* val = fdef->body;
     char* key = fdef->name;
-    htab_ins(scope->buf[scope->ln - 1], key, val);
+    //htab_ins(scope->buf[scope->ln - 1], key, val);
     return val; // Function definitions return function body.
 }
 
