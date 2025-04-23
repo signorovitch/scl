@@ -64,6 +64,7 @@ void ast_print_i(AST* ast, int i) {
 
     INDENT_TITLE("AST", ast);
     INDENT_FIELD("type", "%s", asttype_names[ast->type]);
+    INDENT_FIELD("scope", "%p", ast->scope);
     INDENT_FIELD_EXT_NONL_START("data");
     switch (ast->type) {
         case AST_TYPE_NUM:
