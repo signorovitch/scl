@@ -1,7 +1,6 @@
 #ifndef AST_H
 #define AST_H
 
-#include "htab.h"
 #include "scope.h"
 #include <stdlib.h>
 
@@ -153,5 +152,8 @@ ASTArgData* ast_arg_data_init(char* name);
 void ast_arg_data_destroy(ASTArgData* arg);
 // Print an `ASTArgData`.
 void ast_arg_print(ASTArgData* arg, int i);
+
+// Find a name in the scope.
+AST* ast_find(Scope* scope, char* name);
 
 #endif

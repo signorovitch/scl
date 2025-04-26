@@ -9,11 +9,13 @@ typedef struct SCOPE_T {
     struct SCOPE_T* inherit;
 } Scope;
 
-// Create a new `Scope`.
-Scope* scope_init(HTab* here, Scope* inherit);
+// Create a new `Scope`. Creates new empty `HTab` for current scope.
+Scope* scope_init(Scope* inherit);
 // Destroy all linked `Scope`s this inherits from.
 void scope_destroy(Scope* scope);
 // Destroy the current `Scope` only.
 void scope_destroy_psv(Scope *scope);
+// Insert a key/val pair into the `HTab` of a `Scope`.
+inline void scope_add(Scope* scope, char* key, void* val);
 
 #endif

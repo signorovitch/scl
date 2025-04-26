@@ -276,3 +276,13 @@ void ast_arg_print(ASTArgData* arg, int i) {
     INDENT_FIELD("name", "%s", arg->name);
     INDENT_END;
 }
+
+AST* ast_find(Scope* scope, char* name) {
+    while (scope) {
+        AST* gotten = htab_get(scope->here, name);
+        if (gotten) return gotten;
+        else scope = scope->inherit;
+    }
+
+    return NULL;
+}

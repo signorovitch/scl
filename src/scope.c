@@ -2,10 +2,10 @@
 #include "include/htab.h"
 #include <stdlib.h>
 
-Scope* scope_init(HTab* here, Scope* inherit) {
+Scope* scope_init(Scope* inherit) {
     Scope* scope = malloc(sizeof(Scope));
 
-    scope->here = here;
+    scope->here = htab_init();
     scope->inherit = inherit;
 
     return scope;
@@ -21,4 +21,8 @@ void scope_destroy_psv(Scope* scope) {
     htab_destroy(scope->here);
     scope->inherit = NULL;
     free(scope);
+}
+
+inline void scope_add(Scope* scope, char* key, void* val) {
+    htab_ins(scope->here, key, val);
 }

@@ -6,66 +6,58 @@
 #include "include/builtin.h"
 #include "include/exec.h"
 #include "include/htab.h"
-#include "include/stack.h"
+#include "include/scope.h"
 #include "include/util.h"
-
-AST* exec_find(char* name);
 
 AST* exec_start(AST* ast) {
     log_dbg("Started execution.");
 
-    Stack* scope = stack_init();
-
-    HTab* global = htab_init();
+    Scope* builtin = scope_init(NULL);
 
     for (int i = 0; i < BUILTIN_FNS_LN; i++)
         htab_ins(
-            global, BUILTIN_FNS[i].name,
+            builtin->here, BUILTIN_FNS[i].name,
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
 
-    // Push global namespace to `scope`.
-    stack_push(scope, global);
-
-    return exec_exp(ast);
+    return exec_exp(ast, builtin);
 }
 
-AST* exec_exp(AST* ast) {
+AST* exec_exp(AST* ast, Scope* parent) {
     switch (ast->type) {
-        case AST_TYPE_BLOCK: return exec_block(ast);
-        case AST_TYPE_CALL:  return exec_call(ast);
+        case AST_TYPE_BLOCK: return exec_block(ast, parent);
+        case AST_TYPE_CALL:  return exec_call(ast, parent);
         case AST_TYPE_NUM:   return ast;
-        case AST_TYPE_VREF:  return exec_vref(ast);
-        case AST_TYPE_VDEF:  return exec_vdef(ast);
-        case AST_TYPE_FDEF:  return exec_fdef(ast);
+        case AST_TYPE_VREF:  return exec_vref(ast, parent);
+        case AST_TYPE_VDEF:  return exec_vdef(ast, parent);
+        case AST_TYPE_FDEF:  return exec_fdef(ast, parent);
         default:             printf("what\n"); exit(1);
     }
 }
 
-AST* exec_block(AST* ast) {
+AST* exec_block(AST* ast, Scope* parent) {
     ASTBlockData* block = (ASTBlockData*)ast->data;
 
-    HTab* local = htab_init();
-    // stack_push(scope, local);
+    ast->scope = scope_init(parent);
 
     // Loop through all but last ast.
-    for (int i = 0; i < block->ln - 1; i++) exec_exp(block->inside[i]);
-    AST* last = exec_exp(block->inside[block->ln - 1]);
-
-    // stack_pop(scope);
-    htab_destroy(local);
+    for (int i = 0; i < block->ln - 1; i++)
+        exec_exp(block->inside[i], ast->scope);
+    AST* last = exec_exp(block->inside[block->ln - 1], ast->scope);
 
     return last;
 }
 
-AST* exec_call(AST* ast) {
+AST* exec_call(AST* ast, Scope* parent) {
     log_dbg("Started call execution.");
     ASTCallData* data = (ASTCallData*)ast->data;
     size_t argc = data->argc;
     AST** argv = data->argv;
     char* fname = data->to;
 
-    AST* fdef = exec_find(fname);
+    ast->scope = parent;
+
+    AST* fdef = ast_find(ast->scope, fname);
 
     if (fdef == NULL)
         return ast_init(
@@ -83,42 +75,32 @@ AST* exec_call(AST* ast) {
 }
 
 AST* exec_cf(AST* ast, size_t argc, AST** argv) {
+    Scope* callscope = scope_init(ast->scope);
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
     for (int i = 0; i < argc; i++) {
         char* key = ((ASTArgData*)fdef->argv[i]->data)->name;
         AST* val = argv[i];
-        // htab_ins(scope->buf[scope->ln - 1], key, val);
+        scope_add(callscope, key, val);
     }
 
-    return exec_exp(fdef->body);
+    return exec_exp(fdef->body, callscope);
 }
 
-AST* exec_find(char* name) {
-    AST* val = NULL;
-
-    /*
-    for (int i = scope->ln - 1; i >= 0; i--) {
-        HTab* lvl = scope->buf[i];
-        val = htab_get(lvl, name);
-        if (val != NULL) return val;
-        }*/
-
-    return NULL;
-}
-
-AST* exec_vdef(AST* ast) {
+AST* exec_vdef(AST* ast, Scope* parent) {
+    ast->scope = scope_init(parent);
     ASTVDefData* data = (ASTVDefData*)ast->data;
     AST* val = data->val;
     char* key = data->name;
-    // htab_ins(scope->buf[scope->ln - 1], key, val);
-    return exec_exp(val);
+    scope_add(parent, key, val);
+    return exec_exp(val, ast->scope);
 }
 
-AST* exec_vref(AST* ast) {
+AST* exec_vref(AST* ast, Scope* parent) {
+    ast->scope = parent;
     log_dbg("attempting to reference var");
     ASTVrefData* vref = (ASTVrefData*)ast->data;
 
-    AST* found = exec_find(vref->to);
+    AST* found = ast_find(parent, vref->to);
 
     if (found == NULL) {
         // TODO: Better memory management here.
@@ -130,14 +112,15 @@ AST* exec_vref(AST* ast) {
         return ast_init(AST_TYPE_EXC, ast_exc_data_init(msg, NULL));
     }
 
-    return exec_exp(found);
+    return exec_exp(found, ast->scope);
 }
 
-AST* exec_fdef(AST* ast) {
+AST* exec_fdef(AST* ast, Scope* parent) {
+    ast->scope = scope_init(parent);
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
     AST* val = fdef->body;
     char* key = fdef->name;
-    // htab_ins(scope->buf[scope->ln - 1], key, val);
+    scope_add(parent, key, val);
     return val; // Function definitions return function body.
 }
 
