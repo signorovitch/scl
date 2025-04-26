@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "htab.h"
+#include "scope.h"
 #include <stdlib.h>
 
 // The type of an `AST`.
@@ -32,13 +33,13 @@ typedef enum {
 typedef struct {
     ASTType type; // The type of the `AST`.
     void* data;   // The data of the `AST`.
-    HTab* scope;  // The scope of the `AST`.
+    Scope* scope; // The scope of the `AST`.
 } AST;
 
 // Create a new `AST`.
 AST* ast_init(ASTType type, void* data);
 // Create a new `AST` with a specified scope.
-AST* ast_init_scope(ASTType type, void* data, HTab* scope);
+AST* ast_init_scope(ASTType type, void* data, Scope* scope);
 // Destroy an `AST`, recursively.
 void ast_destroy(AST* ast);
 // Print an `AST`, recursively.
