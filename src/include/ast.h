@@ -69,7 +69,7 @@ void ast_exc_data_destroy(ASTExcData* exc);
 void ast_exc_print(ASTExcData*, int i);
 
 // A built-in function.
-typedef AST* (*ASTBIFData)(size_t argc, AST** argv);
+typedef AST* (*ASTBIFData)(size_t argc, AST** argv, Scope* scope);
 
 // Create a built-in function.
 ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));

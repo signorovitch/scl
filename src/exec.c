@@ -12,15 +12,17 @@
 AST* exec_start(AST* ast) {
     log_dbg("Started execution.");
 
-    Scope* builtin = scope_init(NULL);
+    Scope* global = scope_init(NULL);
 
     for (int i = 0; i < BUILTIN_FNS_LN; i++)
         htab_ins(
-            builtin->here, BUILTIN_FNS[i].name,
+            global->here, BUILTIN_FNS[i].name,
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
 
-    return exec_exp(ast, builtin);
+    log_dbg("Completed startup sequence.");
+
+    return exec_exp(ast, global);
 }
 
 AST* exec_exp(AST* ast, Scope* parent) {
@@ -38,6 +40,7 @@ AST* exec_exp(AST* ast, Scope* parent) {
 AST* exec_block(AST* ast, Scope* parent) {
     ASTBlockData* block = (ASTBlockData*)ast->data;
 
+    // Blocks create their own scope, shared among their expressions.
     ast->scope = scope_init(parent);
 
     // Loop through all but last ast.
@@ -67,7 +70,7 @@ AST* exec_call(AST* ast, Scope* parent) {
     switch (fdef->type) {
         case AST_TYPE_BIF:
             ASTBIFData bifdata = fdef->data;
-            return bifdata(argc, argv);
+            return bifdata(argc, argv, parent);
         case AST_TYPE_FDEF: return exec_cf(fdef, argc, argv);
         default:
             return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
@@ -87,15 +90,17 @@ AST* exec_cf(AST* ast, size_t argc, AST** argv) {
 }
 
 AST* exec_vdef(AST* ast, Scope* parent) {
-    ast->scope = scope_init(parent);
+    // Use parent's scope.
+    ast->scope = parent;
     ASTVDefData* data = (ASTVDefData*)ast->data;
     AST* val = data->val;
     char* key = data->name;
-    scope_add(parent, key, val);
-    return exec_exp(val, ast->scope);
+    scope_add(parent, key, val); // Add variable definition to parent scope.
+    return exec_exp(val, parent);
 }
 
 AST* exec_vref(AST* ast, Scope* parent) {
+    // Use parent's scope.
     ast->scope = parent;
     log_dbg("attempting to reference var");
     ASTVrefData* vref = (ASTVrefData*)ast->data;
