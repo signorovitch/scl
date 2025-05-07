@@ -123,7 +123,7 @@ void ast_exc_print(ASTExcData* data, int i) {
     INDENT_END;
 }
 
-ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**)) {
+ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*)) {
     return (ASTBIFData*)fn;
 }
 

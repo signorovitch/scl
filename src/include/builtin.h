@@ -4,20 +4,20 @@
 #include "ast.h"
 
 // Sum some nums.
-AST* builtin_sum(size_t argc, AST** argv);
+AST* builtin_sum(size_t argc, AST** argv, Scope* parent);
 
 // Subtract nums.
-AST* builtin_sub(size_t argc, AST** argv);
+AST* builtin_sub(size_t argc, AST** argv, Scope* parent);
 
 // Multiply nums.
-AST* builtin_mul(size_t argc, AST** argv);
+AST* builtin_mul(size_t argc, AST** argv, Scope* parent);
 
 // Divide nums.
-AST* builtin_div(size_t argc, AST** argv);
+AST* builtin_div(size_t argc, AST** argv, Scope* parent);
 
 struct builtin_data {
     char* name;
-    AST* (*fn)(size_t argc, AST** argv);
+    AST* (*fn)(size_t argc, AST** argv, Scope* parent);
 };
 
 static struct builtin_data BUILTIN_FNS[] = {

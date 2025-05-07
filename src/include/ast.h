@@ -72,7 +72,7 @@ void ast_exc_print(ASTExcData*, int i);
 typedef AST* (*ASTBIFData)(size_t argc, AST** argv);
 
 // Create a built-in function.
-ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**));
+ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));
 
 // There is no `ASTBIFData` destroy function, as function pointers are immortal.
 

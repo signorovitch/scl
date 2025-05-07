@@ -16,6 +16,6 @@ void scope_destroy(Scope* scope);
 // Destroy the current `Scope` only.
 void scope_destroy_psv(Scope *scope);
 // Insert a key/val pair into the `HTab` of a `Scope`.
-inline void scope_add(Scope* scope, char* key, void* val);
+void scope_add(Scope* scope, char* key, void* val);
 
 #endif

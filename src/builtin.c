@@ -5,11 +5,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-AST* builtin_sum(size_t argc, AST** argv) {
+AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
     ASTNumData total = 0;
 
     for (int i = 0; i < argc; i++) {
-        AST* arg = exec_exp(argv[i]);
+        AST* arg = exec_exp(argv[i], parent);
         if (arg->type == AST_TYPE_EXC)
             return ast_init(
                 AST_TYPE_EXC,
@@ -27,9 +27,9 @@ AST* builtin_sum(size_t argc, AST** argv) {
     return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
 }
 
-AST* builtin_sub(size_t argc, AST** argv) {
+AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
     log_dbg("Got here");
-    AST* first = exec_exp(*argv);
+    AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
             AST_TYPE_EXC,
@@ -44,7 +44,7 @@ AST* builtin_sub(size_t argc, AST** argv) {
     ASTNumData total = *(ASTNumData*)first->data;
 
     for (int i = 1; i < argc; i++) {
-        AST* arg = exec_exp(argv[i]);
+        AST* arg = exec_exp(argv[i], parent);
         if (arg->type == AST_TYPE_EXC)
             return ast_init(
                 AST_TYPE_EXC,
@@ -62,9 +62,9 @@ AST* builtin_sub(size_t argc, AST** argv) {
     return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
 }
 
-AST* builtin_mul(size_t argc, AST** argv) {
+AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
     log_dbg("Got here");
-    AST* first = exec_exp(*argv);
+    AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
             AST_TYPE_EXC,
@@ -79,7 +79,7 @@ AST* builtin_mul(size_t argc, AST** argv) {
     ASTNumData total = *(ASTNumData*)first->data;
 
     for (int i = 1; i < argc; i++) {
-        AST* arg = exec_exp(argv[i]);
+        AST* arg = exec_exp(argv[i], parent);
         if (arg->type == AST_TYPE_EXC)
             return ast_init(
                 AST_TYPE_EXC,
@@ -97,9 +97,9 @@ AST* builtin_mul(size_t argc, AST** argv) {
     return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
 }
 
-AST* builtin_div(size_t argc, AST** argv) {
+AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
     log_dbg("Got here");
-    AST* first = exec_exp(*argv);
+    AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
             AST_TYPE_EXC,
@@ -114,7 +114,7 @@ AST* builtin_div(size_t argc, AST** argv) {
     ASTNumData total = *(ASTNumData*)first->data;
 
     for (int i = 1; i < argc; i++) {
-        AST* arg = exec_exp(argv[i]);
+        AST* arg = exec_exp(argv[i], parent);
         if (arg->type == AST_TYPE_EXC)
             return ast_init(
                 AST_TYPE_EXC,
