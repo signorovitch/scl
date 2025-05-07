@@ -4,10 +4,8 @@
 #include "include/ast.h"
 #include "include/dstr.h"
 #include "include/exec.h"
-#include "include/global.h"
-#include "include/htab.h"
+
 #include "include/lexer.h"
-#include "include/stack.h"
 #include "include/util.h"
 
 #include "../build/grammars/grammar.tab.h"
@@ -17,16 +15,11 @@ extern AST* root;
 extern char* inp;
 extern int yyparse();
 
-Stack* scope;
-
 int main(int argc, char** argv) {
 
     if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
         log_dbg("Parsed successfully!\n");
         ast_print(exec_start(root));
-        HTab* global = stack_pop(scope);
-        htab_destroy(global);
-        stack_destroy(scope);
         ast_destroy(root);
         exit(0);
     }
@@ -63,9 +56,6 @@ int main(int argc, char** argv) {
 #endif
 
             ast_print(exec_start(root));
-            HTab* global = stack_pop(scope);
-            htab_destroy(global);
-            stack_destroy(scope);
 
             ast_destroy(root);
         }

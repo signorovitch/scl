@@ -12,12 +12,14 @@ Scope* scope_init(Scope* inherit) {
 }
 
 void scope_destroy(Scope* scope) {
+    if (!scope) return;
     htab_destroy(scope->here);
     if (scope->inherit != NULL) scope_destroy(scope->inherit);
     free(scope);
 }
 
 void scope_destroy_psv(Scope* scope) {
+    if (!scope) return;
     htab_destroy(scope->here);
     scope->inherit = NULL;
     free(scope);

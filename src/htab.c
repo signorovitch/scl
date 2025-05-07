@@ -7,12 +7,13 @@
 #include <string.h>
 
 HTab* htab_init() {
-    HTab* htab = calloc(1, sizeof(HTab));
+    HTab* htab = malloc(sizeof(HTab));
 
     return htab;
 }
 
-void htab_destroy(HTab* htab) { free(htab); }
+void htab_destroy(HTab* htab) { // free(htab);
+}
 
 // Get the index of a key.
 size_t geti(char* key) {
