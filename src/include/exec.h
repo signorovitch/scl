@@ -23,4 +23,10 @@ AST* exec_fdef(AST* ast, Scope* parent);
 // Print the result of an execution.
 void exec_print(double n);
 
+// Create a new scope and mark it as linked. Also update inherited scope.
+void exec_new_scope(AST* ast, Scope* inherit);
+
+// Inherit from another scope and mark it as linked.
+void exec_inherit_scope(AST* ast, Scope* inherit);
+
 #endif

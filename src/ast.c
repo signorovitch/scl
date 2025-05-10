@@ -53,7 +53,20 @@ void ast_destroy(AST* ast) {
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
 
-    scope_destroy_psv(ast->scope);
+    // If there're no more `AST`s linked to the scope, free.
+    if (ast->scope) {
+        log_dbgf("%p: there is scope.", ast->scope);
+        ast->scope->uses--;
+        log_dbgf(
+            "%p: were %d uses, now %d", ast->scope, ast->scope->uses + 1,
+            ast->scope->uses
+        );
+        if (!ast->scope->uses) {
+            log_dbgf("%p: no more uses, gonna free", ast->scope);
+            scope_destroy_psv(ast->scope);
+        }
+    }
+
     free(ast);
 }
 

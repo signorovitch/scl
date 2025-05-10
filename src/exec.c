@@ -13,6 +13,9 @@ AST* exec_start(AST* ast) {
     log_dbg("Started execution.");
 
     Scope* global = scope_init(NULL);
+    global->uses = 1;
+
+    // Maybe root ast here should set global as scope?
 
     for (int i = 0; i < BUILTIN_FNS_LN; i++)
         htab_ins(
@@ -22,7 +25,10 @@ AST* exec_start(AST* ast) {
 
     log_dbg("Completed startup sequence.");
 
-    return exec_exp(ast, global);
+    AST* res = exec_exp(ast, global);
+    log_dbgf("global addr %p uses %d", global, global->uses);
+    scope_destroy_psv(global);
+    return res;
 }
 
 AST* exec_exp(AST* ast, Scope* parent) {
@@ -41,7 +47,10 @@ AST* exec_block(AST* ast, Scope* parent) {
     ASTBlockData* block = (ASTBlockData*)ast->data;
 
     // Blocks create their own scope, shared among their expressions.
-    ast->scope = scope_init(parent);
+    // ast->scope = scope_init(parent);
+
+    // HERE
+    exec_new_scope(ast, parent);
 
     // Loop through all but last ast.
     for (int i = 0; i < block->ln - 1; i++)
@@ -91,7 +100,11 @@ AST* exec_cf(AST* ast, size_t argc, AST** argv) {
 
 AST* exec_vdef(AST* ast, Scope* parent) {
     // Use parent's scope.
-    ast->scope = parent;
+    // ast->scope = parent;
+
+    // HERE
+    exec_inherit_scope(ast, parent);
+
     ASTVDefData* data = (ASTVDefData*)ast->data;
     AST* val = data->val;
     char* key = data->name;
@@ -101,7 +114,10 @@ AST* exec_vdef(AST* ast, Scope* parent) {
 
 AST* exec_vref(AST* ast, Scope* parent) {
     // Use parent's scope.
-    ast->scope = parent;
+    // ast->scope = parent;
+
+    // HERE
+    exec_inherit_scope(ast, parent);
     log_dbg("attempting to reference var");
     ASTVrefData* vref = (ASTVrefData*)ast->data;
 
@@ -130,3 +146,19 @@ AST* exec_fdef(AST* ast, Scope* parent) {
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }
+
+inline void exec_new_scope(AST* ast, Scope* inherit) {
+    Scope* scope = scope_init(inherit);
+    ast->scope = scope;
+
+    // Update linked status.
+    scope->uses++;
+    // if (inherit) inherit->uses++;
+}
+
+inline void exec_inherit_scope(AST* ast, Scope* inherit) {
+    ast->scope = inherit;
+
+    // Update uses.
+    inherit->uses++;
+}

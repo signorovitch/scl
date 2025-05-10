@@ -12,8 +12,7 @@ HTab* htab_init() {
     return htab;
 }
 
-void htab_destroy(HTab* htab) { // free(htab);
-}
+void htab_destroy(HTab* htab) { free(htab); }
 
 // Get the index of a key.
 size_t geti(char* key) {
