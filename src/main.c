@@ -19,7 +19,10 @@ int main(int argc, char** argv) {
 
     if (argc - 1 && strlen(argv[1]) > 0 && (inp = argv[1]) && !yyparse()) {
         log_dbg("Parsed successfully!\n");
-        ast_print(exec_start(root));
+        ast_print(root);
+        AST* eval = exec_start(root);
+        ast_print(eval);
+        ast_destroy(eval);
         ast_destroy(root);
         exit(0);
     }
@@ -55,8 +58,9 @@ int main(int argc, char** argv) {
             ast_print(root);
 #endif
 
-            ast_print(exec_start(root));
-
+            AST* eval = exec_start(root);
+            ast_print(eval);
+            ast_destroy(eval);
             ast_destroy(root);
         }
 

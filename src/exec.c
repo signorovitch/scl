@@ -4,6 +4,7 @@
 
 #include "include/ast.h"
 #include "include/builtin.h"
+#include "include/dlist.h"
 #include "include/exec.h"
 #include "include/htab.h"
 #include "include/scope.h"
@@ -15,18 +16,32 @@ AST* exec_start(AST* ast) {
     Scope* global = scope_init(NULL);
     global->uses = 1;
 
-    // Maybe root ast here should set global as scope?
+    // Keep track of built-in function ASTs, as they arent part of the main
+    // tree.
+    // DList* builtins = dlist_init();
 
-    for (int i = 0; i < BUILTIN_FNS_LN; i++)
+    for (int i = 0; i < BUILTIN_FNS_LN; i++) {
+
+        // AST* builtin_ast =
+        // ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn));
+
+        // dlist_append(builtins, builtin_ast);
+
         htab_ins(
             global->here, BUILTIN_FNS[i].name,
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
+    }
 
     log_dbg("Completed startup sequence.");
 
     AST* res = exec_exp(ast, global);
-    log_dbgf("global addr %p uses %d", global, global->uses);
+
+    // Clean up built-in function ASTs.
+    /*for (int i = 0; i < builtins->ln; i++) ast_destroy(builtins->buf[i]);
+    dlist_destroy(builtins);
+    */
+
     scope_destroy_psv(global);
     return res;
 }
@@ -35,11 +50,14 @@ AST* exec_exp(AST* ast, Scope* parent) {
     switch (ast->type) {
         case AST_TYPE_BLOCK: return exec_block(ast, parent);
         case AST_TYPE_CALL:  return exec_call(ast, parent);
-        case AST_TYPE_NUM:   return ast;
-        case AST_TYPE_VREF:  return exec_vref(ast, parent);
-        case AST_TYPE_VDEF:  return exec_vdef(ast, parent);
-        case AST_TYPE_FDEF:  return exec_fdef(ast, parent);
-        default:             printf("what\n"); exit(1);
+        case AST_TYPE_NUM:
+            return ast_init(
+                AST_TYPE_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
+            );
+        case AST_TYPE_VREF: return exec_vref(ast, parent);
+        case AST_TYPE_VDEF: return exec_vdef(ast, parent);
+        case AST_TYPE_FDEF: return exec_fdef(ast, parent);
+        default:            printf("what\n"); exit(1);
     }
 }
 
@@ -153,7 +171,6 @@ inline void exec_new_scope(AST* ast, Scope* inherit) {
 
     // Update linked status.
     scope->uses++;
-    // if (inherit) inherit->uses++;
 }
 
 inline void exec_inherit_scope(AST* ast, Scope* inherit) {

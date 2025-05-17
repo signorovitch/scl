@@ -24,12 +24,11 @@ void scope_destroy(Scope* scope) {
 }
 
 void scope_destroy_psv(Scope* scope) {
-    log_dbgf("%p got here", scope);
     if (!scope) return;
+    log_dbgf("%p: destroying", scope);
     htab_destroy(scope->here);
     scope->inherit = NULL;
     free(scope);
-    log_dbgf("%p got here 2", scope);
 }
 
 inline void scope_add(Scope* scope, char* key, void* val) {
