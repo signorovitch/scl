@@ -1,11 +1,12 @@
 #include "include/scope.h"
+#include "include/gc.h"
 #include "include/htab.h"
 #include "include/util.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 Scope* scope_init(Scope* inherit) {
-    Scope* scope = malloc(sizeof(Scope));
+    Scope* scope = gc_alloc(sizeof(Scope), GC_TYPE_SCOPE);
 
     scope->here = htab_init();
     scope->inherit = inherit;

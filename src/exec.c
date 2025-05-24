@@ -42,7 +42,7 @@ AST* exec_start(AST* ast) {
     dlist_destroy(builtins);
     */
 
-    scope_destroy_psv(global);
+    // scope_destroy_psv(global);
     return res;
 }
 

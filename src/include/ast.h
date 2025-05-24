@@ -41,6 +41,8 @@ AST* ast_init(ASTType type, void* data);
 AST* ast_init_scope(ASTType type, void* data, Scope* scope);
 // Destroy an `AST`, recursively.
 void ast_destroy(AST* ast);
+// Destroy an `AST`.
+void ast_destroy_psv(AST* ast);
 // Print an `AST`, recursively.
 void ast_print(AST* ast);
 // Helper function to `ast_print()`, where `i` is indentation level.
@@ -73,8 +75,8 @@ typedef AST* (*ASTBIFData)(size_t argc, AST** argv, Scope* scope);
 
 // Create a built-in function.
 ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));
-
-// There is no `ASTBIFData` destroy function, as function pointers are immortal.
+// Destroy an `ASTBIFData`.
+void ast_bif_data_destroy(ASTBIFData* bif);
 
 // A call (to a function).
 typedef struct {
@@ -85,8 +87,10 @@ typedef struct {
 
 // Create a new `ASTCallData`.
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
-// Destroy an `ASTCallData`.
+// Destroy an `ASTCallData` recursively.
 void ast_call_data_destroy(ASTCallData* call);
+// Destroy an `ASTCallData`.
+void ast_call_data_destroy_psv(ASTCallData *call);
 // Print an `ASTCallData`.
 void ast_call_print(ASTCallData*, int i);
 
@@ -100,6 +104,8 @@ typedef struct {
 ASTVDefData* ast_vdef_data_init(char* name, AST* val);
 // Destroys the `ASTVDefData`, `ASTVDefData->name`, and `ASTVDefData->val`.
 void ast_vdef_data_destroy(ASTVDefData* vdef);
+// Destroy an `ASTVDefData`.
+void ast_vdef_data_destroy_psv(ASTVDefData* vdef);
 // Print an `ASTVDefData`.
 void ast_vdef_print(ASTVDefData*, int depth);
 
@@ -125,6 +131,8 @@ typedef struct {
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 // Destroy an `ASTBlockData`, recursively.
 void ast_block_data_destroy(ASTBlockData* block);
+// Destroy an `ASTBlockData`.
+void ast_block_data_destroy_psv(ASTBlockData *block);
 // Print an `ASTBlockData`.
 void ast_block_print(ASTBlockData*, int i);
 
@@ -137,8 +145,10 @@ typedef struct {
 
 // Create a new `ASTFDefData`.
 ASTFDefData* ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
-// Destroy an `ASTFDefData`.
+// Destroy an `ASTFDefData`, recursively.
 void ast_fdef_data_destroy(ASTFDefData* fdef);
+// Destroy an `ASTFDefData`.
+void ast_fdef_data_destroy_psv(ASTFDefData* fdef);
 // Print an `ASTFDefData`.
 void ast_fdef_print(ASTFDefData* fdef, int i);
 

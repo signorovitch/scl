@@ -4,7 +4,7 @@
 #include "include/ast.h"
 #include "include/dstr.h"
 #include "include/exec.h"
-
+#include "include/gc.h"
 #include "include/lexer.h"
 #include "include/util.h"
 
@@ -22,8 +22,9 @@ int main(int argc, char** argv) {
         ast_print(root);
         AST* eval = exec_start(root);
         ast_print(eval);
-        ast_destroy(eval);
-        ast_destroy(root);
+        // ast_destroy(eval);
+        // ast_destroy(root);
+        gc_hack_free();
         exit(0);
     }
 
@@ -60,8 +61,9 @@ int main(int argc, char** argv) {
 
             AST* eval = exec_start(root);
             ast_print(eval);
-            ast_destroy(eval);
-            ast_destroy(root);
+            // ast_destroy(eval);
+            // ast_destroy(root);
+            gc_hack_free();
         }
 
         dstr_destroy(ln);

@@ -1,7 +1,9 @@
+#include <inttypes.h>
 #include <stdio.h>
 
 #include "include/ast.h"
 #include "include/dstr.h"
+#include "include/gc.h"
 #include "include/scope.h"
 #include "include/util.h"
 
@@ -19,7 +21,7 @@ static char* asttype_names[] = {
 };
 
 AST* ast_init(ASTType type, void* data) {
-    AST* ast = malloc(sizeof(AST));
+    AST* ast = gc_alloc(sizeof(AST), GC_TYPE_AST);
 
     ast->type = type;
     ast->data = data;
@@ -60,6 +62,23 @@ void ast_destroy(AST* ast) {
     }
 
     free(ast);
+}
+
+void ast_destroy_psv(AST* ast) {
+    if (!ast) return;
+
+    switch (ast->type) {
+        case AST_TYPE_NUM:   ast_num_data_destroy(ast->data); break;
+        case AST_TYPE_CALL:  ast_call_data_destroy_psv(ast->data); break;
+        case AST_TYPE_VREF:  ast_vref_data_destroy(ast->data); break;
+        case AST_TYPE_VDEF:  ast_vdef_data_destroy_psv(ast->data); break;
+        case AST_TYPE_BLOCK: ast_block_data_destroy_psv(ast->data); break;
+        case AST_TYPE_FDEF:  ast_fdef_data_destroy_psv(ast->data); break;
+        case AST_TYPE_ARG:   ast_arg_data_destroy(ast->data); break;
+        case AST_TYPE_BIF:   ast_bif_data_destroy(ast->data); break;
+        default:
+            log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
+    }
 }
 
 void ast_print(AST* ast) { ast_print_i(ast, 0); }
@@ -132,6 +151,8 @@ ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*)) {
     return (ASTBIFData*)fn;
 }
 
+void ast_bif_data_destroy(ASTBIFData* bif) { return; }
+
 ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv) {
     talloc(ASTCallData, call);
 
@@ -148,6 +169,13 @@ void ast_call_data_destroy(ASTCallData* call) {
     if (!call) return;
     free(call->to);
     for (size_t i = 0; i < call->argc; i++) ast_destroy(call->argv[i]);
+    free(call->argv);
+    free(call);
+}
+
+void ast_call_data_destroy_psv(ASTCallData* call) {
+    if (!call) return;
+    free(call->to);
     free(call->argv);
     free(call);
 }
@@ -174,6 +202,11 @@ ASTVDefData* ast_vdef_data_init(char* name, AST* val) {
 
 void ast_vdef_data_destroy(ASTVDefData* vdef) {
     ast_destroy(vdef->val);
+    free(vdef->name);
+    free(vdef);
+}
+
+void ast_vdef_data_destroy_psv(ASTVDefData* vdef) {
     free(vdef->name);
     free(vdef);
 }
@@ -228,6 +261,11 @@ void ast_block_data_destroy(ASTBlockData* block) {
     free(block);
 }
 
+void ast_block_data_destroy_psv(ASTBlockData* block) {
+    free(block->inside);
+    free(block);
+}
+
 void ast_block_print(ASTBlockData* data, int depth) {
     INDENT_BEGIN(depth);
 
@@ -254,6 +292,13 @@ void ast_fdef_data_destroy(ASTFDefData* fdef) {
     free(fdef->name);
     for (int i = 0; i < fdef->argc; ast_destroy(fdef->argv[i++]));
     ast_destroy(fdef->body);
+}
+
+void ast_fdef_data_destroy_psv(ASTFDefData* fdef) {
+    free(fdef->name);
+    free(fdef->argv);
+    free(fdef->body);
+    free(fdef);
 }
 
 void ast_fdef_print(ASTFDefData* fdef, int i) {
