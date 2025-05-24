@@ -79,6 +79,8 @@ void ast_destroy_psv(AST* ast) {
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
+
+    free(ast);
 }
 
 void ast_print(AST* ast) { ast_print_i(ast, 0); }

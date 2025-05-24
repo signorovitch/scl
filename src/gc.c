@@ -25,7 +25,6 @@ void* gc_alloc(size_t sz, GCType type) {
 
 void gc_hack_free() {
     while (gclist) {
-        log_dbgf("freeing %p", gclist);
         GC* gc = gclist;
         gclist = gclist->nxt;
         switch (gc->type) {
