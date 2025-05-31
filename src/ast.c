@@ -27,6 +27,13 @@ AST* ast_init(ASTType type, void* data) {
     ast->data = data;
     ast->scope = NULL;
 
+    if (ast->type > AST_TYPE_MAX) {
+        log_dbgf(
+            "Attempted to create invalid AST (%i > %i) to GC: ast:%p",
+            ast->type, AST_TYPE_MAX, ast
+        );
+    }
+
     return ast;
 }
 
@@ -56,10 +63,7 @@ void ast_destroy(AST* ast) {
     }
 
     // If there're no more `AST`s linked to the scope, free.
-    if (ast->scope) {
-        ast->scope->uses--;
-        if (!ast->scope->uses) { scope_destroy_psv(ast->scope); }
-    }
+    if (ast->scope && !--ast->scope->uses) scope_destroy_psv(ast->scope);
 
     free(ast);
 }
@@ -76,6 +80,7 @@ void ast_destroy_psv(AST* ast) {
         case AST_TYPE_FDEF:  ast_fdef_data_destroy_psv(ast->data); break;
         case AST_TYPE_ARG:   ast_arg_data_destroy(ast->data); break;
         case AST_TYPE_BIF:   ast_bif_data_destroy(ast->data); break;
+        case AST_TYPE_EXC:   ast_exc_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -127,11 +132,16 @@ void ast_num_print(ASTNumData* data, int i) {
     INDENT_END;
 }
 
-ASTExcData* ast_exc_data_init(char* msg, AST* trace) {
+ASTExcData* ast_exc_data_init(const char* msg, AST* trace) {
     ASTExcData* data = malloc(sizeof(ASTExcData));
     data->msg = msg;
     data->trace = trace;
     return data;
+}
+
+void ast_exc_data_destroy(ASTExcData* exc) {
+    // `msg` is static, and `trace` will get freed in GC.
+    free(exc);
 }
 
 void ast_exc_print(ASTExcData* data, int i) {
@@ -177,8 +187,8 @@ void ast_call_data_destroy(ASTCallData* call) {
 
 void ast_call_data_destroy_psv(ASTCallData* call) {
     if (!call) return;
-    free(call->to);
-    free(call->argv);
+    call->to = NULL;
+    call->argv = NULL;
     free(call);
 }
 

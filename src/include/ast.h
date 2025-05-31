@@ -25,7 +25,7 @@ typedef enum {
     AST_TYPE_BLOCK, // A block of code (scope).
     AST_TYPE_FDEF,  // A function definition.
     AST_TYPE_ARG,   // A definition argument.
-    AST_TYPE_MAX = AST_TYPE_FDEF,
+    AST_TYPE_MAX = AST_TYPE_ARG,
 } ASTType;
 
 // An Abstract Syntax Tree.
@@ -60,11 +60,11 @@ void ast_num_print(ASTNumData*, int i);
 
 // An exception.
 typedef struct ASTEXCDATA {
-    char* msg;  // The exception message.
+    const char* msg;  // The exception message.
     AST* trace; // The previous exception.
 } ASTExcData;
-// Create a new `ASTExecData.
-ASTExcData* ast_exc_data_init(char* msg, AST* trace);
+// Create a new `ASTExecData. `msg` should be static.
+ASTExcData* ast_exc_data_init(const char* msg, AST* trace);
 // Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
 // Print an `ASTExecData`.

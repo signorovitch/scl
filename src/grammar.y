@@ -124,7 +124,13 @@ block:
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
-    //| BLOCKS exp BLOCKE { $$ = $2; }
+    // Function definitions.
+    | WORD GROUPS arg GROUPE EQ exp {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $6));
+    }
 
     | BLOCKS block BLOCKE {
         $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));
@@ -192,12 +198,5 @@ exp:
         char* to = malloc(4);
         strcpy(to, "div");
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
-    }
-
-    | WORD GROUPS arg GROUPE EQ exp {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
-        argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $6));
     }
 %%
