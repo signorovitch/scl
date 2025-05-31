@@ -88,7 +88,10 @@ void ast_destroy_psv(AST* ast) {
     free(ast);
 }
 
-void ast_print(AST* ast) { ast_print_i(ast, 0); }
+void ast_print(AST* ast) {
+    if (!ast) return;
+    ast_print_i(ast, 0);
+}
 
 void ast_print_i(AST* ast, int i) {
     INDENT_BEGIN(i);

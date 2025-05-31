@@ -13,6 +13,8 @@
 AST* exec_start(AST* ast) {
     log_dbg("Started execution.");
 
+    if (!ast) return ast;
+
     Scope* global = scope_init(NULL);
     global->uses = 1;
 
