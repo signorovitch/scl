@@ -61,8 +61,6 @@ int main(int argc, char** argv) {
 
             AST* eval = exec_start(root);
             ast_print(eval);
-            // ast_destroy(eval);
-            // ast_destroy(root);
             gc_hack_free();
         }
 

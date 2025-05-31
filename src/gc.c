@@ -2,6 +2,7 @@
 #include "include/ast.h"
 #include "include/scope.h"
 #include "include/util.h"
+#include <assert.h>
 #include <stdio.h>
 
 #include <stddef.h>
@@ -13,6 +14,8 @@ void gc_destroy(GC* gc) { free(gc); }
 void f() {}
 
 void* gc_alloc(size_t sz, GCType type) {
+    assert(type <= GC_TYPE_MAX);
+
     void* mem = malloc(sz);
     GC* gc = malloc(sizeof(GC));
 
@@ -21,6 +24,12 @@ void* gc_alloc(size_t sz, GCType type) {
     gc->marked = false;
     gc->nxt = gclist;
     gclist = gc;
+
+    if (type == GC_TYPE_AST) {
+        log_dbgf("Alloc'd AST for GC: %p", mem);
+    } else if (type == GC_TYPE_SCOPE) {
+        log_dbgf("Alloc'd scope for GC: %p", mem);
+    }
 
     return mem;
 }

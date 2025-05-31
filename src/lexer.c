@@ -26,7 +26,7 @@ void argarr_destroy(ArgArr* argarr) {
 void argarr_destroypsv(ArgArr* argarr) { free(argarr); }
 
 void argarr_add(ArgArr* argarr, AST* arg) {
-    if ((argarr->ln + 1) * argarr->sz > argarr->sz) {
+    if ((argarr->ln + 1) * sizeof(AST*) > argarr->sz) {
         argarr->sz *= 2;
         argarr->buf = realloc(argarr->buf, argarr->sz);
         log_dbgf(

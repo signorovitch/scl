@@ -9,6 +9,8 @@
 HTab* htab_init() {
     HTab* htab = malloc(sizeof(HTab));
 
+    log_dbgf("HTAB %p", htab);
+
     return htab;
 }
 

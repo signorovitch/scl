@@ -18,33 +18,16 @@ AST* exec_start(AST* ast) {
     Scope* global = scope_init(NULL);
     global->uses = 1;
 
-    // Keep track of built-in function ASTs, as they arent part of the main
-    // tree.
-    // DList* builtins = dlist_init();
-
-    for (int i = 0; i < BUILTIN_FNS_LN; i++) {
-
-        // AST* builtin_ast =
-        // ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn));
-
-        // dlist_append(builtins, builtin_ast);
-
+    for (int i = 0; i < BUILTIN_FNS_LN; i++)
         htab_ins(
             global->here, BUILTIN_FNS[i].name,
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
-    }
 
     log_dbg("Completed startup sequence.");
 
     AST* res = exec_exp(ast, global);
 
-    // Clean up built-in function ASTs.
-    /*for (int i = 0; i < builtins->ln; i++) ast_destroy(builtins->buf[i]);
-    dlist_destroy(builtins);
-    */
-
-    // scope_destroy_psv(global);
     return res;
 }
 
@@ -66,10 +49,6 @@ AST* exec_exp(AST* ast, Scope* parent) {
 AST* exec_block(AST* ast, Scope* parent) {
     ASTBlockData* block = (ASTBlockData*)ast->data;
 
-    // Blocks create their own scope, shared among their expressions.
-    // ast->scope = scope_init(parent);
-
-    // HERE
     exec_new_scope(ast, parent);
 
     // Loop through all but last ast.
@@ -120,9 +99,6 @@ AST* exec_cf(AST* ast, size_t argc, AST** argv) {
 
 AST* exec_vdef(AST* ast, Scope* parent) {
     // Use parent's scope.
-    // ast->scope = parent;
-
-    // HERE
     exec_inherit_scope(ast, parent);
 
     ASTVDefData* data = (ASTVDefData*)ast->data;
@@ -134,9 +110,6 @@ AST* exec_vdef(AST* ast, Scope* parent) {
 
 AST* exec_vref(AST* ast, Scope* parent) {
     // Use parent's scope.
-    // ast->scope = parent;
-
-    // HERE
     exec_inherit_scope(ast, parent);
     log_dbg("attempting to reference var");
     ASTVrefData* vref = (ASTVrefData*)ast->data;
@@ -159,10 +132,12 @@ AST* exec_vref(AST* ast, Scope* parent) {
 AST* exec_fdef(AST* ast, Scope* parent) {
     ast->scope = scope_init(parent);
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    AST* val = fdef->body;
+    log_dbgf("IS THIS SUSPICIOUS??? %i", fdef->body->type);
+    AST* val = ast;
     char* key = fdef->name;
     scope_add(parent, key, val);
-    return val; // Function definitions return function body.
+    // TODO: Create lambda functions.
+    return fdef->body; // Function definitions return function body.
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }
