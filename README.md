@@ -1,6 +1,6 @@
 # SCL: Simple CAS Language
 
-Version v1.0-alpha
+Version v1.0-beta
 
 SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
 [maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
