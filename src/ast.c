@@ -314,7 +314,6 @@ void ast_fdef_data_destroy(ASTFDefData* fdef) {
 void ast_fdef_data_destroy_psv(ASTFDefData* fdef) {
     free(fdef->name);
     free(fdef->argv);
-    free(fdef->body);
     free(fdef);
 }
 
@@ -327,6 +326,7 @@ void ast_fdef_print(ASTFDefData* fdef, int i) {
     INDENT_FIELD_EXT_NONL_START("body");
     ast_print_i(fdef->body, i + 2);
     INDENT_FIELD_NONL_END;
+    INDENT_END;
 }
 
 ASTArgData* ast_arg_data_init(char* name) {
