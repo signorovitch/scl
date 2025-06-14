@@ -190,7 +190,9 @@ void ast_call_data_destroy(ASTCallData* call) {
 
 void ast_call_data_destroy_psv(ASTCallData* call) {
     if (!call) return;
+    free(call->to);
     call->to = NULL;
+    free(call->argv);
     call->argv = NULL;
     free(call);
 }

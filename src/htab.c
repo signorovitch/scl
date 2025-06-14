@@ -7,7 +7,7 @@
 #include <string.h>
 
 HTab* htab_init() {
-    HTab* htab = malloc(sizeof(HTab));
+    HTab* htab = calloc(1, sizeof(HTab));
 
     log_dbgf("HTAB %p", htab);
 
@@ -31,7 +31,6 @@ void* htab_get(HTab* htab, char* key) {
 
 void htab_ins(HTab* htab, char* key, void* data) {
     size_t i = geti(key);
-    // assert((*htab)[i] == NULL);
     (*htab)[i] = data;
     log_dbgf("Inserted something to hash table @ index %lu", i);
 }
