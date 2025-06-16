@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
             inp = ln->buf;
             if (yyparse() == 0) {
                 log_dbg("Parsed successfully!\n");
-            } else printf("Parse error.\n");
+            } else { printf("Parse error.\n"); continue; }
 
 #ifdef DBG
             ast_print(root);
