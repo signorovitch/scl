@@ -125,11 +125,11 @@ exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
     // Function definitions.
-    | WORD GROUPS arg GROUPE EQ exp {
+    | WORD GROUPS arg GROUPE exp {
         size_t argc = $3->ln;
         AST** argv = $3->buf;
         argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $6));
+        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $5));
     }
 
     | BLOCKS block BLOCKE {
