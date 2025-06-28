@@ -4,7 +4,6 @@
 
 #include "include/ast.h"
 #include "include/builtin.h"
-#include "include/dlist.h"
 #include "include/exec.h"
 #include "include/htab.h"
 #include "include/scope.h"

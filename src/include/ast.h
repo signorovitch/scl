@@ -44,10 +44,6 @@ AST* ast_init_scope(ASTType type, void* data, Scope* scope);
 void ast_destroy(AST* ast);
 // Destroy an `AST`.
 void ast_destroy_psv(AST* ast);
-// Print an `AST`, recursively.
-void ast_print(AST* ast);
-// Helper function to `ast_print()`, where `i` is indentation level.
-void ast_print_i(AST* ast, int i);
 
 // A number.
 typedef double ASTNumData;
@@ -56,8 +52,6 @@ typedef double ASTNumData;
 ASTNumData* ast_num_data_init(double val);
 // Destroy an `ASTNumData`.
 void ast_num_data_destroy(ASTNumData* num);
-// Print an `ASTNumData`.
-void ast_num_print(ASTNumData*, int i);
 
 // An exception.
 typedef struct ASTEXCDATA {
@@ -68,14 +62,28 @@ typedef struct ASTEXCDATA {
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace);
 // Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
-// Print an `ASTExecData`.
-void ast_exc_print(ASTExcData*, int i);
 
-// arguments list as anonymous struct
+// A variable; associates a name with an expression.
+typedef struct {
+    char* name;
+    AST* val;
+} ASTVar;
+
+#define ARG(VAL) (ASTVar){NULL, VAL}
+#define PAR(NAME) (ASTVar){NAME, NULL}
+
+// Argument list as anonymous struct.
 #define ARGS                                                                   \
     struct {                                                                   \
         size_t argc;                                                           \
         AST** argv;                                                            \
+    }
+
+// Parameter list as anonymous struct.
+#define PARS                                                                   \
+    struct {                                                                   \
+        size_t parc;                                                           \
+        AST** parv;                                                            \
     }
 
 // A built-in function.
@@ -98,8 +106,6 @@ ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
 void ast_call_data_destroy(ASTCallData* call);
 // Destroy an `ASTCallData`.
 void ast_call_data_destroy_psv(ASTCallData* call);
-// Print an `ASTCallData`.
-void ast_call_print(ASTCallData*, int i);
 
 // A variable definition's data.
 typedef struct {
@@ -113,8 +119,6 @@ ASTVDefData* ast_vdef_data_init(char* name, AST* val);
 void ast_vdef_data_destroy(ASTVDefData* vdef);
 // Destroy an `ASTVDefData`.
 void ast_vdef_data_destroy_psv(ASTVDefData* vdef);
-// Print an `ASTVDefData`.
-void ast_vdef_print(ASTVDefData*, int depth);
 
 // A variable reference's data.
 typedef struct {
@@ -125,8 +129,6 @@ typedef struct {
 ASTVrefData* ast_vref_data_init(char* to);
 // Destroy an `ASTVRefData`.
 void ast_vref_data_destroy(ASTVrefData* call);
-// Print an `ASTVRefData`.
-void ast_vref_print(ASTVrefData*, int i);
 
 // A code block.
 typedef struct {
@@ -140,8 +142,6 @@ ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 void ast_block_data_destroy(ASTBlockData* block);
 // Destroy an `ASTBlockData`.
 void ast_block_data_destroy_psv(ASTBlockData* block);
-// Print an `ASTBlockData`.
-void ast_block_print(ASTBlockData*, int i);
 
 typedef struct {
     char* name; // Function name.
@@ -155,8 +155,6 @@ ASTFDefData* ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
 void ast_fdef_data_destroy(ASTFDefData* fdef);
 // Destroy an `ASTFDefData`.
 void ast_fdef_data_destroy_psv(ASTFDefData* fdef);
-// Print an `ASTFDefData`.
-void ast_fdef_print(ASTFDefData* fdef, int i);
 
 typedef struct {
     char* name; // Argument name.
@@ -166,8 +164,6 @@ typedef struct {
 ASTArgData* ast_arg_data_init(char* name);
 // Destroy an `ASTArgData`.
 void ast_arg_data_destroy(ASTArgData* arg);
-// Print an `ASTArgData`.
-void ast_arg_print(ASTArgData* arg, int i);
 
 // Represents a function as data.
 typedef struct {
@@ -179,8 +175,6 @@ typedef struct {
 ASTLambdaData* ast_lambda_data_init(size_t argc, AST** argv, AST* body);
 // Destroy an `ASTLambdaData`.
 void ast_lambda_data_destroy(ASTLambdaData*);
-// Print an `ASTLambdaData`.
-void ast_lambda_print(ASTLambdaData* arg, int i);
 
 // Find a name in the scope.
 AST* ast_find(Scope* scope, char* name);
