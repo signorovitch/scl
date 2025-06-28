@@ -86,13 +86,6 @@ ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));
 // Destroy an `ASTBIFData`.
 void ast_bif_data_destroy(ASTBIFData* bif);
 
-/*
- * // A list of arguments.
-typedef struct {
-    size_t argc;
-    AST** argv;
-} Args;
-*/
 // A call (to a function).
 typedef struct {
     char* to; // What the call's to.

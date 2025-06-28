@@ -39,10 +39,11 @@ AST* exec_exp(AST* ast, Scope* parent) {
             return ast_init(
                 AST_TYPE_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
             );
-        case AST_TYPE_VREF: return exec_vref(ast, parent);
-        case AST_TYPE_VDEF: return exec_vdef(ast, parent);
-        case AST_TYPE_FDEF: return exec_fdef(ast, parent);
-        default:            printf("what\n"); exit(1);
+        case AST_TYPE_VREF:   return exec_vref(ast, parent);
+        case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
+        case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
+        case AST_TYPE_LAMBDA: return exec_lambda(ast, parent);
+        default:              printf("what\n"); exit(1);
     }
 }
 
@@ -79,7 +80,8 @@ AST* exec_call(AST* ast, Scope* parent) {
         case AST_TYPE_BIF:
             ASTBIFData bifdata = fdef->data;
             return bifdata(argc, argv, parent);
-        case AST_TYPE_FDEF: return exec_cf(fdef, argc, argv);
+        case AST_TYPE_FDEF:   return exec_cf(fdef, argc, argv);
+        case AST_TYPE_LAMBDA: return exec_lambda_call(fdef, argc, argv);
         default:
             return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
     }
@@ -132,12 +134,27 @@ AST* exec_vref(AST* ast, Scope* parent) {
 AST* exec_fdef(AST* ast, Scope* parent) {
     ast->scope = scope_init(parent);
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    log_dbgf("IS THIS SUSPICIOUS??? %i", fdef->body->type);
     AST* val = ast;
     char* key = fdef->name;
     scope_add(parent, key, val);
-    // TODO: Create lambda functions.
     return fdef->body; // Function definitions return function body.
+}
+
+AST* exec_lambda(AST* ast, Scope* parent) {
+    // Executing a lambda on its own with no arguments returns itself.
+    return ast;
+}
+
+AST* exec_lambda_call(AST* ast, size_t argc, AST** argv) {
+    Scope* callscope = scope_init(ast->scope);
+    ASTFDefData* lambda = (ASTFDefData*)ast->data;
+    for (int i = 0; i < argc; i++) {
+        char* key = ((ASTArgData*)lambda->argv[i]->data)->name;
+        AST* val = argv[i];
+        scope_add(callscope, key, val);
+    }
+
+    return exec_exp(lambda->body, callscope);
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }

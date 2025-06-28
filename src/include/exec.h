@@ -20,6 +20,10 @@ AST* exec_vdef(AST* ast, Scope* parent);
 AST* exec_vref(AST* ast, Scope* parent);
 // Execute a function definition.
 AST* exec_fdef(AST* ast, Scope* parent);
+// Execute a lambda expression.
+AST* exec_lambda(AST* ast, Scope* parent);
+// Execute a lambda call.
+AST* exec_lambda_call(AST* ast, size_t argc, AST** argv);
 // Print the result of an execution.
 void exec_print(double n);
 
