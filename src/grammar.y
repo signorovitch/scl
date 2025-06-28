@@ -47,6 +47,8 @@
 
 %token NL // Newline.
 
+%token BACKSLASH
+
 %left ADD SUB
 %left MUL DIV
 %precedence NEG
@@ -131,6 +133,15 @@ exp:
         argarr_destroypsv($3);
         $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $5));
     }
+
+    // Lambda definitions.
+    | BACKSLASH GROUPS arg GROUPE exp {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(argc, argv, $5));
+    }
+
 
     | BLOCKS block BLOCKE {
         $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));
