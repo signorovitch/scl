@@ -40,10 +40,8 @@ typedef struct {
 AST* ast_init(ASTType type, void* data);
 // Create a new `AST` with a specified scope.
 AST* ast_init_scope(ASTType type, void* data, Scope* scope);
-// Destroy an `AST`, recursively.
-void ast_destroy(AST* ast);
 // Destroy an `AST`.
-void ast_destroy_psv(AST* ast);
+void ast_destroy(AST* ast);
 
 // A number.
 typedef double ASTNumData;
@@ -62,15 +60,6 @@ typedef struct ASTEXCDATA {
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace);
 // Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
-
-// A variable; associates a name with an expression.
-typedef struct {
-    char* name;
-    AST* val;
-} ASTVar;
-
-#define ARG(VAL) (ASTVar){NULL, VAL}
-#define PAR(NAME) (ASTVar){NAME, NULL}
 
 // Argument list as anonymous struct.
 #define ARGS                                                                   \
@@ -94,33 +83,41 @@ ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));
 // Destroy an `ASTBIFData`.
 void ast_bif_data_destroy(ASTBIFData* bif);
 
-// A call (to a function).
+// A lambda.
 typedef struct {
-    char* to; // What the call's to.
-    ARGS;     // argument list
+    PARS;      // The parameters the lambda can accept.
+    AST* body; // The body expression to be executed.
+} ASTLambdaData;
+
+// Creates a new `ASTLambdaData`.
+ASTLambdaData* ast_lambda_data_init(size_t parc, AST** parv, AST* body);
+// Destroy an `ASTLambdaData`.
+void ast_lambda_data_destroy(ASTLambdaData*);
+
+// A call.
+typedef struct {
+    ARGS;    // The arguments the call is made with.
+    AST* to; // The expression the call is to (probably either lambda or
+             // builtin).
 } ASTCallData;
 
 // Create a new `ASTCallData`.
-ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
-// Destroy an `ASTCallData` recursively.
-void ast_call_data_destroy(ASTCallData* call);
+ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* to);
 // Destroy an `ASTCallData`.
-void ast_call_data_destroy_psv(ASTCallData* call);
+void ast_call_data_destroy(ASTCallData* call);
 
-// A variable definition's data.
+// A variable definition. Associates a name with an expression.
 typedef struct {
     char* name;
-    AST* val;
+    AST* exp;
 } ASTVDefData;
 
 // Create a new `ASTVDefData`.
-ASTVDefData* ast_vdef_data_init(char* name, AST* val);
-// Destroys the `ASTVDefData`, `ASTVDefData->name`, and `ASTVDefData->val`.
-void ast_vdef_data_destroy(ASTVDefData* vdef);
+ASTVDefData* ast_vdef_data_init(char* name, AST* exp);
 // Destroy an `ASTVDefData`.
-void ast_vdef_data_destroy_psv(ASTVDefData* vdef);
+void ast_vdef_data_destroy(ASTVDefData* vdef);
 
-// A variable reference's data.
+// A variable reference.
 typedef struct {
     char* to; // What the reference's to.
 } ASTVrefData;
@@ -165,6 +162,7 @@ ASTArgData* ast_arg_data_init(char* name);
 // Destroy an `ASTArgData`.
 void ast_arg_data_destroy(ASTArgData* arg);
 
+/*
 // Represents a function as data.
 typedef struct {
     ARGS;
@@ -176,6 +174,7 @@ ASTLambdaData* ast_lambda_data_init(size_t argc, AST** argv, AST* body);
 // Destroy an `ASTLambdaData`.
 void ast_lambda_data_destroy(ASTLambdaData*);
 
+*/
 // Find a name in the scope.
 AST* ast_find(Scope* scope, char* name);
 

@@ -126,31 +126,26 @@ block:
 exp:
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
-    // Function definitions.
+    // Function definitions. Convert to VDef of Lambda.
     | WORD GROUPS arg GROUPE exp {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
+        size_t parc = $3->ln;
+        AST** parv = $3->buf;
         argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_FDEF, ast_fdef_data_init($1, argc, argv, $5));
+        $$ = ast_init(AST_TYPE_VDEF, ast_vdef_data_init(
+            $1,
+            ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(
+                parc, parv, $5
+            )
+        ));
     }
 
     // Lambda definitions.
     | BACKSLASH GROUPS arg GROUPE exp {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
+        size_t parc = $3->ln;
+        AST** parv = $3->buf;
         argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(argc, argv, $5));
+        $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(parc, parv, $5));
     }
-
-    /*
-    // Inline call.
-    | exp GROUPS arg GROUPE {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
-        argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_CALL, ($1, argc, argv));
-    }
-    */
 
     | BLOCKS block BLOCKE {
         $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));

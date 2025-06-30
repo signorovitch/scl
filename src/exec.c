@@ -64,7 +64,8 @@ AST* exec_call(AST* ast, Scope* parent) {
     ASTCallData* data = (ASTCallData*)ast->data;
     size_t argc = data->argc;
     AST** argv = data->argv;
-    char* fname = data->to;
+    // char* fname = data->to;
+    AST* exp = data->to;
 
     ast->scope = parent;
 
