@@ -1,36 +1,20 @@
-Lambda
-    size_t parmc
-    AST** parmv
-    AST* body
+f = \(x) 2 * x
+g = \(h) \(x) h(h(x))
 
-Call
-    Lambda to
-        size_t parmc
-        AST** parmv
-    size_t argc
-    AST** argv
+f(2) => 4
+g(f)(2) => 8
 
-VDef
-    char* name
-    AST* exp
-
-(\(x) x * 2)(4)
-
-Call
-to:
-    Lambda
-    parc: 1
-    parv: [ x ]
-    body: 
-        Call
-        to:
-            BIF(mul)
-         argc: 2
-         argv: [
-             VRef
-             name: x
-
-             2
-         ]
-argc: 1
-argv: [ 4 ]
+CALL
+ argc: 1
+ argv: [ 2 ]
+ to:
+  CALL
+   argc: 1
+   argv: [
+    VREF
+     name: f
+   ]
+   to:
+    VREF
+     name: g
+ fname: NULL

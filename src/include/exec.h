@@ -23,7 +23,7 @@ AST* exec_fdef(AST* ast, Scope* parent);
 // Execute a lambda expression.
 AST* exec_lambda(AST* ast, Scope* parent);
 // Execute a lambda call.
-AST* exec_lambda_call(AST* ast, size_t argc, AST** argv);
+AST* exec_lambda_call(AST* ast, size_t argc, AST** argv, Scope* parent);
 // Print the result of an execution.
 void exec_print(double n);
 

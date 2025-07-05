@@ -96,13 +96,12 @@ void ast_lambda_data_destroy(ASTLambdaData*);
 
 // A call.
 typedef struct {
-    ARGS;    // The arguments the call is made with.
-    AST* to; // The expression the call is to (probably either lambda or
-             // builtin).
+    ARGS;        // The arguments the call is made with.
+    AST* to;     // The expression the call is to.
 } ASTCallData;
 
 // Create a new `ASTCallData`.
-ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* to);
+ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* to, char* fname);
 // Destroy an `ASTCallData`.
 void ast_call_data_destroy(ASTCallData* call);
 
@@ -162,20 +161,7 @@ ASTArgData* ast_arg_data_init(char* name);
 // Destroy an `ASTArgData`.
 void ast_arg_data_destroy(ASTArgData* arg);
 
-/*
-// Represents a function as data.
-typedef struct {
-    ARGS;
-    AST* body;
-} ASTLambdaData;
-
-// Creates a new `ASTLambdaData`.
-ASTLambdaData* ast_lambda_data_init(size_t argc, AST** argv, AST* body);
-// Destroy an `ASTLambdaData`.
-void ast_lambda_data_destroy(ASTLambdaData*);
-
-*/
-// Find a name in the scope.
+// Find the expression associated with a name in the nearest scope.
 AST* ast_find(Scope* scope, char* name);
 
 #endif

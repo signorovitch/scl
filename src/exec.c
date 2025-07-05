@@ -41,7 +41,7 @@ AST* exec_exp(AST* ast, Scope* parent) {
         case AST_TYPE_VREF:   return exec_vref(ast, parent);
         case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
         case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
-        case AST_TYPE_LAMBDA: return exec_lambda(ast, parent);
+        case AST_TYPE_LAMBDA: return ast;
         default:              printf("what\n"); exit(1);
     }
 }
@@ -60,31 +60,39 @@ AST* exec_block(AST* ast, Scope* parent) {
 }
 
 AST* exec_call(AST* ast, Scope* parent) {
-    log_dbg("Started call execution.");
-    ASTCallData* data = (ASTCallData*)ast->data;
-    size_t argc = data->argc;
-    AST** argv = data->argv;
-    // char* fname = data->to;
-    AST* exp = data->to;
+    ASTCallData* calldata = (ASTCallData*)ast->data;
 
-    ast->scope = parent;
+    AST* to = exec_exp(calldata->to, parent);
 
-    AST* fdef = ast_find(ast->scope, fname);
+    switch (to->type) {
+        case AST_TYPE_BIF:
+            ASTBIFData bifdata = to->data;
+            return bifdata(calldata->argc, calldata->argv, parent);
+        case AST_TYPE_LAMBDA:
+        default:
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("What have you done?", NULL)
+            );
+    }
 
-    if (fdef == NULL)
+    if (data->fname && data->to == NULL) { // If call to name.
+        AST* fexp = ast_find(ast->scope, data->fname);
+        if (fexp) {
+        } else
+            // TODO: make exception messages not static so they cam be more
+            // helpful.
+            return ast_init(
+                AST_TYPE_EXC,
+                ast_exc_data_init("Could not find function.", NULL)
+            );
+    } else lambda = exec_exp(data->to, parent);
+
+    if (lambda->type != AST_TYPE_LAMBDA)
         return ast_init(
-            AST_TYPE_EXC, ast_exc_data_init("No such function found.", NULL)
+            AST_TYPE_EXC, ast_exc_data_init("Call not to function.", NULL)
         );
 
-    switch (fdef->type) {
-        case AST_TYPE_BIF:
-            ASTBIFData bifdata = fdef->data;
-            return bifdata(argc, argv, parent);
-        case AST_TYPE_FDEF:   return exec_cf(fdef, argc, argv);
-        case AST_TYPE_LAMBDA: return exec_lambda_call(fdef, argc, argv);
-        default:
-            return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
-    }
+    return exec_lambda_call(lambda, data->argc, data->argv, parent);
 }
 
 AST* exec_cf(AST* ast, size_t argc, AST** argv) {
