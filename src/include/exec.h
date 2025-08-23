@@ -12,8 +12,6 @@ AST* exec_exp(AST* ast, Scope* parent);
 AST* exec_block(AST* ast, Scope* parent);
 // Execute a call.
 AST* exec_call(AST* ast, Scope* parent);
-// Execute a custom function call.
-AST* exec_cf(AST* ast, size_t argc, AST** argv);
 // Execute a variable definition.
 AST* exec_vdef(AST* ast, Scope* parent);
 // Execute a variable reference.
@@ -21,9 +19,7 @@ AST* exec_vref(AST* ast, Scope* parent);
 // Execute a function definition.
 AST* exec_fdef(AST* ast, Scope* parent);
 // Execute a lambda expression.
-AST* exec_lambda(AST* ast, Scope* parent);
-// Execute a lambda call.
-AST* exec_lambda_call(AST* ast, size_t argc, AST** argv, Scope* parent);
+AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent);
 // Print the result of an execution.
 void exec_print(double n);
 

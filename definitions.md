@@ -18,3 +18,8 @@ CALL
     VREF
      name: g
  fname: NULL
+
+
+expression + arguments = call = expression
+expression + parameters = lambda = expression
+expression + name = variable = expression

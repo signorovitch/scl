@@ -1,4 +1,6 @@
 #include "include/ast_print.h"
+#include "include/ast.h"
+#include "include/builtin.h"
 #include "include/dstr.h"
 #include "include/util.h"
 #include <stdio.h>
@@ -12,7 +14,8 @@ static char* asttype_names[] = {
     [AST_TYPE_EXC] = "EXCEPTION",
     [AST_TYPE_FDEF] = "FUNCTION DEFINITION",
     [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
-    [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION"
+    [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
+    [AST_TYPE_BIF] = "BUILTIN FUNCTION"
 };
 
 void ast_print(AST* ast) {
@@ -39,6 +42,7 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_FDEF:   ast_fdef_print(ast->data, i + 2); break;
         case AST_TYPE_ARG:    ast_arg_print(ast->data, i + 2); break;
         case AST_TYPE_LAMBDA: ast_lambda_print(ast->data, i + 2); break;
+        case AST_TYPE_BIF:    ast_bif_print(ast->data, i + 2); break;
         default:              exit(1);
     }
     INDENT_FIELD_NONL_END;
@@ -72,9 +76,11 @@ void ast_call_print(ASTCallData* data, int i) {
     INDENT_BEGIN(i);
 
     INDENT_TITLE("ASTCallData", data);
-    INDENT_FIELD("to", "%s", data->to);
     INDENT_FIELD("argc", "%ld", data->argc);
     INDENT_FIELD_LIST("argv", data->argv, data->argc, ast_print_i);
+    INDENT_FIELD_EXT_NONL_START("exp");
+    ast_print_i(data->exp, i + 2);
+    INDENT_FIELD_NONL_END;
 
     INDENT_END;
 }
@@ -83,8 +89,8 @@ void ast_vdef_print(ASTVDefData* vdef, int depth) {
 
     INDENT_TITLE("ASTVDefData", vdef);
     INDENT_FIELD("name", "%s", vdef->name);
-    INDENT_FIELD_EXT_NONL_START("val");
-    ast_print_i(vdef->val, depth + 2); // 2 because already indented.
+    INDENT_FIELD_EXT_NONL_START("exp");
+    ast_print_i(vdef->exp, depth + 2); // 2 because already indented.
     INDENT_FIELD_NONL_END;
 
     INDENT_END;
@@ -130,10 +136,26 @@ void ast_arg_print(ASTArgData* arg, int i) {
 void ast_lambda_print(ASTLambdaData* lambda, int i) {
     INDENT_BEGIN(i)
     INDENT_TITLE("ASTLambdaData", lambda);
-    INDENT_FIELD("argc", "%ld", lambda->argc);
-    INDENT_FIELD_LIST("argv", lambda->argv, lambda->argc, ast_print_i);
+    INDENT_FIELD("parc", "%ld", lambda->parc);
+    INDENT_FIELD_LIST("parv", lambda->parv, lambda->parc, ast_print_i);
     INDENT_FIELD_EXT_NONL_START("body");
     ast_print_i(lambda->body, i + 2);
     INDENT_FIELD_NONL_END;
+    INDENT_END;
+}
+
+void ast_bif_print(ASTBIFData* bif, int i) {
+    INDENT_BEGIN(i);
+    INDENT_TITLE("ASTBIFData", bif);
+
+    char* name = "unknown";
+
+    for (int i = 0; i < BUILTIN_FNS_LN; i++)
+        if ((void*)BUILTIN_FNS[i].fn == bif) {
+            name = BUILTIN_FNS[i].name;
+            break;
+        }
+
+    INDENT_FIELD("name", "%s", name);
     INDENT_END;
 }

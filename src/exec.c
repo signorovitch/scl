@@ -41,6 +41,7 @@ AST* exec_exp(AST* ast, Scope* parent) {
         case AST_TYPE_VREF:   return exec_vref(ast, parent);
         case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
         case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
+        case AST_TYPE_BIF:
         case AST_TYPE_LAMBDA: return ast;
         default:              printf("what\n"); exit(1);
     }
@@ -62,49 +63,19 @@ AST* exec_block(AST* ast, Scope* parent) {
 AST* exec_call(AST* ast, Scope* parent) {
     ASTCallData* calldata = (ASTCallData*)ast->data;
 
-    AST* to = exec_exp(calldata->to, parent);
+    AST* exp = exec_exp(calldata->exp, parent);
 
-    switch (to->type) {
+    switch (exp->type) {
         case AST_TYPE_BIF:
-            ASTBIFData bifdata = to->data;
+            ASTBIFData bifdata = exp->data;
             return bifdata(calldata->argc, calldata->argv, parent);
         case AST_TYPE_LAMBDA:
+            return exec_lambda(calldata->argc, calldata->argv, exp, parent);
         default:
             return ast_init(
-                AST_TYPE_EXC, ast_exc_data_init("What have you done?", NULL)
+                AST_TYPE_EXC, ast_exc_data_init("Uncallable.", NULL)
             );
     }
-
-    if (data->fname && data->to == NULL) { // If call to name.
-        AST* fexp = ast_find(ast->scope, data->fname);
-        if (fexp) {
-        } else
-            // TODO: make exception messages not static so they cam be more
-            // helpful.
-            return ast_init(
-                AST_TYPE_EXC,
-                ast_exc_data_init("Could not find function.", NULL)
-            );
-    } else lambda = exec_exp(data->to, parent);
-
-    if (lambda->type != AST_TYPE_LAMBDA)
-        return ast_init(
-            AST_TYPE_EXC, ast_exc_data_init("Call not to function.", NULL)
-        );
-
-    return exec_lambda_call(lambda, data->argc, data->argv, parent);
-}
-
-AST* exec_cf(AST* ast, size_t argc, AST** argv) {
-    Scope* callscope = scope_init(ast->scope);
-    ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    for (int i = 0; i < argc; i++) {
-        char* key = ((ASTArgData*)fdef->argv[i]->data)->name;
-        AST* val = argv[i];
-        scope_add(callscope, key, val);
-    }
-
-    return exec_exp(fdef->body, callscope);
 }
 
 AST* exec_vdef(AST* ast, Scope* parent) {
@@ -112,7 +83,7 @@ AST* exec_vdef(AST* ast, Scope* parent) {
     exec_inherit_scope(ast, parent);
 
     ASTVDefData* data = (ASTVDefData*)ast->data;
-    AST* val = data->val;
+    AST* val = data->exp;
     char* key = data->name;
     scope_add(parent, key, val); // Add variable definition to parent scope.
     return exec_exp(val, parent);
@@ -148,16 +119,11 @@ AST* exec_fdef(AST* ast, Scope* parent) {
     return fdef->body; // Function definitions return function body.
 }
 
-AST* exec_lambda(AST* ast, Scope* parent) {
-    // Executing a lambda on its own with no arguments returns itself.
-    return ast;
-}
-
-AST* exec_lambda_call(AST* ast, size_t argc, AST** argv) {
-    Scope* callscope = scope_init(ast->scope);
-    ASTFDefData* lambda = (ASTFDefData*)ast->data;
+AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
+    Scope* callscope = scope_init(parent);
+    ASTLambdaData* lambda = (ASTLambdaData*)exp->data;
     for (int i = 0; i < argc; i++) {
-        char* key = ((ASTArgData*)lambda->argv[i]->data)->name;
+        char* key = ((ASTArgData*)lambda->parv[i]->data)->name;
         AST* val = argv[i];
         scope_add(callscope, key, val);
     }

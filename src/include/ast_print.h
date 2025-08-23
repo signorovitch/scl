@@ -35,4 +35,7 @@ void ast_arg_print(ASTArgData* arg, int i);
 // Print an `ASTLambdaData`.
 void ast_lambda_print(ASTLambdaData* arg, int i);
 
+// Print an `ASTBIFData`.
+void ast_bif_print(ASTBIFData* arg, int i);
+
 #endif

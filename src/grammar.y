@@ -4,6 +4,7 @@
     #include "../../src/include/ast.h"
     #include "../../src/include/lexer.h"
     #include "../../src/include/dlist.h"
+    #include "../../src/include/builtin.h"
 
     int yylex(void);
     void yyerror(char const*);
@@ -14,6 +15,7 @@
 %code requires {
     #include "../../src/include/ast.h"
     #include "../../src/include/dlist.h"
+    #include "../../src/include/builtin.h"
 }
 
 %union {
@@ -136,7 +138,7 @@ exp:
             $1,
             ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(
                 parc, parv, $5
-            )
+            ))
         ));
     }
 
@@ -148,7 +150,7 @@ exp:
         $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(parc, parv, $5));
     }
 
-    // Expression call.
+    // Call.
     | exp GROUPS arg GROUPE {
         size_t argc = $3->ln;
         AST** argv = $3->buf;
@@ -156,8 +158,7 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
             argc,
             argv,
-            $1,
-            NULL
+            $1
         ));
     }
 
@@ -173,7 +174,15 @@ exp:
         argv[1] = $2;
         char* to = malloc(4);
         strcpy(to, "mul");
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(argc, argv, NULL, to));
+        $$ = ast_init(AST_TYPE_CALL,
+            ast_call_data_init(
+                2,
+                argv,
+                ast_init(AST_TYPE_BIF,
+                    ast_bif_data_init(builtin_sub)
+                )
+            )
+        );
     }
 
     // Group.
@@ -193,35 +202,51 @@ exp:
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        char* to = malloc(4);
-        strcpy(to, "sum");
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
+        $$ = ast_init(AST_TYPE_CALL,
+            ast_call_data_init(
+                2,
+                argv,
+                ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sum))
+            )
+        );
     }
 
     | exp SUB exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        char* to = malloc(4);
-        strcpy(to, "sub");
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
+        $$ = ast_init(AST_TYPE_CALL,
+            ast_call_data_init(
+                2,
+                argv,
+                ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_sub))
+            )
+        );
     }
 
     | exp MUL exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        char* to = malloc(4);
-        strcpy(to, "mul");
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
+        $$ = ast_init(AST_TYPE_CALL,
+            ast_call_data_init(
+                2,
+                argv,
+                ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_mul))
+            )
+        );
     }
 
     | exp DIV exp {
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = $1;
         argv[1] = $3;
-        char* to = malloc(4);
-        strcpy(to, "div");
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(to, 2, argv));
+        $$ = ast_init(AST_TYPE_CALL,
+            ast_call_data_init(
+                2,
+                argv,
+                ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_div))
+            )
+        );
     }
 %%

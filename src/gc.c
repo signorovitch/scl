@@ -48,7 +48,7 @@ void gc_hack_free() {
                         ((AST*)gc->p)->type, AST_TYPE_MAX, gc, gc->p
                     );
                 }
-                ast_destroy_psv(gc->p);
+                ast_destroy(gc->p);
                 break;
             case GC_TYPE_SCOPE: scope_destroy_psv(gc->p); break;
         }

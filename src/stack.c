@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <stdio.h>
+#include <stdio.h> // IWYU pragma: keep. Req by util macros.
 #include <string.h>
 
 #include "include/stack.h"

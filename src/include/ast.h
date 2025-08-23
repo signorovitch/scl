@@ -97,11 +97,11 @@ void ast_lambda_data_destroy(ASTLambdaData*);
 // A call.
 typedef struct {
     ARGS;        // The arguments the call is made with.
-    AST* to;     // The expression the call is to.
+    AST* exp;     // The expression the call is to.
 } ASTCallData;
 
 // Create a new `ASTCallData`.
-ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* to, char* fname);
+ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* exp);
 // Destroy an `ASTCallData`.
 void ast_call_data_destroy(ASTCallData* call);
 

@@ -103,13 +103,12 @@ void ast_lambda_data_destroy(ASTLambdaData* lambda) {
 
 // Call.
 
-ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* to, char* fname) {
+ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* exp) {
     talloc(ASTCallData, call);
 
-    call->to = to;
+    call->exp = exp;
     call->argc = argc;
     call->argv = argv;
-    call->fname = fname;
 
     return call;
 }
