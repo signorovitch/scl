@@ -28,7 +28,8 @@ AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
 }
 
 AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
-    log_dbg("Got here");
+    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
@@ -63,7 +64,8 @@ AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
 }
 
 AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
-    log_dbg("Got here");
+    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
@@ -98,7 +100,8 @@ AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
 }
 
 AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
-    log_dbg("Got here");
+    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
         return ast_init(
@@ -130,4 +133,8 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
     }
 
     return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+}
+
+AST* builtin_die(size_t argc, AST** argv, Scope* parent) {
+    return ast_init(AST_TYPE_EXC, ast_exc_data_init("exit", NULL));
 }

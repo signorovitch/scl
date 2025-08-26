@@ -15,6 +15,9 @@ AST* builtin_mul(size_t argc, AST** argv, Scope* parent);
 // Divide nums.
 AST* builtin_div(size_t argc, AST** argv, Scope* parent);
 
+// Die.
+AST* builtin_die(size_t argc, AST** argv, Scope* parent);
+
 struct builtin_data {
     char* name;
     AST* (*fn)(size_t argc, AST** argv, Scope* parent);
@@ -25,6 +28,7 @@ static struct builtin_data BUILTIN_FNS[] = {
     { "sub", builtin_sub },
     { "mul", builtin_mul },
     { "div", builtin_div },
+    { "die", builtin_die },
 };
 #define BUILTIN_FNS_LN (arrln(BUILTIN_FNS))
 

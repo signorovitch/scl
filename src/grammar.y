@@ -158,6 +158,17 @@ exp:
         ));
     }
 
+    // Call (hacky convenient form).
+    | WORD GROUPS GROUPE {
+        size_t argc = 0;
+        AST** argv = NULL;
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            ast_init(AST_TYPE_VREF, ast_vref_data_init($1))
+        ));
+    }
+
     // Function definitions. Convert to VDef of Lambda.
     | WORD GROUPS arg GROUPE exp {
         size_t parc = $3->ln;
