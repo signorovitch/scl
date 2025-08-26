@@ -1,8 +1,8 @@
-#include "include/dlist.h"
-#include "include/util.h"
-
 #include <stddef.h>
 #include <stdio.h> // IWYU pragma: keep. Req by util macros.
+
+#include "include/dlist.h"
+#include "include/util.h"
 
 DList* dlist_init(void) {
     DList* dlist = malloc(sizeof(DList));
