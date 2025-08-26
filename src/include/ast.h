@@ -18,13 +18,14 @@ typedef enum {
     AST_TYPE_LIST, // A list (variable size, variable type).
 
     // Misc. types.
-    AST_TYPE_BIF,   // Built-in function.
-    AST_TYPE_CALL,  // A function call.
-    AST_TYPE_VDEF,  // A variable definition.
-    AST_TYPE_VREF,  // A variable reference.
-    AST_TYPE_BLOCK, // A block of code (scope).
-    AST_TYPE_FDEF,  // A function definition.
-    AST_TYPE_ARG,   // A definition argument.
+    AST_TYPE_BIF,    // Built-in function.
+    AST_TYPE_CALL,   // A function call.
+    AST_TYPE_VDEF,   // A variable definition.
+    AST_TYPE_VREF,   // A variable reference.
+    AST_TYPE_BLOCK,  // A block of code (scope).
+    AST_TYPE_FDEF,   // A function definition.
+    AST_TYPE_LAMBDA, // An anonymous function definition.
+    AST_TYPE_ARG,    // A definition argument.
     AST_TYPE_MAX = AST_TYPE_ARG,
 } ASTType;
 
@@ -39,14 +40,8 @@ typedef struct {
 AST* ast_init(ASTType type, void* data);
 // Create a new `AST` with a specified scope.
 AST* ast_init_scope(ASTType type, void* data, Scope* scope);
-// Destroy an `AST`, recursively.
-void ast_destroy(AST* ast);
 // Destroy an `AST`.
-void ast_destroy_psv(AST* ast);
-// Print an `AST`, recursively.
-void ast_print(AST* ast);
-// Helper function to `ast_print()`, where `i` is indentation level.
-void ast_print_i(AST* ast, int i);
+void ast_destroy(AST* ast);
 
 // A number.
 typedef double ASTNumData;
@@ -55,20 +50,30 @@ typedef double ASTNumData;
 ASTNumData* ast_num_data_init(double val);
 // Destroy an `ASTNumData`.
 void ast_num_data_destroy(ASTNumData* num);
-// Print an `ASTNumData`.
-void ast_num_print(ASTNumData*, int i);
 
 // An exception.
 typedef struct ASTEXCDATA {
-    const char* msg;  // The exception message.
-    AST* trace; // The previous exception.
+    const char* msg; // The exception message.
+    AST* trace;      // The previous exception.
 } ASTExcData;
 // Create a new `ASTExecData. `msg` should be static.
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace);
 // Destroy an `ASTExecData`.
 void ast_exc_data_destroy(ASTExcData* exc);
-// Print an `ASTExecData`.
-void ast_exc_print(ASTExcData*, int i);
+
+// Argument list as anonymous struct.
+#define ARGS                                                                   \
+    struct {                                                                   \
+        size_t argc;                                                           \
+        AST** argv;                                                            \
+    }
+
+// Parameter list as anonymous struct.
+#define PARS                                                                   \
+    struct {                                                                   \
+        size_t parc;                                                           \
+        AST** parv;                                                            \
+    }
 
 // A built-in function.
 typedef AST* (*ASTBIFData)(size_t argc, AST** argv, Scope* scope);
@@ -78,38 +83,40 @@ ASTBIFData* ast_bif_data_init(AST* fn(size_t, AST**, Scope*));
 // Destroy an `ASTBIFData`.
 void ast_bif_data_destroy(ASTBIFData* bif);
 
-// A call (to a function).
+// A lambda.
 typedef struct {
-    char* to;    // What the call's to.
-    size_t argc; // Argument count.
-    AST** argv;  // Argument vector.
+    PARS;      // The parameters the lambda can accept.
+    AST* body; // The body expression to be executed.
+} ASTLambdaData;
+
+// Creates a new `ASTLambdaData`.
+ASTLambdaData* ast_lambda_data_init(size_t parc, AST** parv, AST* body);
+// Destroy an `ASTLambdaData`.
+void ast_lambda_data_destroy(ASTLambdaData*);
+
+// A call.
+typedef struct {
+    ARGS;        // The arguments the call is made with.
+    AST* exp;     // The expression the call is to.
 } ASTCallData;
 
 // Create a new `ASTCallData`.
-ASTCallData* ast_call_data_init(char* to, size_t argc, AST** argv);
-// Destroy an `ASTCallData` recursively.
-void ast_call_data_destroy(ASTCallData* call);
+ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* exp);
 // Destroy an `ASTCallData`.
-void ast_call_data_destroy_psv(ASTCallData *call);
-// Print an `ASTCallData`.
-void ast_call_print(ASTCallData*, int i);
+void ast_call_data_destroy(ASTCallData* call);
 
-// A variable definition's data.
+// A variable definition. Associates a name with an expression.
 typedef struct {
     char* name;
-    AST* val;
+    AST* exp;
 } ASTVDefData;
 
 // Create a new `ASTVDefData`.
-ASTVDefData* ast_vdef_data_init(char* name, AST* val);
-// Destroys the `ASTVDefData`, `ASTVDefData->name`, and `ASTVDefData->val`.
-void ast_vdef_data_destroy(ASTVDefData* vdef);
+ASTVDefData* ast_vdef_data_init(char* name, AST* exp);
 // Destroy an `ASTVDefData`.
-void ast_vdef_data_destroy_psv(ASTVDefData* vdef);
-// Print an `ASTVDefData`.
-void ast_vdef_print(ASTVDefData*, int depth);
+void ast_vdef_data_destroy(ASTVDefData* vdef);
 
-// A variable reference's data.
+// A variable reference.
 typedef struct {
     char* to; // What the reference's to.
 } ASTVrefData;
@@ -118,8 +125,6 @@ typedef struct {
 ASTVrefData* ast_vref_data_init(char* to);
 // Destroy an `ASTVRefData`.
 void ast_vref_data_destroy(ASTVrefData* call);
-// Print an `ASTVRefData`.
-void ast_vref_print(ASTVrefData*, int i);
 
 // A code block.
 typedef struct {
@@ -132,15 +137,12 @@ ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 // Destroy an `ASTBlockData`, recursively.
 void ast_block_data_destroy(ASTBlockData* block);
 // Destroy an `ASTBlockData`.
-void ast_block_data_destroy_psv(ASTBlockData *block);
-// Print an `ASTBlockData`.
-void ast_block_print(ASTBlockData*, int i);
+void ast_block_data_destroy_psv(ASTBlockData* block);
 
 typedef struct {
-    char* name;  // Function name.
-    size_t argc; // Argument count.
-    AST** argv;  // Argument vector.
-    AST* body;   // Function body.
+    char* name; // Function name.
+    ARGS;       // Function args.
+    AST* body;  // Function body.
 } ASTFDefData;
 
 // Create a new `ASTFDefData`.
@@ -149,8 +151,6 @@ ASTFDefData* ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
 void ast_fdef_data_destroy(ASTFDefData* fdef);
 // Destroy an `ASTFDefData`.
 void ast_fdef_data_destroy_psv(ASTFDefData* fdef);
-// Print an `ASTFDefData`.
-void ast_fdef_print(ASTFDefData* fdef, int i);
 
 typedef struct {
     char* name; // Argument name.
@@ -160,10 +160,8 @@ typedef struct {
 ASTArgData* ast_arg_data_init(char* name);
 // Destroy an `ASTArgData`.
 void ast_arg_data_destroy(ASTArgData* arg);
-// Print an `ASTArgData`.
-void ast_arg_print(ASTArgData* arg, int i);
 
-// Find a name in the scope.
+// Find the expression associated with a name in the nearest scope.
 AST* ast_find(Scope* scope, char* name);
 
 #endif

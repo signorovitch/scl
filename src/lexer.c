@@ -116,6 +116,7 @@ int yylex() {
         case '{':  return BLOCKS;
         case '}':  return BLOCKE;
         case '=':  return EQ;
+        case '\\': return BACKSLASH;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

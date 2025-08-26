@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "include/ast.h"
+#include "include/ast_print.h"
 #include "include/dstr.h"
 #include "include/exec.h"
 #include "include/gc.h"

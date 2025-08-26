@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <signal.h>
+
 // Most of this file is cursed printing macros for `ast_print()`. Do not attempt
 // to comprehend.
 
@@ -9,6 +11,9 @@
 
 // Get the length of an array.
 #define arrln(A) (sizeof(A)/sizeof(*A))
+
+// Trap GDB &c.
+#define TRAP() RAISE(SIGTRAP)
 
 #ifdef DBG // Debug macros
 

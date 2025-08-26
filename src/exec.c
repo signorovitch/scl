@@ -4,7 +4,6 @@
 
 #include "include/ast.h"
 #include "include/builtin.h"
-#include "include/dlist.h"
 #include "include/exec.h"
 #include "include/htab.h"
 #include "include/scope.h"
@@ -39,10 +38,12 @@ AST* exec_exp(AST* ast, Scope* parent) {
             return ast_init(
                 AST_TYPE_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
             );
-        case AST_TYPE_VREF: return exec_vref(ast, parent);
-        case AST_TYPE_VDEF: return exec_vdef(ast, parent);
-        case AST_TYPE_FDEF: return exec_fdef(ast, parent);
-        default:            printf("what\n"); exit(1);
+        case AST_TYPE_VREF:   return exec_vref(ast, parent);
+        case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
+        case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
+        case AST_TYPE_BIF:
+        case AST_TYPE_LAMBDA: return ast;
+        default:              printf("what\n"); exit(1);
     }
 }
 
@@ -60,41 +61,21 @@ AST* exec_block(AST* ast, Scope* parent) {
 }
 
 AST* exec_call(AST* ast, Scope* parent) {
-    log_dbg("Started call execution.");
-    ASTCallData* data = (ASTCallData*)ast->data;
-    size_t argc = data->argc;
-    AST** argv = data->argv;
-    char* fname = data->to;
+    ASTCallData* calldata = (ASTCallData*)ast->data;
 
-    ast->scope = parent;
+    AST* exp = exec_exp(calldata->exp, parent);
 
-    AST* fdef = ast_find(ast->scope, fname);
-
-    if (fdef == NULL)
-        return ast_init(
-            AST_TYPE_EXC, ast_exc_data_init("No such function found.", NULL)
-        );
-
-    switch (fdef->type) {
+    switch (exp->type) {
         case AST_TYPE_BIF:
-            ASTBIFData bifdata = fdef->data;
-            return bifdata(argc, argv, parent);
-        case AST_TYPE_FDEF: return exec_cf(fdef, argc, argv);
+            ASTBIFData bifdata = exp->data;
+            return bifdata(calldata->argc, calldata->argv, parent);
+        case AST_TYPE_LAMBDA:
+            return exec_lambda(calldata->argc, calldata->argv, exp, parent);
         default:
-            return ast_init(AST_TYPE_EXC, ast_exc_data_init("Good job!", NULL));
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("Uncallable.", NULL)
+            );
     }
-}
-
-AST* exec_cf(AST* ast, size_t argc, AST** argv) {
-    Scope* callscope = scope_init(ast->scope);
-    ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    for (int i = 0; i < argc; i++) {
-        char* key = ((ASTArgData*)fdef->argv[i]->data)->name;
-        AST* val = argv[i];
-        scope_add(callscope, key, val);
-    }
-
-    return exec_exp(fdef->body, callscope);
 }
 
 AST* exec_vdef(AST* ast, Scope* parent) {
@@ -102,7 +83,7 @@ AST* exec_vdef(AST* ast, Scope* parent) {
     exec_inherit_scope(ast, parent);
 
     ASTVDefData* data = (ASTVDefData*)ast->data;
-    AST* val = data->val;
+    AST* val = data->exp;
     char* key = data->name;
     scope_add(parent, key, val); // Add variable definition to parent scope.
     return exec_exp(val, parent);
@@ -132,12 +113,22 @@ AST* exec_vref(AST* ast, Scope* parent) {
 AST* exec_fdef(AST* ast, Scope* parent) {
     ast->scope = scope_init(parent);
     ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    log_dbgf("IS THIS SUSPICIOUS??? %i", fdef->body->type);
     AST* val = ast;
     char* key = fdef->name;
     scope_add(parent, key, val);
-    // TODO: Create lambda functions.
     return fdef->body; // Function definitions return function body.
+}
+
+AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
+    Scope* callscope = scope_init(parent);
+    ASTLambdaData* lambda = (ASTLambdaData*)exp->data;
+    for (int i = 0; i < argc; i++) {
+        char* key = ((ASTArgData*)lambda->parv[i]->data)->name;
+        AST* val = argv[i];
+        scope_add(callscope, key, val);
+    }
+
+    return exec_exp(lambda->body, callscope);
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }

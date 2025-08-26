@@ -12,10 +12,10 @@
   - [x] Order of operations
   - [x] Parse function application
   - [x] Parse order of operations with parenthesis
-  - [ ] Parse variable invocation
+  - [x] Parse variable invocation
   - [x] Parse variable definition
     - [ ] Parse types
-  - [ ] Parse function definition
+  - [x] Parse function definition
   - [ ] Parse lists/arrays/vectors
   - [x] Parse blocks
   - [ ] Parse control flow
@@ -32,9 +32,9 @@
 
 - [ ] Executer
   - [x] Exec function calls
-  - [ ] Exec variable use
-  - [ ] Exec variable definition
-  - [ ] Exec function definition
+  - [x] Exec variable use
+  - [x] Exec variable definition
+  - [x] Exec function definition
   - [ ] Exec symbolic variables
   - [ ] Exec control flow statements
   - [ ] Exec variadic functions
