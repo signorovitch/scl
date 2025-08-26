@@ -4,8 +4,8 @@ Version v1.0-beta
 
 SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
 [maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
-its current state, SCL can be used as a basic 4-function calculator with order
-of operations and local variables. The codebase is about 1,400 lines of C,
+its current state, SCL can be used as a functional programming language capable
+of performing simple arithmetic. The codebase is about 2,000 lines of C,
 including a parser, interpreter, and runtime. It uses a linked environment
 scoping model.
 
@@ -42,55 +42,18 @@ As one would expect, you can evaluate simple infix expressions:
 You can also define your own functions and variables:
 
 ```scl
-> f(x) = 2x
+> f(x) 2 * x
 > n = 3
 > f(n)
 = 6
 ```
 
-As SCL uses a linked environment model for scope, arguments are passed by
-reference by default. If you would like to pass by value (i.e., a copy) you may
-use the syntax:
+Being a functional programming language at heart, one can of course use lambda functions:
 
 ```scl
-> f(x) = x = 1
-> n = 4
-> f($n) # Pass a copy of n.
-= 1
-> n
+> (\(x) 2 * x)(5)
+= 10
+> f(g) g(2)
+> f(\(x) 2 * x)
 = 4
-> f(n) # Pass a reference to n.
-= 1
-> n
-> 1
-```
-
-Symbolic algebra is done in the following manner:
-
-```scl
-> f(x) = x^4
-> diff(f, x:sym, 2)
-= 12x^2
-```
-
-SCL will dynamically decide on types, but you can state them explicitly as
-well:
-
-```scl
-> f(x: int): int = 2x
-> f(3)
-= 6
-> f(3.1)
-! Traceback:
-! In call to `f(x: int): int`:
-! TypeError (58): Argument `x` must be of type `int`.
-```
-
-Variables can be defined, with several attributes:
-
-```scl
-> a = 1             // Interpret type automatically.
-> b:int = 1         // Must be int.
-> c:const:int = 1   // Constant: value can never change.
-> x:sym             // Treated symbolicaly.
 ```
