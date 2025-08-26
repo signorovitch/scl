@@ -129,7 +129,12 @@ exp:
     // Number.
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
-    // Call.
+    // Variable reference.
+    | WORD {
+        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+    }
+
+    // Call (general form).
     | exp GROUPS arg GROUPE {
         size_t argc = $3->ln;
         AST** argv = $3->buf;
@@ -138,6 +143,18 @@ exp:
             argc,
             argv,
             $1
+        ));
+    }
+
+    // Call (convenient form).
+    | WORD GROUPS arg GROUPE {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            ast_init(AST_TYPE_VREF, ast_vref_data_init($1))
         ));
     }
 
@@ -189,11 +206,6 @@ exp:
     // Variable definition.
     | WORD EQ exp {
         $$ = ast_init(AST_TYPE_VDEF, ast_vdef_data_init($1, $3));
-    }
-
-    // Variable reference.
-    | WORD {
-        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
     }
 
     | exp ADD exp {
