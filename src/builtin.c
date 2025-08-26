@@ -136,5 +136,5 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
 }
 
 AST* builtin_die(size_t argc, AST** argv, Scope* parent) {
-    return ast_init(AST_TYPE_EXC, ast_exc_data_init("exit", NULL));
+    return ast_init(AST_TYPE_EXC, ast_exc_data_init("8", NULL));
 }

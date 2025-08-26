@@ -62,6 +62,13 @@ int main(int argc, char** argv) {
 
             AST* eval = exec_start(root);
             ast_print(eval);
+            // Awful hack to exit when die() is called, until proper exception
+            // handling is implemented. TODO TODO TODO PLSFIX.
+            if (eval->type == AST_TYPE_EXC &&
+                ((ASTExcData*)eval->data)->msg[0] == '8') {
+                gc_hack_free();
+                exit(1);
+            }
             gc_hack_free();
         }
 
