@@ -129,6 +129,18 @@ exp:
     // Number.
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
 
+    // Call.
+    | exp GROUPS arg GROUPE {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $1
+        ));
+    }
+
     // Function definitions. Convert to VDef of Lambda.
     | WORD GROUPS arg GROUPE exp {
         size_t parc = $3->ln;
@@ -150,18 +162,6 @@ exp:
         $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(parc, parv, $5));
     }
 
-    // Call.
-    | exp GROUPS arg GROUPE {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
-        argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
-            argc,
-            argv,
-            $1
-        ));
-    }
-
     // Block.
     | BLOCKS block BLOCKE {
         $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));
@@ -172,14 +172,12 @@ exp:
         AST** argv = calloc(2, sizeof(AST*));
         argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-1));
         argv[1] = $2;
-        char* to = malloc(4);
-        strcpy(to, "mul");
         $$ = ast_init(AST_TYPE_CALL,
             ast_call_data_init(
                 2,
                 argv,
                 ast_init(AST_TYPE_BIF,
-                    ast_bif_data_init(builtin_sub)
+                    ast_bif_data_init(builtin_mul)
                 )
             )
         );
