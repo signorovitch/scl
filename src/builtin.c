@@ -158,3 +158,35 @@ AST* builtin_if(size_t argc, AST** argv, Scope* parent) {
     if (*(ASTBoolData*)pred->data) return exec_exp(body, parent);
     else return exec_exp(alt, parent);
 }
+
+AST* builtin_eq(size_t argc, AST** argv, Scope* parent) {
+    if (argc < 1) return ast_init(AST_TYPE_EXC, ast_exc_data_init("bad", NULL));
+    else if (argc == 1) return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
+
+    AST* first = exec_exp(argv[0], parent);
+    ASTType type = first->type;
+
+    AST* second = exec_exp(argv[1], parent);
+    if (second->type != type)
+        return ast_init(
+            AST_TYPE_EXC,
+            ast_exc_data_init("apples and oranges or something idk", NULL)
+        );
+    // Later when I put together an anctual type system I'll have this
+    // delegated to each type. For now this works.
+
+    switch (type) {
+        case AST_TYPE_NUM:
+            if (*(ASTNumData*)first->data == *(ASTNumData*)second->data)
+                return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
+            else return ast_init(AST_TYPE_BOOL, ast_bool_data_init(0));
+        case AST_TYPE_BOOL:
+            if (*(ASTNumData*)first->data == *(ASTNumData*)second->data)
+                return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
+            else return ast_init(AST_TYPE_BOOL, ast_bool_data_init(0));
+        default:
+            return ast_init(
+                AST_TYPE_BOOL, ast_bool_data_init(0)
+            ); // Can't equate nonprimatives. I think. Maybe.
+    }
+}

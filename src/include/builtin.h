@@ -22,6 +22,9 @@ AST* builtin_die(size_t argc, AST** argv, Scope* parent);
 // If statement.
 AST* builtin_if(size_t argc, AST** argv, Scope* parent);
 
+// Equality.
+AST* builtin_eq(size_t argc, AST** argv, Scope* parent);
+
 struct builtin_data {
     char* name;
     AST* (*fn)(size_t argc, AST** argv, Scope* parent);
@@ -34,6 +37,7 @@ static struct builtin_data BUILTIN_FNS[] = {
     { "div", builtin_div },
     { "die", builtin_die },
     {"_if", builtin_if},
+    {"eq", builtin_eq},
 };
 #define BUILTIN_FNS_LN (arrln(BUILTIN_FNS))
 

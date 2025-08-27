@@ -84,6 +84,19 @@ char* acc_word(int c) {
     return ret;
 }
 
+char* acc_deq(int c) {
+    Dstr* val = dstr_init();
+    while (*inp == '=') {
+        dstr_appendch(val, *(inp - 1));
+        inp++;
+    }
+    dstr_appendch(val, *(inp - 1));
+
+    char* ret = val->buf;
+    dstr_destroypsv(val);
+    return ret;
+}
+
 int yylex() {
     if (*inp == '\0') return YYEOF;
 
@@ -97,6 +110,12 @@ int yylex() {
     if (isdigit(c)) {
         yylval.fval = acc_float(c); // Set the token value.
         return NUM;
+    }
+
+    if (c == '=') {
+        yylval.strval = acc_deq(c);
+        if (!strcmp(yylval.strval, "=")) return EQ;
+        if (!strcmp(yylval.strval, "==")) return DEQ;
     }
 
     if (isalpha(c) || c == '_') {
@@ -125,7 +144,7 @@ int yylex() {
         case ';':  return EXPSEP;
         case '{':  return BLOCKS;
         case '}':  return BLOCKE;
-        case '=':  return EQ;
+        // case '=':  return EQ;
         case '\\': return BACKSLASH;
         case '?':  return IF;
         case ':':  return ELSE;

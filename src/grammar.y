@@ -42,6 +42,7 @@
 %token SEP // Seperator ,.
 
 %token EQ // Equals =.
+%token DEQ // Double equals ==.
 
 %token EXPSEP // Expression seperator ;.
 
@@ -137,6 +138,18 @@ exp:
 
     | BOOLT { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(1)); }
     | BOOLF { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(0)); }
+
+    | exp DEQ exp {
+        AST** argv = calloc(2, sizeof(AST*));
+        argv[0] = $1;
+        argv[1] = $3;
+
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            2,
+            argv,
+            ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_eq))
+        ));
+    }
 
     | IF exp exp exp {
         AST** argv = calloc(3, sizeof(AST*));
