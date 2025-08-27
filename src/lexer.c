@@ -73,7 +73,7 @@ double acc_float(int c) {
 
 char* acc_word(int c) {
     Dstr* val = dstr_init();
-    while (isalpha(*inp)) {
+    while (isalpha(*inp) || *inp == '_') {
         dstr_appendch(val, *(inp - 1));
         inp++;
     }
@@ -99,15 +99,17 @@ int yylex() {
         return NUM;
     }
 
-    if (isalpha(c)) {
-        switch (c) {
-            case 'T': return BOOLT;
-            case 'F': return BOOLF;
-            default:
-        }
+    if (isalpha(c) || c == '_') {
         yylval.strval = acc_word(c);
-        if (!strcmp(yylval.strval, "TRUE")) return BOOLT;
-        else if (!strcmp(yylval.strval, "FALSE")) return BOOLF;
+
+        printf("WORD scanned: '%s'\n", yylval.strval);
+        if (!strcmp(yylval.strval, "TRUE") || !strcmp(yylval.strval, "T"))
+            return BOOLT;
+        if (!strcmp(yylval.strval, "FALSE") || !strcmp(yylval.strval, "F"))
+            return BOOLF;
+        if (!strcmp(yylval.strval, "if")) return IF;
+        if (!strcmp(yylval.strval, "else")) return ELSE;
+
         return WORD;
     }
 
@@ -125,6 +127,8 @@ int yylex() {
         case '}':  return BLOCKE;
         case '=':  return EQ;
         case '\\': return BACKSLASH;
+        case '?':  return IF;
+        case ':':  return ELSE;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

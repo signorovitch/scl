@@ -31,6 +31,9 @@
 %token BOOLT // Boolean true (TRUE or T).
 %token BOOLF // Boolean false (FALSE or F).
 
+%token IF // if or ?.
+%token ELSE // else or :.
+
 %token BLOCKS // Block start {.
 %token BLOCKE // Block end }.
 
@@ -134,6 +137,20 @@ exp:
 
     | BOOLT { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(1)); }
     | BOOLF { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(0)); }
+
+    | IF exp exp exp {
+        AST** argv = calloc(3, sizeof(AST*));
+        argv[0] = $2;
+        argv[1] = $3;
+        argv[2] = $4;
+
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            3,
+            argv,
+            ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_if))
+        ));
+    }
+    | IF exp exp ELSE exp { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(0)); }
 
     // Variable reference.
     | WORD {

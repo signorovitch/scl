@@ -138,3 +138,23 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
 AST* builtin_die(size_t argc, AST** argv, Scope* parent) {
     return ast_init(AST_TYPE_EXC, ast_exc_data_init("8", NULL));
 }
+
+AST* builtin_if(size_t argc, AST** argv, Scope* parent) {
+    if (argc != 3)
+        return ast_init(
+            AST_TYPE_EXC,
+            ast_exc_data_init("If invoked with too few args.", NULL)
+        );
+
+    AST* pred = exec_exp(argv[0], parent);
+    AST* body = argv[1];
+    AST* alt = argv[2];
+
+    if (pred->type != AST_TYPE_BOOL)
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init("if works on booleans idiot", NULL)
+        );
+
+    if (*(ASTBoolData*)pred->data) return exec_exp(body, parent);
+    else return exec_exp(alt, parent);
+}
