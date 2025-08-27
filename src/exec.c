@@ -111,7 +111,8 @@ AST* exec_vref(AST* ast, Scope* parent) {
         return ast_init(AST_TYPE_EXC, ast_exc_data_init(msg, NULL));
     }
 
-    return exec_exp(found, ast->scope);
+    // return exec_exp(found, ast->scope);
+    return found;
 }
 
 AST* exec_fdef(AST* ast, Scope* parent) {
@@ -128,7 +129,7 @@ AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
     ASTLambdaData* lambda = (ASTLambdaData*)exp->data;
     for (int i = 0; i < argc; i++) {
         char* key = ((ASTArgData*)lambda->parv[i]->data)->name;
-        AST* val = argv[i];
+        AST* val = exec_exp(argv[i], parent);
         scope_add(callscope, key, val);
     }
 

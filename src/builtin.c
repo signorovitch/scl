@@ -2,8 +2,10 @@
 #include <stdio.h>
 
 #include "include/ast.h"
+#include "include/ast_print.h"
 #include "include/builtin.h"
 #include "include/exec.h"
+#include "include/util.h"
 
 AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
     ASTNumData total = 0;
@@ -150,10 +152,18 @@ AST* builtin_if(size_t argc, AST** argv, Scope* parent) {
     AST* body = argv[1];
     AST* alt = argv[2];
 
-    if (pred->type != AST_TYPE_BOOL)
-        return ast_init(
-            AST_TYPE_EXC, ast_exc_data_init("if works on booleans idiot", NULL)
-        );
+    if (pred->type != AST_TYPE_BOOL) {
+        if (pred->type == AST_TYPE_EXC) {
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("if touched an error", pred)
+            );
+        } else {
+            return ast_init(
+                AST_TYPE_EXC,
+                ast_exc_data_init("if works on booleans idiot", NULL)
+            );
+        }
+    }
 
     if (*(ASTBoolData*)pred->data) return exec_exp(body, parent);
     else return exec_exp(alt, parent);
@@ -167,6 +177,15 @@ AST* builtin_eq(size_t argc, AST** argv, Scope* parent) {
     ASTType type = first->type;
 
     AST* second = exec_exp(argv[1], parent);
+    if (first->type == AST_TYPE_EXC)
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init("first was bad", first)
+        );
+    if (second->type == AST_TYPE_EXC)
+        return ast_init(
+            AST_TYPE_EXC, ast_exc_data_init("second was bad", second)
+        );
+
     if (second->type != type)
         return ast_init(
             AST_TYPE_EXC,

@@ -121,7 +121,6 @@ int yylex() {
     if (isalpha(c) || c == '_') {
         yylval.strval = acc_word(c);
 
-        printf("WORD scanned: '%s'\n", yylval.strval);
         if (!strcmp(yylval.strval, "TRUE") || !strcmp(yylval.strval, "T"))
             return BOOLT;
         if (!strcmp(yylval.strval, "FALSE") || !strcmp(yylval.strval, "F"))
