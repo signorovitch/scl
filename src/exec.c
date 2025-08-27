@@ -38,6 +38,10 @@ AST* exec_exp(AST* ast, Scope* parent) {
             return ast_init(
                 AST_TYPE_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
             );
+        case AST_TYPE_BOOL:
+            return ast_init(
+                AST_TYPE_BOOL, ast_bool_data_init(*(ASTBoolData*)ast->data)
+            );
         case AST_TYPE_VREF:   return exec_vref(ast, parent);
         case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
         case AST_TYPE_FDEF:   return exec_fdef(ast, parent);

@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "include/dstr.h"
 #include "include/lexer.h"
@@ -99,7 +100,14 @@ int yylex() {
     }
 
     if (isalpha(c)) {
+        switch (c) {
+            case 'T': return BOOLT;
+            case 'F': return BOOLF;
+            default:
+        }
         yylval.strval = acc_word(c);
+        if (!strcmp(yylval.strval, "TRUE")) return BOOLT;
+        else if (!strcmp(yylval.strval, "FALSE")) return BOOLF;
         return WORD;
     }
 

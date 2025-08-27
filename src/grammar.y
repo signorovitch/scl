@@ -28,6 +28,9 @@
 
 %define parse.error verbose
 
+%token BOOLT // Boolean true (TRUE or T).
+%token BOOLF // Boolean false (FALSE or F).
+
 %token BLOCKS // Block start {.
 %token BLOCKE // Block end }.
 
@@ -128,6 +131,9 @@ block:
 exp:
     // Number.
     NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
+
+    | BOOLT { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(1)); }
+    | BOOLF { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(0)); }
 
     // Variable reference.
     | WORD {

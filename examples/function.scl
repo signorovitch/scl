@@ -1,3 +1,2 @@
-f(n) 2 * n
-
-f(5)
+apply(f, x) f(x)
+apply(\(x) x + 1, 2)

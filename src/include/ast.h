@@ -7,11 +7,12 @@
 // The type of an `AST`.
 typedef enum {
     // Primitive types.
-    AST_TYPE_NUM, // A number (float).
-    AST_TYPE_STR, // A string
-    AST_TYPE_INT, // An integer.
-    AST_TYPE_SYM, // A symbol.
-    AST_TYPE_EXC, // Exception.
+    AST_TYPE_NUM,  // A number (float).
+    AST_TYPE_STR,  // A string
+    AST_TYPE_INT,  // An integer.
+    AST_TYPE_BOOL, // A boolean.
+    AST_TYPE_SYM,  // A symbol.
+    AST_TYPE_EXC,  // Exception.
 
     // Collection types:
     AST_TYPE_VEC,  // A vector (fixed size, fixed type).
@@ -50,6 +51,14 @@ typedef double ASTNumData;
 ASTNumData* ast_num_data_init(double val);
 // Destroy an `ASTNumData`.
 void ast_num_data_destroy(ASTNumData* num);
+
+// A boolean.
+typedef int ASTBoolData;
+
+// Create a new `ASTBoolData`.
+ASTBoolData* ast_bool_data_init(int val);
+// Destroy an `ASTBoolData`.
+void ast_bool_data_destroy(ASTBoolData* bol);
 
 // An exception.
 typedef struct ASTEXCDATA {
@@ -96,8 +105,8 @@ void ast_lambda_data_destroy(ASTLambdaData*);
 
 // A call.
 typedef struct {
-    ARGS;        // The arguments the call is made with.
-    AST* exp;     // The expression the call is to.
+    ARGS;     // The arguments the call is made with.
+    AST* exp; // The expression the call is to.
 } ASTCallData;
 
 // Create a new `ASTCallData`.

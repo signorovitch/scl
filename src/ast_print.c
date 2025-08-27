@@ -8,6 +8,7 @@
 static char* asttype_names[] = {
     [AST_TYPE_CALL] = "FUNC CALL",
     [AST_TYPE_NUM] = "NUMBER",
+    [AST_TYPE_BOOL] = "BOOLEAN",
     [AST_TYPE_VREF] = "VAR REFERENCE",
     [AST_TYPE_VDEF] = "VAR DEFINITION",
     [AST_TYPE_BLOCK] = "BLOCK",
@@ -34,6 +35,12 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_NUM:
             printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
             break;
+        case AST_TYPE_BOOL:
+            printf(
+                "%s  %s\n", INDENT_spacing->buf,
+                *(ASTBoolData*)ast->data ? "true" : "false"
+            );
+            break;
         case AST_TYPE_CALL:   ast_call_print(ast->data, i + 2); break;
         case AST_TYPE_EXC:    ast_exc_print(ast->data, i + 2); break;
         case AST_TYPE_VREF:   ast_vref_print(ast->data, i + 2); break;
@@ -53,6 +60,14 @@ void ast_num_print(ASTNumData* data, int i) {
     INDENT_BEGIN(i);
 
     INDENT_FIELD("data", "%lf", *data);
+
+    INDENT_END;
+}
+
+void ast_bool_print(ASTBoolData* data, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_FIELD("data", "%s", *data ? "true" : "false");
 
     INDENT_END;
 }

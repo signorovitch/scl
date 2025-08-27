@@ -1,9 +1,9 @@
-#include "include/builtin.h"
-#include "include/ast.h"
-#include "include/exec.h"
-#include "include/util.h"
 #include <stdarg.h>
 #include <stdio.h>
+
+#include "include/ast.h"
+#include "include/builtin.h"
+#include "include/exec.h"
 
 AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
     ASTNumData total = 0;

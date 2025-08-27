@@ -40,6 +40,7 @@ void ast_destroy(AST* ast) {
 
     switch (ast->type) {
         case AST_TYPE_NUM:    ast_num_data_destroy(ast->data); break;
+        case AST_TYPE_BOOL:   ast_bool_data_destroy(ast->data); break;
         case AST_TYPE_CALL:   ast_call_data_destroy(ast->data); break;
         case AST_TYPE_VREF:   ast_vref_data_destroy(ast->data); break;
         case AST_TYPE_VDEF:   ast_vdef_data_destroy(ast->data); break;
@@ -65,6 +66,16 @@ ASTNumData* ast_num_data_init(double val) {
 }
 
 void ast_num_data_destroy(ASTNumData* num) { free(num); }
+
+ASTBoolData* ast_bool_data_init(int val) {
+    talloc(ASTBoolData, bol);
+
+    *bol = val;
+
+    return bol;
+}
+
+void ast_bool_data_destroy(ASTBoolData* bol) { free(bol); }
 
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace) {
     ASTExcData* data = malloc(sizeof(ASTExcData));
