@@ -57,3 +57,18 @@ Being a functional programming language at heart, one can of course use lambda f
 > f(\(x) 2 * x)
 = 4
 ```
+
+Here's a simple factorial function:
+
+```scl
+> factorial(n) {
+>   if (n == 0) { 1 }
+>   else { n * factorial(n - 1) }
+> }
+```
+
+Or, using SCL's more concise syntax:
+
+```scl
+> factorial(n) ? n == 0 1 n * factorial(n - 1)
+```
