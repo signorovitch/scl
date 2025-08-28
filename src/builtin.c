@@ -2,10 +2,8 @@
 #include <stdio.h>
 
 #include "include/ast.h"
-#include "include/ast_print.h"
 #include "include/builtin.h"
 #include "include/exec.h"
-#include "include/util.h"
 
 AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
     ASTNumData total = 0;
@@ -191,6 +189,7 @@ AST* builtin_eq(size_t argc, AST** argv, Scope* parent) {
             AST_TYPE_EXC,
             ast_exc_data_init("apples and oranges or something idk", NULL)
         );
+
     // Later when I put together an anctual type system I'll have this
     // delegated to each type. For now this works.
 
