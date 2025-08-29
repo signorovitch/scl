@@ -6,11 +6,12 @@
 
 // The type of an `AST`.
 typedef enum {
-    // Primitive types.
-    AST_TYPE_NUM,  // A number (float).
-    AST_TYPE_STR,  // A string
+    // Primitive type literals.
+    AST_TYPE_LIT_NUM,  // A number (float) literal.
+    AST_TYPE_LIT_BOOL, // A boolean literal.
+    AST_TYPE_LIT_KIND, // A kind literal.
+
     AST_TYPE_INT,  // An integer.
-    AST_TYPE_BOOL, // A boolean.
     AST_TYPE_SYM,  // A symbol.
     AST_TYPE_EXC,  // Exception.
 

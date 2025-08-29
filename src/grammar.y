@@ -134,10 +134,10 @@ block:
 
 exp:
     // Number.
-    NUM { $$ = ast_init(AST_TYPE_NUM, ast_num_data_init($1)); }
+    NUM { $$ = ast_init(AST_TYPE_LIT_NUM, ast_num_data_init($1)); }
 
-    | BOOLT { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(1)); }
-    | BOOLF { $$ = ast_init(AST_TYPE_BOOL, ast_bool_data_init(0)); }
+    | BOOLT { $$ = ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(1)); }
+    | BOOLF { $$ = ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(0)); }
 
     | exp DEQ exp {
         AST** argv = calloc(2, sizeof(AST*));
@@ -245,7 +245,7 @@ exp:
     // Negative.
     | SUB exp {
         AST** argv = calloc(2, sizeof(AST*));
-        argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(-1));
+        argv[0] = ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(-1));
         argv[1] = $2;
         $$ = ast_init(AST_TYPE_CALL,
             ast_call_data_init(

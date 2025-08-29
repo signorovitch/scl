@@ -5,19 +5,17 @@
 #include "include/util.h"
 #include <stdio.h>
 
-static char* asttype_names[] = {
-    [AST_TYPE_CALL] = "FUNC CALL",
-    [AST_TYPE_NUM] = "NUMBER",
-    [AST_TYPE_BOOL] = "BOOLEAN",
-    [AST_TYPE_VREF] = "VAR REFERENCE",
-    [AST_TYPE_VDEF] = "VAR DEFINITION",
-    [AST_TYPE_BLOCK] = "BLOCK",
-    [AST_TYPE_EXC] = "EXCEPTION",
-    [AST_TYPE_FDEF] = "FUNCTION DEFINITION",
-    [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
-    [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
-    [AST_TYPE_BIF] = "BUILTIN FUNCTION"
-};
+static char* asttype_names[] = {[AST_TYPE_CALL] = "FUNC CALL",
+                                [AST_TYPE_LIT_NUM] = "NUMBER",
+                                [AST_TYPE_LIT_BOOL] = "BOOLEAN",
+                                [AST_TYPE_VREF] = "VAR REFERENCE",
+                                [AST_TYPE_VDEF] = "VAR DEFINITION",
+                                [AST_TYPE_BLOCK] = "BLOCK",
+                                [AST_TYPE_EXC] = "EXCEPTION",
+                                [AST_TYPE_FDEF] = "FUNCTION DEFINITION",
+                                [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
+                                [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
+                                [AST_TYPE_BIF] = "BUILTIN FUNCTION"};
 
 void ast_print(AST* ast) {
     if (!ast) return;
@@ -31,10 +29,10 @@ void ast_print_i(AST* ast, int i) {
     INDENT_FIELD("type", "%s", asttype_names[ast->type]);
     INDENT_FIELD_EXT_NONL_START("data");
     switch (ast->type) {
-        case AST_TYPE_NUM:
+        case AST_TYPE_LIT_NUM:
             printf("%s  %lf\n", INDENT_spacing->buf, *(ASTNumData*)ast->data);
             break;
-        case AST_TYPE_BOOL:
+        case AST_TYPE_LIT_BOOL:
             printf(
                 "%s  %s\n", INDENT_spacing->buf,
                 *(ASTBoolData*)ast->data ? "true" : "false"

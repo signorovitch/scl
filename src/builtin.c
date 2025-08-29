@@ -15,7 +15,7 @@ AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
                 AST_TYPE_EXC,
                 ast_exc_data_init("`sum` encountered an exception.", arg)
             );
-        if (arg->type != AST_TYPE_NUM)
+        if (arg->type != AST_TYPE_LIT_NUM)
             return ast_init(
                 AST_TYPE_EXC,
                 ast_exc_data_init("Sum can't sum some non-num arguments.", NULL)
@@ -24,11 +24,11 @@ AST* builtin_sum(size_t argc, AST** argv, Scope* parent) {
         total += *(ASTNumData*)arg->data;
     }
 
-    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+    return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(total));
 }
 
 AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
-    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+    if (argc <= 0) return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(0));
 
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
@@ -36,7 +36,7 @@ AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
             AST_TYPE_EXC,
             ast_exc_data_init("`sub` encountered an exception.", first)
         );
-    if (first->type != AST_TYPE_NUM)
+    if (first->type != AST_TYPE_LIT_NUM)
         return ast_init(
             AST_TYPE_EXC,
             ast_exc_data_init("Can't subtract non-num arguments.", NULL)
@@ -51,7 +51,7 @@ AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
                 AST_TYPE_EXC,
                 ast_exc_data_init("`sub` encountered an exception.", arg)
             );
-        if (arg->type != AST_TYPE_NUM)
+        if (arg->type != AST_TYPE_LIT_NUM)
             return ast_init(
                 AST_TYPE_EXC,
                 ast_exc_data_init("Can't subtract non-num arguments.", NULL)
@@ -60,11 +60,11 @@ AST* builtin_sub(size_t argc, AST** argv, Scope* parent) {
         total -= *(ASTNumData*)arg->data;
     }
 
-    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+    return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(total));
 }
 
 AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
-    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+    if (argc <= 0) return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(0));
 
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
@@ -72,7 +72,7 @@ AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
             AST_TYPE_EXC,
             ast_exc_data_init("`mul` encountered an expection.", first)
         );
-    if (first->type != AST_TYPE_NUM)
+    if (first->type != AST_TYPE_LIT_NUM)
         return ast_init(
             AST_TYPE_EXC,
             ast_exc_data_init("Can't multiply non-num arguments.", NULL)
@@ -87,7 +87,7 @@ AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
                 AST_TYPE_EXC,
                 ast_exc_data_init("`mul` encountered an execption.", arg)
             );
-        if (arg->type != AST_TYPE_NUM)
+        if (arg->type != AST_TYPE_LIT_NUM)
             return ast_init(
                 AST_TYPE_EXC,
                 ast_exc_data_init("Can't multiply non-num arguments.", NULL)
@@ -96,11 +96,11 @@ AST* builtin_mul(size_t argc, AST** argv, Scope* parent) {
         total *= *(ASTNumData*)arg->data;
     }
 
-    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+    return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(total));
 }
 
 AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
-    if (argc <= 0) return ast_init(AST_TYPE_NUM, ast_num_data_init(0));
+    if (argc <= 0) return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(0));
 
     AST* first = exec_exp(*argv, parent);
     if (first->type == AST_TYPE_EXC)
@@ -108,7 +108,7 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
             AST_TYPE_EXC,
             ast_exc_data_init("`div` encountered an exception.", first)
         );
-    if (first->type != AST_TYPE_NUM)
+    if (first->type != AST_TYPE_LIT_NUM)
         return ast_init(
             AST_TYPE_EXC,
             ast_exc_data_init("Can't divide non-num arguments.", NULL)
@@ -123,7 +123,7 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
                 AST_TYPE_EXC,
                 ast_exc_data_init("`div` encountered an exception.", arg)
             );
-        if (arg->type != AST_TYPE_NUM)
+        if (arg->type != AST_TYPE_LIT_NUM)
             return ast_init(
                 AST_TYPE_EXC,
                 ast_exc_data_init("Can't divide non-num arguments.", NULL)
@@ -132,7 +132,7 @@ AST* builtin_div(size_t argc, AST** argv, Scope* parent) {
         total /= *(ASTNumData*)arg->data;
     }
 
-    return ast_init(AST_TYPE_NUM, ast_num_data_init(total));
+    return ast_init(AST_TYPE_LIT_NUM, ast_num_data_init(total));
 }
 
 AST* builtin_die(size_t argc, AST** argv, Scope* parent) {
@@ -150,7 +150,7 @@ AST* builtin_if(size_t argc, AST** argv, Scope* parent) {
     AST* body = argv[1];
     AST* alt = argv[2];
 
-    if (pred->type != AST_TYPE_BOOL) {
+    if (pred->type != AST_TYPE_LIT_BOOL) {
         if (pred->type == AST_TYPE_EXC) {
             return ast_init(
                 AST_TYPE_EXC, ast_exc_data_init("if touched an error", pred)
@@ -169,7 +169,8 @@ AST* builtin_if(size_t argc, AST** argv, Scope* parent) {
 
 AST* builtin_eq(size_t argc, AST** argv, Scope* parent) {
     if (argc < 1) return ast_init(AST_TYPE_EXC, ast_exc_data_init("bad", NULL));
-    else if (argc == 1) return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
+    else if (argc == 1)
+        return ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(1));
 
     AST* first = exec_exp(argv[0], parent);
     ASTType type = first->type;
@@ -194,17 +195,17 @@ AST* builtin_eq(size_t argc, AST** argv, Scope* parent) {
     // delegated to each type. For now this works.
 
     switch (type) {
-        case AST_TYPE_NUM:
+        case AST_TYPE_LIT_NUM:
             if (*(ASTNumData*)first->data == *(ASTNumData*)second->data)
-                return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
-            else return ast_init(AST_TYPE_BOOL, ast_bool_data_init(0));
-        case AST_TYPE_BOOL:
+                return ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(1));
+            else return ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(0));
+        case AST_TYPE_LIT_BOOL:
             if (*(ASTNumData*)first->data == *(ASTNumData*)second->data)
-                return ast_init(AST_TYPE_BOOL, ast_bool_data_init(1));
-            else return ast_init(AST_TYPE_BOOL, ast_bool_data_init(0));
+                return ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(1));
+            else return ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(0));
         default:
             return ast_init(
-                AST_TYPE_BOOL, ast_bool_data_init(0)
+                AST_TYPE_LIT_BOOL, ast_bool_data_init(0)
             ); // Can't equate nonprimatives. I think. Maybe.
     }
 }

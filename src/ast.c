@@ -39,17 +39,17 @@ void ast_destroy(AST* ast) {
     if (!ast) return;
 
     switch (ast->type) {
-        case AST_TYPE_NUM:    ast_num_data_destroy(ast->data); break;
-        case AST_TYPE_BOOL:   ast_bool_data_destroy(ast->data); break;
-        case AST_TYPE_CALL:   ast_call_data_destroy(ast->data); break;
-        case AST_TYPE_VREF:   ast_vref_data_destroy(ast->data); break;
-        case AST_TYPE_VDEF:   ast_vdef_data_destroy(ast->data); break;
-        case AST_TYPE_BLOCK:  ast_block_data_destroy_psv(ast->data); break;
-        case AST_TYPE_FDEF:   ast_fdef_data_destroy_psv(ast->data); break;
-        case AST_TYPE_ARG:    ast_arg_data_destroy(ast->data); break;
-        case AST_TYPE_BIF:    ast_bif_data_destroy(ast->data); break;
-        case AST_TYPE_EXC:    ast_exc_data_destroy(ast->data); break;
-        case AST_TYPE_LAMBDA: ast_lambda_data_destroy(ast->data); break;
+        case AST_TYPE_LIT_NUM:  ast_num_data_destroy(ast->data); break;
+        case AST_TYPE_LIT_BOOL: ast_bool_data_destroy(ast->data); break;
+        case AST_TYPE_CALL:     ast_call_data_destroy(ast->data); break;
+        case AST_TYPE_VREF:     ast_vref_data_destroy(ast->data); break;
+        case AST_TYPE_VDEF:     ast_vdef_data_destroy(ast->data); break;
+        case AST_TYPE_BLOCK:    ast_block_data_destroy_psv(ast->data); break;
+        case AST_TYPE_FDEF:     ast_fdef_data_destroy_psv(ast->data); break;
+        case AST_TYPE_ARG:      ast_arg_data_destroy(ast->data); break;
+        case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
+        case AST_TYPE_EXC:      ast_exc_data_destroy(ast->data); break;
+        case AST_TYPE_LAMBDA:   ast_lambda_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
