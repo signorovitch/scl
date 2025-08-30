@@ -44,7 +44,6 @@ AST* exec_exp(AST* ast, Scope* parent) {
             );
         case AST_TYPE_VREF:   return exec_vref(ast, parent);
         case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
-        case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
         case AST_TYPE_BIF:
         case AST_TYPE_LAMBDA: return ast;
         default:              printf("what\n"); exit(1);

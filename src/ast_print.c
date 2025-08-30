@@ -5,17 +5,19 @@
 #include "include/util.h"
 #include <stdio.h>
 
-static char* asttype_names[] = {[AST_TYPE_CALL] = "FUNC CALL",
-                                [AST_TYPE_LIT_NUM] = "NUMBER",
-                                [AST_TYPE_LIT_BOOL] = "BOOLEAN",
-                                [AST_TYPE_VREF] = "VAR REFERENCE",
-                                [AST_TYPE_VDEF] = "VAR DEFINITION",
-                                [AST_TYPE_BLOCK] = "BLOCK",
-                                [AST_TYPE_EXC] = "EXCEPTION",
-                                [AST_TYPE_FDEF] = "FUNCTION DEFINITION",
-                                [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
-                                [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
-                                [AST_TYPE_BIF] = "BUILTIN FUNCTION"};
+static char* asttype_names[] = {
+    [AST_TYPE_CALL] = "FUNC CALL",
+    [AST_TYPE_LIT_NUM] = "NUMBER",
+    [AST_TYPE_LIT_BOOL] = "BOOLEAN",
+    [AST_TYPE_LIT_KIND] = "KIND",
+    [AST_TYPE_VREF] = "VAR REFERENCE",
+    [AST_TYPE_VDEF] = "VAR DEFINITION",
+    [AST_TYPE_BLOCK] = "BLOCK",
+    [AST_TYPE_EXC] = "EXCEPTION",
+    [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
+    [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
+    [AST_TYPE_BIF] = "BUILTIN FUNCTION"
+};
 
 void ast_print(AST* ast) {
     if (!ast) return;
@@ -43,7 +45,6 @@ void ast_print_i(AST* ast, int i) {
         case AST_TYPE_VREF:   ast_vref_print(ast->data, i + 2); break;
         case AST_TYPE_VDEF:   ast_vdef_print(ast->data, i + 2); break;
         case AST_TYPE_BLOCK:  ast_block_print(ast->data, i + 2); break;
-        case AST_TYPE_FDEF:   ast_fdef_print(ast->data, i + 2); break;
         case AST_TYPE_ARG:    ast_arg_print(ast->data, i + 2); break;
         case AST_TYPE_LAMBDA: ast_lambda_print(ast->data, i + 2); break;
         case AST_TYPE_BIF:    ast_bif_print(ast->data, i + 2); break;
@@ -124,18 +125,6 @@ void ast_block_print(ASTBlockData* data, int depth) {
     INDENT_FIELD("ln", "%ld", data->ln);
     INDENT_FIELD_LIST("inside", data->inside, data->ln, ast_print_i);
 
-    INDENT_END;
-}
-
-void ast_fdef_print(ASTFDefData* fdef, int i) {
-    INDENT_BEGIN(i)
-    INDENT_TITLE("ASTFDefData", fdef);
-    INDENT_FIELD("name", "%s", fdef->name);
-    INDENT_FIELD("argc", "%ld", fdef->argc);
-    INDENT_FIELD_LIST("argv", fdef->argv, fdef->argc, ast_print_i);
-    INDENT_FIELD_EXT_NONL_START("body");
-    ast_print_i(fdef->body, i + 2);
-    INDENT_FIELD_NONL_END;
     INDENT_END;
 }
 void ast_arg_print(ASTArgData* arg, int i) {

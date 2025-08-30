@@ -45,7 +45,6 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_VREF:     ast_vref_data_destroy(ast->data); break;
         case AST_TYPE_VDEF:     ast_vdef_data_destroy(ast->data); break;
         case AST_TYPE_BLOCK:    ast_block_data_destroy_psv(ast->data); break;
-        case AST_TYPE_FDEF:     ast_fdef_data_destroy_psv(ast->data); break;
         case AST_TYPE_ARG:      ast_arg_data_destroy(ast->data); break;
         case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
         case AST_TYPE_EXC:      ast_exc_data_destroy(ast->data); break;
@@ -180,30 +179,6 @@ void ast_block_data_destroy(ASTBlockData* block) {
 void ast_block_data_destroy_psv(ASTBlockData* block) {
     free(block->inside);
     free(block);
-}
-
-ASTFDefData*
-ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body) {
-    ASTFDefData* fdef = malloc(sizeof(ASTFDefData));
-
-    fdef->name = name;
-    fdef->argc = argc;
-    fdef->argv = argv;
-    fdef->body = body;
-
-    return fdef;
-}
-
-void ast_fdef_data_destroy(ASTFDefData* fdef) {
-    free(fdef->name);
-    for (int i = 0; i < fdef->argc; ast_destroy(fdef->argv[i++]));
-    ast_destroy(fdef->body);
-}
-
-void ast_fdef_data_destroy_psv(ASTFDefData* fdef) {
-    free(fdef->name);
-    free(fdef->argv);
-    free(fdef);
 }
 
 ASTArgData* ast_arg_data_init(char* name) {

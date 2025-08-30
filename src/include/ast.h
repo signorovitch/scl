@@ -25,7 +25,6 @@ typedef enum {
     AST_TYPE_VDEF,   // A variable definition.
     AST_TYPE_VREF,   // A variable reference.
     AST_TYPE_BLOCK,  // A block of code (scope).
-    AST_TYPE_FDEF,   // A function definition.
     AST_TYPE_LAMBDA, // An anonymous function definition.
     AST_TYPE_ARG,    // A definition argument.
     AST_TYPE_MAX = AST_TYPE_ARG,
@@ -60,6 +59,12 @@ typedef int ASTBoolData;
 ASTBoolData* ast_bool_data_init(int val);
 // Destroy an `ASTBoolData`.
 void ast_bool_data_destroy(ASTBoolData* bol);
+
+// A kind.
+typedef struct {
+    char* name;
+
+} ASTKindData;
 
 // An exception.
 typedef struct ASTEXCDATA {
@@ -148,19 +153,6 @@ ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 void ast_block_data_destroy(ASTBlockData* block);
 // Destroy an `ASTBlockData`.
 void ast_block_data_destroy_psv(ASTBlockData* block);
-
-typedef struct {
-    char* name; // Function name.
-    ARGS;       // Function args.
-    AST* body;  // Function body.
-} ASTFDefData;
-
-// Create a new `ASTFDefData`.
-ASTFDefData* ast_fdef_data_init(char* name, size_t argc, AST** argv, AST* body);
-// Destroy an `ASTFDefData`, recursively.
-void ast_fdef_data_destroy(ASTFDefData* fdef);
-// Destroy an `ASTFDefData`.
-void ast_fdef_data_destroy_psv(ASTFDefData* fdef);
 
 typedef struct {
     char* name; // Argument name.

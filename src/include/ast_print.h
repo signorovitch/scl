@@ -29,9 +29,6 @@ void ast_vref_print(ASTVrefData*, int i);
 // Print an `ASTBlockData`.
 void ast_block_print(ASTBlockData*, int i);
 
-// Print an `ASTFDefData`.
-void ast_fdef_print(ASTFDefData* fdef, int i);
-
 // Print an `ASTArgData`.
 void ast_arg_print(ASTArgData* arg, int i);
 
