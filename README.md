@@ -1,20 +1,20 @@
 # SCL: Simple CAS Language
 
-Version v0.3
+*v0.3*
 
 SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
 [maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
 its current state, SCL can be used as a functional programming language capable
-of performing simple arithmetic. The codebase is about 2,000 lines of C,
-including a parser, interpreter, and runtime. It uses a linked environment
-scoping model.
+of performing simple arithmetic. The codebase is about 2,000 lines of
+handwritten C, including a parser, interpreter, and runtime. It uses a linked
+environment scoping model.
 
 ## Usage
 
 To download and run:
 
 ```bash
-git clone https://git.signorovitch.org/jacob/scl -b stable && cd scl
+git clone https://git.signorovitch.org/scl/scl -b stable && cd scl
 make release
 ./scl.out
 ```
@@ -22,35 +22,25 @@ make release
 ### For Development
 
 ```bash
-git clone git@signorovitch.org:jacob/scl --recurse-submodules && cd scl
+git clone git@signorovitch.org:scl/scl --recurse-submodules && cd scl
 make all test
 ./scl.out
 ```
 
 If you wish to run tests, make sure to run `git clone --recurse-submodules` to
 include the [Unity](https://github.com/ThrowTheSwitch/Unity) test framework.
+*Note that tests are currently in poor use. I hope to amend this in the future.*
 
 ## Syntax
 
-As one would expect, you can evaluate simple infix expressions:
+SCL's syntax will feel familiar to other functional programming languages.
 
 ```scl
-> 1 + 1
+> x = 3 + 3 * 3; x + 1
+= 13
+> f(x) x + 1
+> f(1)
 = 2
-```
-
-You can also define your own functions and variables:
-
-```scl
-> f(x) 2 * x
-> n = 3
-> f(n)
-= 6
-```
-
-Being a functional programming language at heart, one can of course use lambda functions:
-
-```scl
 > (\(x) 2 * x)(5)
 = 10
 > f(g) g(2)
@@ -58,7 +48,7 @@ Being a functional programming language at heart, one can of course use lambda f
 = 4
 ```
 
-Here's a simple factorial function:
+Here's a simple factorial function, using recursion:
 
 ```scl
 > factorial(n) {
@@ -67,7 +57,8 @@ Here's a simple factorial function:
 > }
 ```
 
-Or, using SCL's more concise syntax:
+SCL's syntax is quite flexible. The above function could be more concisely
+written as:
 
 ```scl
 > factorial(n) ? n == 0 1 n * factorial(n - 1)
