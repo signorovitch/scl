@@ -11,9 +11,10 @@ typedef enum {
     AST_TYPE_LIT_BOOL, // A boolean literal.
     AST_TYPE_LIT_KIND, // A kind literal.
 
-    AST_TYPE_INT,  // An integer.
-    AST_TYPE_SYM,  // A symbol.
-    AST_TYPE_EXC,  // Exception.
+    AST_TYPE_INT_CON,  // An integer constructor.
+    AST_TYPE_BOOL_CON, // A boolean constructor.
+    AST_TYPE_KIND_CON, // A kind constructor.
+    AST_TYPE_EXC_CON,  // Exception constructor.
 
     // Collection types:
     AST_TYPE_VEC,  // A vector (fixed size, fixed type).

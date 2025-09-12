@@ -1,3 +1,4 @@
+Differentiate kind literals, constructors, and kinds themselves.
 EXCEPTION HANDLING: exception ast type should have as data a giant enum of
 possible types, rather than a char* message. A description of each type could be
 handled under the exception type and print logic. For now, executor checks
