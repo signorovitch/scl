@@ -70,8 +70,9 @@ AST* exec_call(AST* ast, Scope* parent) {
 
     switch (exp->type) {
         case AST_TYPE_BIF:
-            ASTBIFData bifdata = exp->data;
-            return bifdata(calldata->argc, calldata->argv, parent);
+            return ((ASTBIFData) exp->data)(
+                calldata->argc, calldata->argv, parent
+            );
         case AST_TYPE_LAMBDA:
             return exec_lambda(calldata->argc, calldata->argv, exp, parent);
         default:
@@ -112,15 +113,6 @@ AST* exec_vref(AST* ast, Scope* parent) {
 
     // return exec_exp(found, ast->scope);
     return found;
-}
-
-AST* exec_fdef(AST* ast, Scope* parent) {
-    ast->scope = scope_init(parent);
-    ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    AST* val = ast;
-    char* key = fdef->name;
-    scope_add(parent, key, val);
-    return fdef->body; // Function definitions return function body.
 }
 
 AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
