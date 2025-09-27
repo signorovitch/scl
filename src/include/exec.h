@@ -12,10 +12,10 @@ AST* exec_exp(AST* ast, Scope* parent);
 AST* exec_block(AST* ast, Scope* parent);
 // Execute a call.
 AST* exec_call(AST* ast, Scope* parent);
-// Execute a variable definition.
-AST* exec_vdef(AST* ast, Scope* parent);
-// Execute a variable reference.
-AST* exec_vref(AST* ast, Scope* parent);
+// Execute a definition.
+AST* exec_def(AST* ast, Scope* parent);
+// Execute a reference.
+AST* exec_ref(AST* ast, Scope* parent);
 // Execute a function definition.
 AST* exec_fdef(AST* ast, Scope* parent);
 // Execute a lambda expression.

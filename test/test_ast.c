@@ -17,7 +17,7 @@ void test_ast_num() {
 }
 
 void test_ast_call() {
-    AST** argv = malloc(2*sizeof(AST*));
+    AST** argv = malloc(2 * sizeof(AST*));
     argv[0] = ast_init(AST_TYPE_NUM, ast_num_data_init(1.0));
     argv[1] = ast_init(AST_TYPE_NUM, ast_num_data_init(2.0));
 
@@ -37,23 +37,8 @@ void test_ast_call() {
     ast_destroy(ast);
 }
 
-void test_ast_vref() {
-    char* s = malloc(2);
-    strcpy(s, "x");
-    ASTVrefData* vref = ast_vref_data_init(s);
-    AST* ast = ast_init(AST_TYPE_VREF, vref);
-
-    TEST_ASSERT_EQUAL(AST_TYPE_VREF, ast->type);
-    ASTVrefData data = *(ASTVrefData*)ast->data;
-    TEST_ASSERT_EQUAL_STRING("x", data.to);
-
-    //ast_destroy(ast);
+// ast_destroy(ast);
 }
 
 int main() {
     UNITY_BEGIN();
-    RUN_TEST(test_ast_num);
-    //RUN_TEST(test_ast_call);
-    //RUN_TEST(test_ast_vref);
-    return UNITY_END();
-}

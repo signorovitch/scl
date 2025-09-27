@@ -2,6 +2,7 @@
 #define GC_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 // The type a GC can refer to.
 typedef enum {

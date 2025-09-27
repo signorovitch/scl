@@ -34,17 +34,16 @@ AST* exec_exp(AST* ast, Scope* parent) {
     switch (ast->type) {
         case AST_TYPE_BLOCK: return exec_block(ast, parent);
         case AST_TYPE_CALL:  return exec_call(ast, parent);
-        case AST_TYPE_NUM:
+        case AST_TYPE_LIT_NUM:
             return ast_init(
-                AST_TYPE_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
+                AST_TYPE_LIT_NUM, ast_num_data_init(*(ASTNumData*)ast->data)
             );
-        case AST_TYPE_BOOL:
+        case AST_TYPE_LIT_BOOL:
             return ast_init(
-                AST_TYPE_BOOL, ast_bool_data_init(*(ASTBoolData*)ast->data)
+                AST_TYPE_LIT_BOOL, ast_bool_data_init(*(ASTBoolData*)ast->data)
             );
-        case AST_TYPE_VREF:   return exec_vref(ast, parent);
-        case AST_TYPE_VDEF:   return exec_vdef(ast, parent);
-        case AST_TYPE_FDEF:   return exec_fdef(ast, parent);
+        case AST_TYPE_REF:    return exec_ref(ast, parent);
+        case AST_TYPE_DEF:    return exec_def(ast, parent);
         case AST_TYPE_BIF:
         case AST_TYPE_LAMBDA: return ast;
         default:              printf("what\n"); exit(1);
@@ -71,8 +70,9 @@ AST* exec_call(AST* ast, Scope* parent) {
 
     switch (exp->type) {
         case AST_TYPE_BIF:
-            ASTBIFData bifdata = exp->data;
-            return bifdata(calldata->argc, calldata->argv, parent);
+            return ((ASTBIFData)exp->data)(
+                calldata->argc, calldata->argv, parent
+            );
         case AST_TYPE_LAMBDA:
             return exec_lambda(calldata->argc, calldata->argv, exp, parent);
         default:
@@ -82,46 +82,36 @@ AST* exec_call(AST* ast, Scope* parent) {
     }
 }
 
-AST* exec_vdef(AST* ast, Scope* parent) {
+AST* exec_def(AST* ast, Scope* parent) {
     // Use parent's scope.
     exec_inherit_scope(ast, parent);
 
-    ASTVDefData* data = (ASTVDefData*)ast->data;
+    ASTDefData* data = (ASTDefData*)ast->data;
     AST* val = data->exp;
     char* key = data->name;
     scope_add(parent, key, val); // Add variable definition to parent scope.
     return exec_exp(val, parent);
 }
 
-AST* exec_vref(AST* ast, Scope* parent) {
+AST* exec_ref(AST* ast, Scope* parent) {
     // Use parent's scope.
     exec_inherit_scope(ast, parent);
     log_dbg("attempting to reference var");
-    ASTVrefData* vref = (ASTVrefData*)ast->data;
+    ASTRefData* ref = (ASTRefData*)ast->data;
 
-    AST* found = ast_find(parent, vref->to);
+    AST* found = ast_find(parent, ref->to);
 
     if (found == NULL) {
         // TODO: Better memory management here.
         static char msg[256];
         snprintf(
-            msg, sizeof(msg), "Could not find value in scope for `%s`.",
-            vref->to
+            msg, sizeof(msg), "Could not find value in scope for `%s`.", ref->to
         );
         return ast_init(AST_TYPE_EXC, ast_exc_data_init(msg, NULL));
     }
 
     // return exec_exp(found, ast->scope);
     return found;
-}
-
-AST* exec_fdef(AST* ast, Scope* parent) {
-    ast->scope = scope_init(parent);
-    ASTFDefData* fdef = (ASTFDefData*)ast->data;
-    AST* val = ast;
-    char* key = fdef->name;
-    scope_add(parent, key, val);
-    return fdef->body; // Function definitions return function body.
 }
 
 AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
