@@ -44,7 +44,7 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_CALL:     ast_call_data_destroy(ast->data); break;
         case AST_TYPE_REF:      ast_ref_data_destroy(ast->data); break;
         case AST_TYPE_DEF:      ast_def_data_destroy(ast->data); break;
-        case AST_TYPE_BLOCK:    ast_block_data_destroy_psv(ast->data); break;
+        case AST_TYPE_BLOCK:    ast_block_data_destroy(ast->data); break;
         case AST_TYPE_ARG:      ast_arg_data_destroy(ast->data); break;
         case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
         case AST_TYPE_EXC:      ast_exc_data_destroy(ast->data); break;
@@ -171,13 +171,6 @@ ASTBlockData* ast_block_data_init(AST** inside, size_t ln) {
 }
 
 void ast_block_data_destroy(ASTBlockData* block) {
-    for (size_t i = 0; i < block->ln; i++) { ast_destroy(block->inside[i]); }
-
-    free(block->inside);
-    free(block);
-}
-
-void ast_block_data_destroy_psv(ASTBlockData* block) {
     free(block->inside);
     free(block);
 }

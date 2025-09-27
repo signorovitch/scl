@@ -157,8 +157,6 @@ typedef struct {
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 // Destroy an `ASTBlockData`, recursively.
 void ast_block_data_destroy(ASTBlockData* block);
-// Destroy an `ASTBlockData`.
-void ast_block_data_destroy_psv(ASTBlockData* block);
 
 typedef struct {
     char* name; // Argument name.
