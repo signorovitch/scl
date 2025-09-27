@@ -178,7 +178,7 @@ exp:
 
     // Variable reference.
     | WORD {
-        $$ = ast_init(AST_TYPE_VREF, ast_vref_data_init($1));
+        $$ = ast_init(AST_TYPE_REF, ast_ref_data_init($1));
     }
 
     // Call (general form).
@@ -201,7 +201,7 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
             argc,
             argv,
-            ast_init(AST_TYPE_VREF, ast_vref_data_init($1))
+            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
         ));
     }
 
@@ -212,16 +212,16 @@ exp:
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
             argc,
             argv,
-            ast_init(AST_TYPE_VREF, ast_vref_data_init($1))
+            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
         ));
     }
 
-    // Function definitions. Convert to VDef of Lambda.
+    // Function definitions. Convert to Def of Lambda.
     | WORD GROUPS arg GROUPE exp {
         size_t parc = $3->ln;
         AST** parv = $3->buf;
         argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_VDEF, ast_vdef_data_init(
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init(
             $1,
             ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(
                 parc, parv, $5
@@ -263,7 +263,7 @@ exp:
 
     // Variable definition.
     | WORD EQ exp {
-        $$ = ast_init(AST_TYPE_VDEF, ast_vdef_data_init($1, $3));
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3));
     }
 
     | exp ADD exp {

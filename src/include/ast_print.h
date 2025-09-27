@@ -20,11 +20,11 @@ void ast_exc_print(ASTExcData*, int i);
 // Print an `ASTCallData`.
 void ast_call_print(ASTCallData*, int i);
 
-// Print an `ASTVDefData`.
-void ast_vdef_print(ASTVDefData*, int depth);
+// Print an `ASTDefData`.
+void ast_def_print(ASTDefData*, int depth);
 
-// Print an `ASTVRefData`.
-void ast_vref_print(ASTVrefData*, int i);
+// Print an `ASTRefData`.
+void ast_ref_print(ASTRefData*, int i);
 
 // Print an `ASTBlockData`.
 void ast_block_print(ASTBlockData*, int i);

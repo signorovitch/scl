@@ -42,8 +42,8 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_LIT_NUM:  ast_num_data_destroy(ast->data); break;
         case AST_TYPE_LIT_BOOL: ast_bool_data_destroy(ast->data); break;
         case AST_TYPE_CALL:     ast_call_data_destroy(ast->data); break;
-        case AST_TYPE_VREF:     ast_vref_data_destroy(ast->data); break;
-        case AST_TYPE_VDEF:     ast_vdef_data_destroy(ast->data); break;
+        case AST_TYPE_REF:      ast_ref_data_destroy(ast->data); break;
+        case AST_TYPE_DEF:      ast_def_data_destroy(ast->data); break;
         case AST_TYPE_BLOCK:    ast_block_data_destroy_psv(ast->data); break;
         case AST_TYPE_ARG:      ast_arg_data_destroy(ast->data); break;
         case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
@@ -131,8 +131,8 @@ void ast_call_data_destroy(ASTCallData* call) {
 
 // VDef.
 
-ASTVDefData* ast_vdef_data_init(char* name, AST* exp) {
-    talloc(ASTVDefData, vdef);
+ASTDefData* ast_def_data_init(char* name, AST* exp) {
+    talloc(ASTDefData, vdef);
 
     vdef->name = name;
     vdef->exp = exp;
@@ -140,24 +140,24 @@ ASTVDefData* ast_vdef_data_init(char* name, AST* exp) {
     return vdef;
 }
 
-void ast_vdef_data_destroy(ASTVDefData* vdef) {
+void ast_def_data_destroy(ASTDefData* vdef) {
     free(vdef->name);
     free(vdef);
 }
 
-// VRef.
+// Ref.
 
-ASTVrefData* ast_vref_data_init(char* to) {
-    talloc(ASTVrefData, vref);
+ASTRefData* ast_ref_data_init(char* to) {
+    talloc(ASTRefData, ref);
 
-    vref->to = to;
+    ref->to = to;
 
-    return vref;
+    return ref;
 }
 
-void ast_vref_data_destroy(ASTVrefData* vref) {
-    free(vref->to);
-    free(vref);
+void ast_ref_data_destroy(ASTRefData* ref) {
+    free(ref->to);
+    free(ref);
 }
 
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln) {

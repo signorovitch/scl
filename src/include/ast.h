@@ -9,12 +9,15 @@ typedef enum {
     // Primitive type literals.
     AST_TYPE_LIT_NUM,  // A number (float) literal.
     AST_TYPE_LIT_BOOL, // A boolean literal.
-    AST_TYPE_LIT_KIND, // A kind literal.
+    AST_TYPE_LIT_VEC,  // A vector literal.
 
-    AST_TYPE_INT_CON,  // An integer constructor.
-    AST_TYPE_BOOL_CON, // A boolean constructor.
-    AST_TYPE_KIND_CON, // A kind constructor.
-    AST_TYPE_EXC_CON,  // Exception constructor.
+    // Kind constructors. Maybe these can just be BIFASTs/BIVs?
+    AST_TYPE_INT_CON,  // An integer constructor `Int`.
+    AST_TYPE_BOOL_CON, // A boolean constructor `Bool`.
+    AST_TYPE_KIND_CON, // A kind constructor `Type`.
+
+    AST_TYPE_EXC_CON,  // Exception constructor `Exc`.
+    AST_TYPE_VEC_CON,  // Vectpr constructor `Vec()`.
 
     // Collection types:
     AST_TYPE_VEC,  // A vector (fixed size, fixed type).
@@ -23,10 +26,11 @@ typedef enum {
     // Misc. types.
     AST_TYPE_BIF,    // Built-in function.
     AST_TYPE_CALL,   // A function call.
-    AST_TYPE_VDEF,   // A variable definition.
-    AST_TYPE_VREF,   // A variable reference.
+    AST_TYPE_DEF,   // A definition.
+    AST_TYPE_REF,   // A variable reference.
     AST_TYPE_BLOCK,  // A block of code (scope).
     AST_TYPE_LAMBDA, // An anonymous function definition.
+    AST_TYPE_EXC,   // An exception.
     AST_TYPE_ARG,    // A definition argument.
     AST_TYPE_MAX = AST_TYPE_ARG,
 } ASTType;
@@ -121,26 +125,26 @@ ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* exp);
 // Destroy an `ASTCallData`.
 void ast_call_data_destroy(ASTCallData* call);
 
-// A variable definition. Associates a name with an expression.
+// A definition. Associates a name with an expression.
 typedef struct {
     char* name;
     AST* exp;
-} ASTVDefData;
+} ASTDefData;
 
-// Create a new `ASTVDefData`.
-ASTVDefData* ast_vdef_data_init(char* name, AST* exp);
-// Destroy an `ASTVDefData`.
-void ast_vdef_data_destroy(ASTVDefData* vdef);
+// Create a new `ASTDefData`.
+ASTDefData* ast_def_data_init(char* name, AST* exp);
+// Destroy an `ASTDefData`.
+void ast_def_data_destroy(ASTDefData* vdef);
 
-// A variable reference.
+// A reference.
 typedef struct {
     char* to; // What the reference's to.
-} ASTVrefData;
+} ASTRefData;
 
-// Create a new `ASTVRefData`.
-ASTVrefData* ast_vref_data_init(char* to);
-// Destroy an `ASTVRefData`.
-void ast_vref_data_destroy(ASTVrefData* call);
+// Create a new `ASTRefData`.
+ASTRefData* ast_ref_data_init(char* to);
+// Destroy an `ASTRefData`.
+void ast_ref_data_destroy(ASTRefData* call);
 
 // A code block.
 typedef struct {
