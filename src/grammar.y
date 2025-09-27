@@ -44,6 +44,9 @@
 %token EQ // Equals =.
 %token DEQ // Double equals ==.
 
+%token RARROW // Right arrow ->.
+%token LARROW // Left arrow <-.
+
 %token EXPSEP // Expression seperator ;.
 
 %token<strval> WORD // Word, i.e. keyword.
@@ -56,10 +59,14 @@
 
 %token NL // Newline.
 
+%token COLON // Colon :.
+%token STOP // Stop sign $.
+
 %token BACKSLASH
 
 %left ADD SUB
 %left MUL DIV
+%right RARROW
 %precedence NEG
 
 %type<ast> exp;
@@ -133,8 +140,84 @@ block:
     ;
 
 exp:
+    // Variable reference.
+    WORD {
+        $$ = ast_init(AST_TYPE_REF, ast_ref_data_init($1));
+    }
+
+    // Call (general form).
+    | exp GROUPS arg GROUPE {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $1
+        ));
+    }
+
+    // Call (right arrow general form).
+    | GROUPS arg GROUPE RARROW exp {
+        size_t argc = $2->ln;
+        AST** argv = $2->buf;
+        argarr_destroypsv($2);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $5
+        ));
+    }
+
+    /* TODO: Call (right arrow single arg).
+    | exp RARROW exp {
+        size_t argc = 1;
+        AST** argv = ;
+        argarr_destroypsv($2);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $5
+        ));
+    }*/
+
+    // Call (convenient form).
+    | WORD GROUPS arg GROUPE {
+        size_t argc = $3->ln;
+        AST** argv = $3->buf;
+        argarr_destroypsv($3);
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
+        ));
+    }
+
+
+    // Call (hacky convenient form).
+    | WORD GROUPS GROUPE {
+        size_t argc = 0;
+        AST** argv = NULL;
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
+        ));
+    }
+
+    // Call (right arrow hacky convenient form).
+    | GROUPS GROUPE RARROW WORD {
+        size_t argc = 0;
+        AST** argv = NULL;
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            ast_init(AST_TYPE_REF, ast_ref_data_init($4))
+        ));
+    }
+
     // Number.
-    NUM { $$ = ast_init(AST_TYPE_LIT_NUM, ast_num_data_init($1)); }
+    | NUM { $$ = ast_init(AST_TYPE_LIT_NUM, ast_num_data_init($1)); }
 
     | BOOLT { $$ = ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(1)); }
     | BOOLF { $$ = ast_init(AST_TYPE_LIT_BOOL, ast_bool_data_init(0)); }
@@ -176,45 +259,6 @@ exp:
         ));
     }
 
-    // Variable reference.
-    | WORD {
-        $$ = ast_init(AST_TYPE_REF, ast_ref_data_init($1));
-    }
-
-    // Call (general form).
-    | exp GROUPS arg GROUPE {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
-        argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
-            argc,
-            argv,
-            $1
-        ));
-    }
-
-    // Call (convenient form).
-    | WORD GROUPS arg GROUPE {
-        size_t argc = $3->ln;
-        AST** argv = $3->buf;
-        argarr_destroypsv($3);
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
-            argc,
-            argv,
-            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
-        ));
-    }
-
-    // Call (hacky convenient form).
-    | WORD GROUPS GROUPE {
-        size_t argc = 0;
-        AST** argv = NULL;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
-            argc,
-            argv,
-            ast_init(AST_TYPE_REF, ast_ref_data_init($1))
-        ));
-    }
 
     // Function definitions. Convert to Def of Lambda.
     | WORD GROUPS arg GROUPE exp {
@@ -223,6 +267,7 @@ exp:
         argarr_destroypsv($3);
         $$ = ast_init(AST_TYPE_DEF, ast_def_data_init(
             $1,
+            NULL,
             ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(
                 parc, parv, $5
             ))
@@ -261,9 +306,17 @@ exp:
     // Group.
     | GROUPS exp GROUPE { $$ = $2; }
 
+    // Stop sign.
+    | exp STOP { $$ = $1; }
+
     // Variable definition.
     | WORD EQ exp {
-        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3));
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, NULL, $3));
+    }
+
+    // Variable definition with type annotation.
+    | WORD COLON exp EQ exp {
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3, $5));
     }
 
     | exp ADD exp {

@@ -129,15 +129,16 @@ void ast_call_data_destroy(ASTCallData* call) {
     free(call);
 }
 
-// VDef.
+// Def.
 
-ASTDefData* ast_def_data_init(char* name, AST* exp) {
-    talloc(ASTDefData, vdef);
+ASTDefData* ast_def_data_init(char* name, AST* kind, AST* exp) {
+    talloc(ASTDefData, def);
 
-    vdef->name = name;
-    vdef->exp = exp;
+    def->name = name;
+    def->kind = kind;
+    def->exp = exp;
 
-    return vdef;
+    return def;
 }
 
 void ast_def_data_destroy(ASTDefData* vdef) {

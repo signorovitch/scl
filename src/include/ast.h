@@ -125,14 +125,15 @@ ASTCallData* ast_call_data_init(size_t argc, AST** argv, AST* exp);
 // Destroy an `ASTCallData`.
 void ast_call_data_destroy(ASTCallData* call);
 
-// A definition. Associates a name with an expression.
+// A definition. Associates a name and kind with an expression.
 typedef struct {
     char* name;
+    AST* kind; // If NULL, assume `Any` kind.
     AST* exp;
 } ASTDefData;
 
 // Create a new `ASTDefData`.
-ASTDefData* ast_def_data_init(char* name, AST* exp);
+ASTDefData* ast_def_data_init(char* name, AST* kind, AST* exp);
 // Destroy an `ASTDefData`.
 void ast_def_data_destroy(ASTDefData* vdef);
 

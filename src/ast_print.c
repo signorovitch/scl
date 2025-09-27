@@ -96,13 +96,19 @@ void ast_call_print(ASTCallData* data, int i) {
 
     INDENT_END;
 }
-void ast_def_print(ASTDefData* vdef, int depth) {
+void ast_def_print(ASTDefData* def, int depth) {
     INDENT_BEGIN(depth);
 
-    INDENT_TITLE("ASTDefData", vdef);
-    INDENT_FIELD("name", "%s", vdef->name);
+    INDENT_TITLE("ASTDefData", def);
+    INDENT_FIELD("name", "%s", def->name);
+    if (def->kind) {
+        INDENT_FIELD_EXT_NONL_START("kind");
+        ast_print_i(def->kind, depth + 2);
+        INDENT_FIELD_NONL_END;
+    } else INDENT_FIELD("kind", "%s", "Any");
+
     INDENT_FIELD_EXT_NONL_START("exp");
-    ast_print_i(vdef->exp, depth + 2); // 2 because already indented.
+    ast_print_i(def->exp, depth + 2); // 2 because already indented.
     INDENT_FIELD_NONL_END;
 
     INDENT_END;

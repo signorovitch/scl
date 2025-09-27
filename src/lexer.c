@@ -106,6 +106,9 @@ int yylex() {
     // Assign & consume current character.
     int c = *inp++;
 
+    if (c == '-' && *inp == '>' && inp++) { return RARROW; }
+    if (c == '<' && *inp == '-' && inp++) { return LARROW; }
+
     // Check for NUM.
     if (isdigit(c)) {
         yylval.fval = acc_float(c); // Set the token value.
@@ -146,7 +149,8 @@ int yylex() {
         // case '=':  return EQ;
         case '\\': return BACKSLASH;
         case '?':  return IF;
-        case ':':  return ELSE;
+        case ':':  return COLON;
+        case '$':  return STOP;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 
