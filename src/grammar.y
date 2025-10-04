@@ -76,6 +76,7 @@
 %type<exps> block;
 %type<exps> inputstart
 %type<exps> input
+%type<ast> typed_word;
 
 %start inputend // This makes no sense but w/e.
 
@@ -138,6 +139,7 @@ block:
         $$ = $1;
     }
     ;
+
 
 exp:
     // Variable reference.
@@ -246,6 +248,7 @@ exp:
             ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_if))
         ));
     }
+
     | IF exp exp ELSE exp {
         AST** argv = calloc(3, sizeof(AST*));
         argv[0] = $2;
@@ -309,14 +312,19 @@ exp:
     // Stop sign.
     | exp STOP { $$ = $1; }
 
-    // Variable definition.
-    | WORD EQ exp {
-        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, NULL, $3));
-    }
-
-    // Variable definition with type annotation.
+    // Definition with type annotation.
     | WORD COLON exp EQ exp {
         $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3, $5));
+    }
+
+    // Definition with type annotation.
+    | WORD COLON WORD EQ exp {
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3, $5));
+    }
+
+    // Definition.
+    | WORD EQ exp {
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, NULL, $3));
     }
 
     | exp ADD exp {
