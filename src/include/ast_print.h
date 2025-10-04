@@ -14,6 +14,9 @@ void ast_num_print(ASTNumData*, int i);
 // Print an `ASTBoolData`.
 void ast_bool_print(ASTBoolData*, int i);
 
+// Print an `ASTKindData`.
+void ast_kind_print(ASTKindData*, int i);
+
 // Print an `ASTExecData`.
 void ast_exc_print(ASTExcData*, int i);
 
