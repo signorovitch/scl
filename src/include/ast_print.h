@@ -41,4 +41,9 @@ void ast_lambda_print(ASTLambdaData* arg, int i);
 // Print an `ASTBIFData`.
 void ast_bif_print(ASTBIFData* arg, int i);
 
+// Print an `ASTForceData`.
+void ast_force_print(ASTForceData* force, int i);
+
+// Print an `ASTPreserveData`.
+void ast_preserve_print(ASTPreserveData* preserve, int i);
 #endif

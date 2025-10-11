@@ -50,6 +50,8 @@ void ast_destroy(AST* ast) {
         case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
         case AST_TYPE_EXC:      ast_exc_data_destroy(ast->data); break;
         case AST_TYPE_LAMBDA:   ast_lambda_data_destroy(ast->data); break;
+        case AST_TYPE_FORCE:    ast_force_data_destroy(ast->data); break;
+        case AST_TYPE_PRESERVE: ast_preserve_data_destroy(ast->data); break;
         default:
             log_dbgf("Unknown ast type %d (max: %d)", ast->type, AST_TYPE_MAX);
     }
@@ -90,9 +92,7 @@ ASTKindData* ast_kind_data_init(ASTKindData val) {
     return kind;
 }
 
-void ast_kind_data_destroy(ASTKindData* kind) {
-    free(kind);
-}
+void ast_kind_data_destroy(ASTKindData* kind) { free(kind); }
 
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace) {
     ASTExcData* data = malloc(sizeof(ASTExcData));
@@ -210,3 +210,19 @@ AST* ast_find(Scope* scope, char* name) {
 
     return NULL;
 }
+
+ASTForceData* ast_force_data_init(AST* body) {
+    talloc(ASTForceData, force);
+    force->body = body;
+    return force;
+}
+
+void ast_force_data_destroy(ASTForceData* force) { free(force); }
+
+ASTPreserveData* ast_preserve_data_init(AST* body) {
+    talloc(ASTPreserveData, preserve);
+    preserve->body = body;
+    return preserve;
+}
+
+void ast_preserve_data_destroy(ASTPreserveData* preserve) { free(preserve); }

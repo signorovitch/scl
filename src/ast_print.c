@@ -15,7 +15,9 @@ static char* asttype_names[] = {
     [AST_TYPE_EXC] = "EXCEPTION",
     [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
     [AST_TYPE_LAMBDA] = "LAMBDA",
-    [AST_TYPE_BIF] = "BUILTIN FUNCTION"
+    [AST_TYPE_BIF] = "BUILTIN FUNCTION",
+    [AST_TYPE_FORCE] = "FORCE",
+    [AST_TYPE_PRESERVE] = "PRESERVE"
 };
 
 void ast_print(AST* ast) {
@@ -45,15 +47,17 @@ void ast_print_i(AST* ast, int i) {
                 ast_lit_kind_names[*(ASTKindData*)ast->data]
             );
             break;
-        case AST_TYPE_CALL:   ast_call_print(ast->data, i + 2); break;
-        case AST_TYPE_EXC:    ast_exc_print(ast->data, i + 2); break;
-        case AST_TYPE_REF:    ast_ref_print(ast->data, i + 2); break;
-        case AST_TYPE_DEF:    ast_def_print(ast->data, i + 2); break;
-        case AST_TYPE_BLOCK:  ast_block_print(ast->data, i + 2); break;
-        case AST_TYPE_ARG:    ast_arg_print(ast->data, i + 2); break;
-        case AST_TYPE_LAMBDA: ast_lambda_print(ast->data, i + 2); break;
-        case AST_TYPE_BIF:    ast_bif_print(ast->data, i + 2); break;
-        default:              exit(1);
+        case AST_TYPE_CALL:     ast_call_print(ast->data, i + 2); break;
+        case AST_TYPE_EXC:      ast_exc_print(ast->data, i + 2); break;
+        case AST_TYPE_REF:      ast_ref_print(ast->data, i + 2); break;
+        case AST_TYPE_DEF:      ast_def_print(ast->data, i + 2); break;
+        case AST_TYPE_BLOCK:    ast_block_print(ast->data, i + 2); break;
+        case AST_TYPE_ARG:      ast_arg_print(ast->data, i + 2); break;
+        case AST_TYPE_LAMBDA:   ast_lambda_print(ast->data, i + 2); break;
+        case AST_TYPE_BIF:      ast_bif_print(ast->data, i + 2); break;
+        case AST_TYPE_FORCE:    ast_force_print(ast->data, i + 2); break;
+        case AST_TYPE_PRESERVE: ast_preserve_print(ast->data, i + 2); break;
+        default:                exit(1);
     }
     INDENT_FIELD_NONL_END;
     INDENT_END;
@@ -169,5 +173,27 @@ void ast_bif_print(ASTBIFData* bif, int i) {
         }
 
     INDENT_FIELD("name", "%s", name);
+    INDENT_END;
+}
+
+void ast_force_print(ASTForceData* force, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("ASTForceData", force);
+    INDENT_FIELD_EXT_NONL_START("body");
+    ast_print_i(force->body, i + 2);
+    INDENT_FIELD_NONL_END;
+
+    INDENT_END;
+}
+
+void ast_preserve_print(ASTPreserveData* preserve, int i) {
+    INDENT_BEGIN(i);
+
+    INDENT_TITLE("ASTPreserveData", preserve);
+    INDENT_FIELD_EXT_NONL_START("body");
+    ast_print_i(preserve->body, i + 2);
+    INDENT_FIELD_NONL_END;
+
     INDENT_END;
 }

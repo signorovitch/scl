@@ -62,6 +62,9 @@
 %token COLON // Colon :.
 %token STOP // Stop sign $.
 
+%token FORCE // Force operator !.
+%token PRESERVE // Preserve operator @.
+
 %token BACKSLASH
 
 %left ADD SUB
@@ -282,6 +285,16 @@ exp:
         AST** parv = $3->buf;
         argarr_destroypsv($3);
         $$ = ast_init(AST_TYPE_LAMBDA, ast_lambda_data_init(parc, parv, $5));
+    }
+
+    // Force operator.
+    | FORCE exp {
+        $$ = ast_init(AST_TYPE_FORCE, ast_force_data_init($2));
+    }
+
+    // Preserve operator.
+    | PRESERVE exp {
+        $$ = ast_init(AST_TYPE_PRESERVE, ast_preserve_data_init($2));
     }
 
     // Block.

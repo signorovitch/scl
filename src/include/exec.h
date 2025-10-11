@@ -20,6 +20,10 @@ AST* exec_ref(AST* ast, Scope* parent);
 AST* exec_fdef(AST* ast, Scope* parent);
 // Execute a lambda expression.
 AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent);
+// Execute a force expression.
+AST* exec_force(AST* ast, Scope* parent);
+// Execute a preserve expression.
+AST* exec_preserve(AST* ast, Scope* parent);
 // Print the result of an execution.
 void exec_print(double n);
 

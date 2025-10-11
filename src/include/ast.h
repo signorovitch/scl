@@ -19,16 +19,20 @@ typedef enum {
     AST_TYPE_VEC,  // A vector (fixed size, fixed type).
     AST_TYPE_LIST, // A list (variable size, variable type).
 
+    // Syntactic types:
+    AST_TYPE_FORCE,
+    AST_TYPE_PRESERVE,
+    AST_TYPE_BLOCK,  // A block of code (scope).
+    AST_TYPE_ARG,    // A definition argument.
+
     // Misc. types.
     AST_TYPE_BIF,    // Built-in function.
     AST_TYPE_CALL,   // A function call.
     AST_TYPE_DEF,   // A definition.
     AST_TYPE_REF,   // A variable reference.
-    AST_TYPE_BLOCK,  // A block of code (scope).
     AST_TYPE_LAMBDA, // An anonymous function definition.
     AST_TYPE_EXC,   // An exception.
-    AST_TYPE_ARG,    // A definition argument.
-    AST_TYPE_MAX = AST_TYPE_ARG,
+    AST_TYPE_MAX = AST_TYPE_EXC,
 } ASTType;
 
 // An Abstract Syntax Tree.
@@ -68,7 +72,6 @@ typedef enum {
     AST_LIT_KIND_KIND,
     AST_LIT_KIND_MAX = AST_LIT_KIND_KIND
 } ASTKindData;
-
 
 extern const char* ast_lit_kind_names[AST_LIT_KIND_MAX + 2];
 
@@ -176,5 +179,15 @@ void ast_arg_data_destroy(ASTArgData* arg);
 
 // Find the expression associated with a name in the nearest scope.
 AST* ast_find(Scope* scope, char* name);
+
+// A force operator.
+typedef struct {AST* body;} ASTForceData;
+ASTForceData* ast_force_data_init(AST* body);
+void ast_force_data_destroy(ASTForceData* force);
+
+// A preserve operator.
+typedef struct {AST* body;} ASTPreserveData;
+ASTPreserveData* ast_preserve_data_init(AST* body);
+void ast_preserve_data_destroy(ASTPreserveData* preserve);
 
 #endif

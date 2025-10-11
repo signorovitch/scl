@@ -151,6 +151,8 @@ int yylex() {
         case '?':  return IF;
         case ':':  return COLON;
         case '$':  return STOP;
+        case '!':  return FORCE;
+        case '@':  return PRESERVE;
         default:   fprintf(stderr, "Unexpected character: %c\n", c);
     }
 

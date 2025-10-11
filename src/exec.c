@@ -23,13 +23,16 @@ AST* exec_start(AST* ast) {
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
 
-    AST* defnum = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_NUM));
+    AST* defnum =
+        ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_NUM));
     htab_ins(global->here, "Num", defnum);
 
-    AST* defbool = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_BOOL));
+    AST* defbool =
+        ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_BOOL));
     htab_ins(global->here, "Bool", defbool);
 
-    AST* defkind = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_KIND));
+    AST* defkind =
+        ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_KIND));
     htab_ins(global->here, "Type", defkind);
 
     log_dbg("Completed startup sequence.");
@@ -51,11 +54,13 @@ AST* exec_exp(AST* ast, Scope* parent) {
             return ast_init(
                 AST_TYPE_LIT_BOOL, ast_bool_data_init(*(ASTBoolData*)ast->data)
             );
-        case AST_TYPE_REF:    return exec_ref(ast, parent);
-        case AST_TYPE_DEF:    return exec_def(ast, parent);
+        case AST_TYPE_REF:      return exec_ref(ast, parent);
+        case AST_TYPE_DEF:      return exec_def(ast, parent);
         case AST_TYPE_BIF:
-        case AST_TYPE_LAMBDA: return ast;
-        default:              printf("what\n"); exit(1);
+        case AST_TYPE_LAMBDA:   return ast;
+        case AST_TYPE_FORCE:    return exec_force(ast, parent);
+        case AST_TYPE_PRESERVE: return exec_preserve(ast, parent);
+        default:                printf("what\n"); exit(1);
     }
 }
 
@@ -101,23 +106,23 @@ AST* exec_def(AST* ast, Scope* parent) {
 
     if (data->kind) {
 
-        ASTKindData kind = *(ASTKindData*)exec_exp(data->kind, parent)->data == AST_LIT_KIND_NUM;
+        ASTKindData kind = *(ASTKindData*)exec_exp(data->kind, parent)->data ==
+                           AST_LIT_KIND_NUM;
 
-        if (
-            kind == AST_LIT_KIND_NUM &&
-            data->exp->type != AST_TYPE_LIT_NUM
-        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Num.", NULL));
+        if (kind == AST_LIT_KIND_NUM && data->exp->type != AST_TYPE_LIT_NUM)
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("Expected Num.", NULL)
+            );
 
-        if (
-            kind == AST_LIT_KIND_BOOL &&
-            data->exp->type != AST_TYPE_LIT_BOOL
-        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Bool.", NULL));
+        if (kind == AST_LIT_KIND_BOOL && data->exp->type != AST_TYPE_LIT_BOOL)
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("Expected Bool.", NULL)
+            );
 
-        if (
-            kind == AST_LIT_KIND_KIND &&
-            data->exp->type != AST_TYPE_LIT_KIND
-        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Type.", NULL));
-
+        if (kind == AST_LIT_KIND_KIND && data->exp->type != AST_TYPE_LIT_KIND)
+            return ast_init(
+                AST_TYPE_EXC, ast_exc_data_init("Expected Type.", NULL)
+            );
     }
 
     scope_add(parent, key, val); // Add variable definition to parent scope.
@@ -155,6 +160,18 @@ AST* exec_lambda(size_t argc, AST** argv, AST* exp, Scope* parent) {
     }
 
     return exec_exp(lambda->body, callscope);
+}
+
+AST* exec_force(AST* ast, Scope* parent) {
+    AST* body = ((ASTForceData*)ast->data)->body;
+
+    if (body->type == AST_TYPE_REF) {
+        return exec_exp(exec_ref(body, parent), parent);
+    } else return exec_exp(body, parent);
+}
+
+AST* exec_preserve(AST* ast, Scope* parent) {
+    return ((ASTPreserveData*)ast->data)->body;
 }
 
 void exec_print(double n) { printf("= %lf\n", n); }
