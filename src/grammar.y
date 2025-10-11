@@ -69,7 +69,9 @@
 
 %left ADD SUB
 %left MUL DIV
-%right RARROW
+%left RARROW
+%right LARROW
+%nonassoc STOP
 %precedence NEG
 
 %type<ast> exp;
@@ -83,6 +85,8 @@
 %start inputend // This makes no sense but w/e.
 
 %%
+
+maybe_stop: %empty | STOP;
 
 inputstart:
     exp {
@@ -144,8 +148,11 @@ block:
 
 
 exp:
+    // Stop sign.
+    exp STOP { $$ = $1; }
+
     // Variable reference.
-    WORD {
+    | WORD {
         $$ = ast_init(AST_TYPE_REF, ast_ref_data_init($1));
     }
 
@@ -173,17 +180,27 @@ exp:
         ));
     }
 
-    /* TODO: Call (right arrow single arg).
     | exp RARROW exp {
         size_t argc = 1;
-        AST** argv = ;
-        argarr_destroypsv($2);
+        AST** argv = malloc(sizeof(AST*));
+        argv[0] = $1;
         $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
             argc,
             argv,
-            $5
+            $3
         ));
-    }*/
+    }
+
+    | exp LARROW exp {
+        size_t argc = 1;
+        AST** argv = malloc(sizeof(AST*));
+        argv[0] = $3;
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $1
+        ));
+    }
 
     // Call (convenient form).
     | WORD GROUPS arg GROUPE {
@@ -206,17 +223,6 @@ exp:
             argc,
             argv,
             ast_init(AST_TYPE_REF, ast_ref_data_init($1))
-        ));
-    }
-
-    // Call (right arrow hacky convenient form).
-    | GROUPS GROUPE RARROW WORD {
-        size_t argc = 0;
-        AST** argv = NULL;
-        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
-            argc,
-            argv,
-            ast_init(AST_TYPE_REF, ast_ref_data_init($4))
         ));
     }
 
@@ -264,9 +270,8 @@ exp:
         ));
     }
 
-
     // Function definitions. Convert to Def of Lambda.
-    | WORD GROUPS arg GROUPE exp {
+    | WORD GROUPS arg GROUPE exp maybe_stop {
         size_t parc = $3->ln;
         AST** parv = $3->buf;
         argarr_destroypsv($3);
@@ -320,9 +325,6 @@ exp:
 
     // Group.
     | GROUPS exp GROUPE { $$ = $2; }
-
-    // Stop sign.
-    | exp STOP { $$ = $1; }
 
     // Definition with type annotation.
     | WORD COLON exp EQ exp {
