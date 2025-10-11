@@ -6,15 +6,15 @@
 #include <stdio.h>
 
 static char* asttype_names[] = {
-    [AST_TYPE_CALL] = "FUNC CALL",
-    [AST_TYPE_LIT_NUM] = "NUMBER",
-    [AST_TYPE_LIT_BOOL] = "BOOLEAN",
+    [AST_TYPE_CALL] = "CALL",
+    [AST_TYPE_LIT_NUM] = "LITERAL NUMBER",
+    [AST_TYPE_LIT_BOOL] = "LITERAL BOOLEAN",
     [AST_TYPE_REF] = "REFERENCE",
     [AST_TYPE_DEF] = "DEFINITION",
     [AST_TYPE_BLOCK] = "BLOCK",
     [AST_TYPE_EXC] = "EXCEPTION",
     [AST_TYPE_ARG] = "DEFINITION ARGUMENT",
-    [AST_TYPE_LAMBDA] = "LAMBDA EXPRESSION",
+    [AST_TYPE_LAMBDA] = "LAMBDA",
     [AST_TYPE_BIF] = "BUILTIN FUNCTION"
 };
 
@@ -37,6 +37,12 @@ void ast_print_i(AST* ast, int i) {
             printf(
                 "%s  %s\n", INDENT_spacing->buf,
                 *(ASTBoolData*)ast->data ? "true" : "false"
+            );
+            break;
+        case AST_TYPE_LIT_KIND:
+            printf(
+                "%s  %s\n", INDENT_spacing->buf,
+                ast_lit_kind_names[*(ASTKindData*)ast->data]
             );
             break;
         case AST_TYPE_CALL:   ast_call_print(ast->data, i + 2); break;

@@ -41,10 +41,11 @@ void ast_destroy(AST* ast) {
     switch (ast->type) {
         case AST_TYPE_LIT_NUM:  ast_num_data_destroy(ast->data); break;
         case AST_TYPE_LIT_BOOL: ast_bool_data_destroy(ast->data); break;
+        case AST_TYPE_LIT_KIND: ast_kind_data_destroy(ast->data); break;
         case AST_TYPE_CALL:     ast_call_data_destroy(ast->data); break;
         case AST_TYPE_REF:      ast_ref_data_destroy(ast->data); break;
         case AST_TYPE_DEF:      ast_def_data_destroy(ast->data); break;
-        case AST_TYPE_BLOCK:    ast_block_data_destroy_psv(ast->data); break;
+        case AST_TYPE_BLOCK:    ast_block_data_destroy(ast->data); break;
         case AST_TYPE_ARG:      ast_arg_data_destroy(ast->data); break;
         case AST_TYPE_BIF:      ast_bif_data_destroy(ast->data); break;
         case AST_TYPE_EXC:      ast_exc_data_destroy(ast->data); break;
@@ -75,6 +76,23 @@ ASTBoolData* ast_bool_data_init(int val) {
 }
 
 void ast_bool_data_destroy(ASTBoolData* bol) { free(bol); }
+
+const char* ast_lit_kind_names[AST_LIT_KIND_MAX + 2] = {
+    [AST_LIT_KIND_NUM] = "Number",
+    [AST_LIT_KIND_BOOL] = "Boolean",
+    [AST_LIT_KIND_KIND] = "Type",
+};
+
+ASTKindData* ast_kind_data_init(ASTKindData val) {
+    talloc(ASTKindData, kind);
+    *kind = val;
+
+    return kind;
+}
+
+void ast_kind_data_destroy(ASTKindData* kind) {
+    free(kind);
+}
 
 ASTExcData* ast_exc_data_init(const char* msg, AST* trace) {
     ASTExcData* data = malloc(sizeof(ASTExcData));
@@ -171,13 +189,6 @@ ASTBlockData* ast_block_data_init(AST** inside, size_t ln) {
 }
 
 void ast_block_data_destroy(ASTBlockData* block) {
-    for (size_t i = 0; i < block->ln; i++) { ast_destroy(block->inside[i]); }
-
-    free(block->inside);
-    free(block);
-}
-
-void ast_block_data_destroy_psv(ASTBlockData* block) {
     free(block->inside);
     free(block);
 }

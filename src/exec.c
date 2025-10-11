@@ -23,6 +23,15 @@ AST* exec_start(AST* ast) {
             ast_init(AST_TYPE_BIF, ast_bif_data_init(BUILTIN_FNS[i].fn))
         );
 
+    AST* defnum = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_NUM));
+    htab_ins(global->here, "Num", defnum);
+
+    AST* defbool = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_BOOL));
+    htab_ins(global->here, "Bool", defbool);
+
+    AST* defkind = ast_init(AST_TYPE_LIT_KIND, ast_kind_data_init(AST_LIT_KIND_KIND));
+    htab_ins(global->here, "Type", defkind);
+
     log_dbg("Completed startup sequence.");
 
     AST* res = exec_exp(ast, global);
@@ -89,6 +98,28 @@ AST* exec_def(AST* ast, Scope* parent) {
     ASTDefData* data = (ASTDefData*)ast->data;
     AST* val = data->exp;
     char* key = data->name;
+
+    if (data->kind) {
+
+        ASTKindData kind = *(ASTKindData*)exec_exp(data->kind, parent)->data == AST_LIT_KIND_NUM;
+
+        if (
+            kind == AST_LIT_KIND_NUM &&
+            data->exp->type != AST_TYPE_LIT_NUM
+        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Num.", NULL));
+
+        if (
+            kind == AST_LIT_KIND_BOOL &&
+            data->exp->type != AST_TYPE_LIT_BOOL
+        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Bool.", NULL));
+
+        if (
+            kind == AST_LIT_KIND_KIND &&
+            data->exp->type != AST_TYPE_LIT_KIND
+        ) return ast_init(AST_TYPE_EXC, ast_exc_data_init("Expected Type.", NULL));
+
+    }
+
     scope_add(parent, key, val); // Add variable definition to parent scope.
     return exec_exp(val, parent);
 }

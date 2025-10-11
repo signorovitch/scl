@@ -51,9 +51,15 @@ SCL's syntax will feel familiar to other functional programming languages.
 Here's a simple factorial function, using recursion:
 
 ```scl
-> factorial(n) {
->   if (n == 0) { 1 }
->   else { n * factorial(n - 1) }
+> fac(n) = {
+>   f(n, a) = {
+>     if n == 1
+>       a
+>     else
+>       f(n - 1, a * n);
+>   }
+>
+>   f(n, 1);
 > }
 ```
 
@@ -61,5 +67,5 @@ SCL's syntax is quite flexible. The above function could be more concisely
 written as:
 
 ```scl
-> factorial(n) ? n == 0 1 n * factorial(n - 1)
+> fac(n) (n, 1) -> f(n, a) ? n == 1 a f(n - 1, a * n)
 ```

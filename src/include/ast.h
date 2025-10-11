@@ -10,11 +10,7 @@ typedef enum {
     AST_TYPE_LIT_NUM,  // A number (float) literal.
     AST_TYPE_LIT_BOOL, // A boolean literal.
     AST_TYPE_LIT_VEC,  // A vector literal.
-
-    // Kind constructors. Maybe these can just be BIFASTs/BIVs?
-    AST_TYPE_INT_CON,  // An integer constructor `Int`.
-    AST_TYPE_BOOL_CON, // A boolean constructor `Bool`.
-    AST_TYPE_KIND_CON, // A kind constructor `Type`.
+    AST_TYPE_LIT_KIND, // A kind literal.
 
     AST_TYPE_EXC_CON,  // Exception constructor `Exc`.
     AST_TYPE_VEC_CON,  // Vectpr constructor `Vec()`.
@@ -65,11 +61,22 @@ ASTBoolData* ast_bool_data_init(int val);
 // Destroy an `ASTBoolData`.
 void ast_bool_data_destroy(ASTBoolData* bol);
 
-// A kind.
-typedef struct {
-    char* name;
-
+// A literal kind.
+typedef enum {
+    AST_LIT_KIND_BOOL,
+    AST_LIT_KIND_NUM,
+    AST_LIT_KIND_KIND,
+    AST_LIT_KIND_MAX = AST_LIT_KIND_KIND
 } ASTKindData;
+
+
+extern const char* ast_lit_kind_names[AST_LIT_KIND_MAX + 2];
+
+// Create a new `ASTKindData`.
+ASTKindData* ast_kind_data_init(ASTKindData);
+
+// Destroy an `ASTKindData`.
+void ast_kind_data_destroy(ASTKindData*);
 
 // An exception.
 typedef struct ASTEXCDATA {
@@ -157,8 +164,6 @@ typedef struct {
 ASTBlockData* ast_block_data_init(AST** inside, size_t ln);
 // Destroy an `ASTBlockData`, recursively.
 void ast_block_data_destroy(ASTBlockData* block);
-// Destroy an `ASTBlockData`.
-void ast_block_data_destroy_psv(ASTBlockData* block);
 
 typedef struct {
     char* name; // Argument name.

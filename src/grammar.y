@@ -139,6 +139,7 @@ block:
     }
     ;
 
+
 exp:
     // Variable reference.
     WORD {
@@ -246,6 +247,7 @@ exp:
             ast_init(AST_TYPE_BIF, ast_bif_data_init(builtin_if))
         ));
     }
+
     | IF exp exp ELSE exp {
         AST** argv = calloc(3, sizeof(AST*));
         argv[0] = $2;
@@ -309,14 +311,23 @@ exp:
     // Stop sign.
     | exp STOP { $$ = $1; }
 
-    // Variable definition.
-    | WORD EQ exp {
-        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, NULL, $3));
-    }
-
-    // Variable definition with type annotation.
+    // Definition with type annotation.
     | WORD COLON exp EQ exp {
         $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, $3, $5));
+    }
+
+    // Definition with type annotation.
+    | WORD COLON WORD EQ exp {
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init(
+            $1,
+            ast_init(AST_TYPE_REF, ast_ref_data_init($3)),
+            $5
+        ));
+    }
+
+    // Definition.
+    | WORD EQ exp {
+        $$ = ast_init(AST_TYPE_DEF, ast_def_data_init($1, NULL, $3));
     }
 
     | exp ADD exp {
