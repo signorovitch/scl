@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
                 log_dbg("Parsed successfully!\n");
             } else {
                 printf("Parse error.\n");
+                dstr_destroy(ln);
                 continue;
             }
 

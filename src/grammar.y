@@ -168,6 +168,17 @@ exp:
         ));
     }
 
+    // Call (general hacky form).
+    | exp GROUPS GROUPE {
+        size_t argc = 1;
+        AST** argv = NULL;
+        $$ = ast_init(AST_TYPE_CALL, ast_call_data_init(
+            argc,
+            argv,
+            $1
+        ));
+    }
+
     // Call (right arrow general form).
     | GROUPS arg GROUPE RARROW exp {
         size_t argc = $2->ln;
@@ -304,7 +315,9 @@ exp:
 
     // Block.
     | BLOCKS block BLOCKE {
-        $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) $2->buf, $2->ln));
+        AST** exps = (AST**) $2->buf;
+        dlist_destroypsv($2);
+        $$ = ast_init(AST_TYPE_BLOCK, ast_block_data_init((AST**) exps, $2->ln));
     }
 
     // Negative.

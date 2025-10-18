@@ -108,17 +108,13 @@ int yylex() {
 
     if (c == '-' && *inp == '>' && inp++) { return RARROW; }
     if (c == '<' && *inp == '-' && inp++) { return LARROW; }
+    if (c == '=' && *inp == '=' && inp++) { return DEQ; }
+    if (c == '=' && *inp != '=') { return EQ; }
 
     // Check for NUM.
     if (isdigit(c)) {
         yylval.fval = acc_float(c); // Set the token value.
         return NUM;
-    }
-
-    if (c == '=') {
-        yylval.strval = acc_deq(c);
-        if (!strcmp(yylval.strval, "=")) return EQ;
-        if (!strcmp(yylval.strval, "==")) return DEQ;
     }
 
     if (isalpha(c) || c == '_') {
@@ -146,7 +142,6 @@ int yylex() {
         case ';':  return EXPSEP;
         case '{':  return BLOCKS;
         case '}':  return BLOCKE;
-        // case '=':  return EQ;
         case '\\': return BACKSLASH;
         case '?':  return IF;
         case ':':  return COLON;
