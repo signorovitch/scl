@@ -11,8 +11,6 @@ GC* gclist = NULL;
 
 void gc_destroy(GC* gc) { free(gc); }
 
-void f() {}
-
 void* gc_alloc(size_t sz, GCType type) {
     assert(type <= GC_TYPE_MAX);
 
@@ -40,7 +38,6 @@ void gc_hack_free() {
         gclist = gclist->nxt;
         switch (gc->type) {
             case GC_TYPE_AST:
-                f();
                 if (((AST*)gc->p)->type > AST_TYPE_MAX) {
                     log_dbgf(
                         "Attempted to free invalid AST (%i > %i) to GC: gc:%p "
