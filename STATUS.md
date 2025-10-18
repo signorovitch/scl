@@ -14,7 +14,7 @@
   - [x] Parse order of operations with parenthesis
   - [x] Parse variable invocation
   - [x] Parse variable definition
-    - [ ] Parse types
+    - [x] Parse types
   - [x] Parse function definition
   - [ ] Parse lists/arrays/vectors
   - [x] Parse blocks
@@ -26,7 +26,6 @@
     - [ ] Parse `case` statements
     - [ ] Parse `goto` statements
   - [x] Parse lambda function definition
-  - [ ] Parse function calling with positional arguments
   - [ ] Parse variadic functions
   - [ ] Parse infix function definition
 
@@ -35,8 +34,8 @@
   - [x] Exec variable use
   - [x] Exec variable definition
   - [x] Exec function definition
-  - [ ] Exec symbolic variables
-  - [ ] Exec control flow statements
+  - [x] Exec symbolic variables
+  - [x] Exec control flow statements
   - [ ] Exec variadic functions
   - [x] Exec lambda functions
   - [ ] Exec lists
