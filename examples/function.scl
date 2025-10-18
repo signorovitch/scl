@@ -1,2 +1,5 @@
-apply(f, x) f(x)
-apply(\(x) x + 1, 2)
+factorial(n)
+    (n, 1) -> f(n, a)
+        ? n == 1
+            n
+            f(n - 1, a * n)
