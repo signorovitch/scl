@@ -1,11 +1,11 @@
 # SCL: Simple CAS Language
 
-*v0.3*
+*v1.0*
 
 SCL aims to be a human-friendly Computer Algebra System (CAS) inspired by
 [maxima](https://maxima.sourceforge.io/) that feels like writing on paper. In
 its current state, SCL can be used as a functional programming language capable
-of performing simple arithmetic. The codebase is about 2,000 lines of
+of performing simple arithmetic. The codebase is about 2,400 lines of
 handwritten C, including a parser, interpreter, and runtime. It uses a linked
 environment scoping model.
 
