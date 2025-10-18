@@ -6,7 +6,9 @@ AlignConsecutiveShortCaseStatements:
 IndentCaseLabels: true
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortFunctionsOnASingleLine: SFS_Empty
 AllowShortLoopsOnASingleLine: true
 IndentWidth: 4
 PointerAlignment: Left
